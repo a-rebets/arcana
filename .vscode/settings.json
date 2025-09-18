@@ -1,0 +1,12 @@
+{
+	"biome.enabled": true,
+	"prettier.enable": false,
+	"editor.codeActionsOnSave": {
+		"source.organizeImports.biome": "always",
+		"source.fixAll.biome": "always"
+	},
+	"[html]": {
+		"editor.defaultFormatter": "vscode.html-language-features"
+	},
+	"typescript.tsdk": "node_modules/typescript/lib"
+}

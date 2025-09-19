@@ -59,6 +59,7 @@ function closePopupHTML(message: string) {
               justify-content: center;
               font-family: Arial, sans-serif;
               font-size: 18px;
+			  text-align: center;
             }
           </style>
         </head>

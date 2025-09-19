@@ -12,7 +12,6 @@ import {
 	ConversationContent,
 	ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
-import { Loader } from "@/components/ai-elements/loader";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import {
 	PromptInput,
@@ -43,6 +42,7 @@ import {
 	SourcesContent,
 	SourcesTrigger,
 } from "@/components/ai-elements/sources";
+import { EyeLoader } from "@/components/ui/loaders";
 import NavigationHeader from "./navigation";
 
 const models = [
@@ -173,7 +173,7 @@ function Page() {
 								})}
 							</div>
 						))}
-						{status === "submitted" && <Loader />}
+						{status === "submitted" && <EyeLoader />}
 					</ConversationContent>
 					<ConversationScrollButton />
 				</Conversation>

@@ -1,18 +1,17 @@
 {
 	"name": "arcana",
 	"version": "1.0.0",
-	"workspaces": [
-		"packages/*"
-	],
+	"devDependencies": {
+		"@types/node": "24.5.2",
+		"typescript": "5.9.2"
+	},
 	"scripts": {
 		"dev": "bun --filter '*' dev",
 		"build": "bun --filter '*' build",
 		"lint": "bun --filter '*' lint",
 		"preview": "bun --filter '*' preview"
 	},
-	"devDependencies": {
-		"@types/node": "24.5.2",
-		"typescript": "5.9.2",
-		"vite-plugin-svgr": "4.5.0"
-	}
+	"workspaces": [
+		"packages/*"
+	]
 }

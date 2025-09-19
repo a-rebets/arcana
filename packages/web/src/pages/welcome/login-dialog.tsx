@@ -141,7 +141,7 @@ function EmailTab() {
 	return (
 		<div className="flex flex-col gap-6">
 			<DialogHeader>
-				<DialogTitle>Login to Arcana</DialogTitle>
+				<DialogTitle>Sign in to Arcana</DialogTitle>
 				<DialogDescription>
 					We'll send a one-time code to your email.
 				</DialogDescription>

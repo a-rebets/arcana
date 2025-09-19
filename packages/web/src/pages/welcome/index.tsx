@@ -85,10 +85,10 @@ function Page() {
 								/>
 								<div>
 									<p className="font-medium leading-none">
-										Plugs into your stack
+										Plugs into any workspace
 									</p>
 									<p className="text-sm text-muted-foreground">
-										Asana today; Google Calendar and more next.
+										Asana today; Google Calendar and more soon.
 									</p>
 								</div>
 							</li>

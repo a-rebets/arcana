@@ -1,6 +1,6 @@
 import { api } from "@convex/api";
 import { useAuthActions } from "@convex-dev/auth/react";
-import { SignOutIcon } from "@phosphor-icons/react";
+import { SignOutIcon, UserIcon } from "@phosphor-icons/react";
 import { useQuery } from "convex/react";
 import AsanaIcon from "@/assets/asana-icon.svg?react";
 import { Button } from "@/components/animate-ui/components/buttons/button";
@@ -39,11 +39,7 @@ export default function UserMenu() {
 								getGradientClasses(profileColors),
 							)}
 						>
-							{user ? (
-								user.name?.charAt(0)
-							) : (
-								<Skeleton className="h-4 w-4 rounded" />
-							)}
+							<UserIcon className="size-5 text-white/90" weight="bold" />
 						</AvatarFallback>
 					</Avatar>
 				</Button>
@@ -52,7 +48,7 @@ export default function UserMenu() {
 				<DropdownMenuLabel className="flex min-w-0 flex-col">
 					{user ? (
 						<>
-							<span className="text-foreground truncate text-sm font-medium">
+							<span className="text-foreground truncate text-xl font-accent font-light">
 								{user.name}
 							</span>
 							<span className="text-muted-foreground truncate text-xs font-normal">

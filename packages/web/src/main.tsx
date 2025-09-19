@@ -2,12 +2,14 @@ import { ConvexAuthProvider } from "@convex-dev/auth/react";
 import { ConvexQueryClient } from "@convex-dev/react-query";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConvexReactClient } from "convex/react";
+import { ThemeProvider } from "next-themes";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router";
 import { Toaster } from "./components/ui/sonner";
 import { Gate } from "./lib/nav-gate";
 import MainPage from "./pages/main/index";
+import NotFoundPage from "./pages/not-found/index";
 import OnboardingPage from "./pages/onboarding";
 import WelcomePage from "./pages/welcome/index";
 
@@ -32,7 +34,13 @@ createRoot(elem).render(
 	<StrictMode>
 		<ConvexAuthProvider client={convex}>
 			<QueryClientProvider client={queryClient}>
-				<App />
+				<ThemeProvider
+					storageKey="arcana-theme"
+					enableSystem={false}
+					attribute="class"
+				>
+					<App />
+				</ThemeProvider>
 			</QueryClientProvider>
 		</ConvexAuthProvider>
 	</StrictMode>,
@@ -53,6 +61,7 @@ function App() {
 						<Route path="/onboarding" element={<OnboardingPage />} />
 					</Route>
 				</Route>
+				<Route path="*" element={<NotFoundPage />} />
 			</Routes>
 			<Toaster richColors position="bottom-right" />
 		</BrowserRouter>

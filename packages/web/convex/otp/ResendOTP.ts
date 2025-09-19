@@ -26,7 +26,7 @@ export const ResendOTP = Email({
 	}) {
 		const resend = new ResendAPI(provider.apiKey);
 		const { error } = await resend.emails.send({
-			from: "Arcana <authentication@resend.dev>",
+			from: "Arcana <auth@notifications.tryarcana.app>",
 			to: [email],
 			subject: `Sign in to Arcana`,
 			react: LoginCodeEmail({ code: token, expires }),

@@ -1,9 +1,7 @@
 import { useAuthActions } from "@convex-dev/auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CheckIcon, ChecksIcon, XIcon } from "@phosphor-icons/react";
 import { useCallback, useEffect } from "react";
 import { useForm, useFormContext } from "react-hook-form";
-import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import {
@@ -37,6 +35,7 @@ import {
 	InputOTPSeparator,
 	InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { errorToast, successToast } from "@/components/ui/toasts";
 
 const tabs: { value: string; component: React.ComponentType }[] = [
 	{
@@ -69,18 +68,10 @@ export const LoginDialog = ({ children }: { children: React.ReactNode }) => {
 			const withCode = data.code !== undefined;
 			void signIn("resend-otp", data)
 				.then(() => {
-					toast.success(withCode ? "Login successful" : "Email sent", {
-						icon: withCode ? (
-							<ChecksIcon weight="bold" className="size-full" />
-						) : (
-							<CheckIcon weight="bold" className="size-full" />
-						),
-					});
+					successToast(withCode ? "Login successful" : "Email sent", withCode);
 				})
 				.catch(() => {
-					toast.error("Failed to login", {
-						icon: <XIcon weight="bold" className="size-full" />,
-					});
+					errorToast("Failed to login");
 				});
 		},
 		[signIn],

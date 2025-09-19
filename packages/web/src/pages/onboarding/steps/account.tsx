@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import asana from "@/assets/asana.svg";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import { EyeLoader } from "@/components/ui/loaders";
+import { errorToast, successToast } from "@/components/ui/toasts";
 
 export function AccountStep() {
 	const [isLoading, toggleLoading] = useToggle(false);
@@ -37,9 +38,9 @@ export function AccountStep() {
 
 			toggleLoading(false);
 			if (data.success) {
-				console.log("Asana connected");
+				successToast("Asana connected");
 			} else {
-				console.error("Asana connection failed:", data.message);
+				errorToast(`Asana connection failed: ${data.message}`);
 			}
 		}
 

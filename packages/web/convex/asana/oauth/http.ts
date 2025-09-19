@@ -9,13 +9,13 @@ export const handleCallback = httpAction(async (ctx, request) => {
 
 	if (error) {
 		return new Response(closePopupHTML(`OAuth error: ${error}`), {
-			headers: { "Content-Type": "text/html" },
+			headers: { "Content-Type": "text/html; charset=utf-8" },
 		});
 	}
 
 	if (!code || !state) {
 		return new Response(closePopupHTML("Missing code or state"), {
-			headers: { "Content-Type": "text/html" },
+			headers: { "Content-Type": "text/html; charset=utf-8" },
 		});
 	}
 
@@ -26,7 +26,7 @@ export const handleCallback = httpAction(async (ctx, request) => {
 		});
 
 		return new Response(closePopupHTML("success"), {
-			headers: { "Content-Type": "text/html" },
+			headers: { "Content-Type": "text/html; charset=utf-8" },
 		});
 	} catch (error) {
 		console.error("OAuth callback error:", error);
@@ -40,17 +40,37 @@ export const handleCallback = httpAction(async (ctx, request) => {
 			console.error("Failed to cleanup OAuth state:", cleanupErr);
 		}
 		return new Response(closePopupHTML("Connection failed"), {
-			headers: { "Content-Type": "text/html" },
+			headers: { "Content-Type": "text/html; charset=utf-8" },
 		});
 	}
 });
 
 function closePopupHTML(message: string) {
 	return `
-      <script>
-        window.opener?.postMessage({ type: 'asana_oauth', success: ${message === "success"}, message: '${message}' }, '*');
-        window.close();
-      </script>
-      <p>${message === "success" ? "✅ Connected!" : `❌ ${message}`}</p>
+      <html>
+        <head>
+          <style>
+            body {
+              margin: 0;
+              padding: 0;
+              height: 100vh;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-family: Arial, sans-serif;
+              font-size: 18px;
+            }
+          </style>
+        </head>
+        <body>
+          <p>${message === "success" ? "✅ Connected!" : `❌ ${message}`}<br><br>Closing this window...</p>
+          <script>
+            setTimeout(() => {
+              window.opener?.postMessage({ type: 'asana_oauth', success: ${message === "success"}, message: '${message}' }, '*');
+              window.close();
+            }, 1000);
+          </script>
+        </body>
+      </html>
     `;
 }

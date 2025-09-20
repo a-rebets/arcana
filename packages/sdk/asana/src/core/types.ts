@@ -1,9 +1,12 @@
 import type { components, operations } from "../lib/api";
 
-export type OptFields<T extends keyof operations> =
-	operations[T]["parameters"]["query"] extends { opt_fields?: infer F }
-		? F
-		: never;
+export type OptFields<T extends keyof operations> = NonNullable<
+	operations[T]["parameters"]["query"]
+> extends {
+	opt_fields?: infer F;
+}
+	? Exclude<F, undefined>
+	: never;
 
 // Casting helpers for SDK clients to assert expanded shapes after using opt_fields
 export type ProjectExpandedShape = {

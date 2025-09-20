@@ -1,8 +1,9 @@
 import { tool } from "ai";
-import type { ProjectCompact, TeamMembershipCompact } from "asana-sdk";
 import {
 	castExpandedArray,
+	type ProjectCompact,
 	type ProjectExpandedShape,
+	type TeamMembershipCompact,
 	type TeamMembershipExpandedShape,
 } from "asana-sdk";
 import type { z } from "zod";
@@ -24,7 +25,7 @@ async function getUserTeams(
 	>(
 		await sdk.teams.getTeamMembershipsForUser(userGid, workspaceGid, {
 			limit: 500,
-			fields: ["team", "team.name"] as const,
+			fields: ["team", "team.name"],
 		}),
 	);
 

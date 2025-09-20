@@ -1,3 +1,4 @@
 export { createAsanaClient } from "./http";
 export { listUserProjectsTool } from "./listUserProjects";
-export type { ListUserProjectsInput } from "./schemas";
+export { listUserWorkspacesTool } from "./listUserWorkspaces";
+export type { ListUserProjectsInput, ListUserWorkspacesInput } from "./schemas";

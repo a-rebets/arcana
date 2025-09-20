@@ -3,7 +3,7 @@
 	"type": "module",
 	"main": "./src/index.ts",
 	"dependencies": {
-		"ai": "^5.0.41",
+		"ai": "^5.0.47",
 		"zod": "^4.1.8",
 		"asana-sdk": "workspace:*"
 	}

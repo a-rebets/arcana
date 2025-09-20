@@ -1,0 +1,10 @@
+{
+	"name": "asana-tools",
+	"type": "module",
+	"main": "./src/index.ts",
+	"dependencies": {
+		"ai": "^5.0.41",
+		"zod": "^4.1.8",
+		"asana-sdk": "workspace:*"
+	}
+}

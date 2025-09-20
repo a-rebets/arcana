@@ -12,6 +12,8 @@
 		"preview": "bun --filter '*' preview"
 	},
 	"workspaces": [
-		"packages/*"
+		"packages/web",
+		"packages/tools/*",
+		"packages/sdk/*"
 	]
 }

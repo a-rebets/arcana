@@ -1,0 +1,23 @@
+{
+	"name": "asana-sdk",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"main": "./src/index.ts",
+	"types": "./src/index.ts",
+	"exports": {
+		".": {
+			"types": "./src/index.ts",
+			"default": "./src/index.ts"
+		}
+	},
+	"scripts": {
+		"generate": "openapi-typescript https://raw.githubusercontent.com/Asana/openapi/master/defs/asana_oas.yaml -o ./src/lib/api.d.ts"
+	},
+	"dependencies": {
+		"openapi-fetch": "^0.14.0"
+	},
+	"devDependencies": {
+		"openapi-typescript": "^7.9.1"
+	}
+}

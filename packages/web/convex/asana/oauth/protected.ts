@@ -1,5 +1,5 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
-import { v } from "convex/values";
+import { type Infer, v } from "convex/values";
 import { internal } from "$/_generated/api";
 import type { Doc } from "$/_generated/dataModel";
 import {
@@ -9,19 +9,17 @@ import {
 } from "$/_generated/server";
 import {
 	asanaConnectionFields,
-	exchangeTokenResponse,
+	type exchangeTokenResponse,
 	tokenFields,
 } from "$/asana/oauth/schemas";
 import { env } from "$/lib/env";
 
-const oauthStateCreateArgs = {
-	state: v.string(),
-	codeVerifier: v.string(),
-	expiresAt: v.number(),
-} as const;
-
 export const storeOAuthState = internalMutation({
-	args: oauthStateCreateArgs,
+	args: {
+		state: v.string(),
+		codeVerifier: v.string(),
+		expiresAt: v.number(),
+	},
 	returns: v.null(),
 	handler: async (ctx, args) => {
 		const userId = await getAuthUserId(ctx);
@@ -94,23 +92,14 @@ export const saveConnection = internalMutation({
 	},
 });
 
-export const updateConnectionTokens = internalMutation({
-	args: tokenFields,
+export const updateConnectionTokensById = internalMutation({
+	args: {
+		connectionId: v.id("asanaConnections"),
+		...tokenFields,
+	},
 	returns: v.null(),
 	handler: async (ctx, args) => {
-		const userId = await getAuthUserId(ctx);
-		if (!userId) throw new Error("Unauthorized");
-
-		const connection = await ctx.db
-			.query("asanaConnections")
-			.withIndex("by_user", (q) => q.eq("userId", userId))
-			.first();
-
-		if (!connection) {
-			throw new Error("No connection found to update");
-		}
-
-		await ctx.db.patch(connection._id, {
+		await ctx.db.patch(args.connectionId, {
 			accessToken: args.accessToken,
 			refreshToken: args.refreshToken,
 			expiresAt: args.expiresAt,
@@ -119,21 +108,11 @@ export const updateConnectionTokens = internalMutation({
 	},
 });
 
-export const deleteConnection = internalMutation({
-	args: {},
+export const deleteConnectionById = internalMutation({
+	args: { connectionId: v.id("asanaConnections") },
 	returns: v.null(),
-	handler: async (ctx) => {
-		const userId = await getAuthUserId(ctx);
-		if (!userId) throw new Error("Unauthorized");
-
-		const connection = await ctx.db
-			.query("asanaConnections")
-			.withIndex("by_user", (q) => q.eq("userId", userId))
-			.first();
-
-		if (connection) {
-			await ctx.db.delete(connection._id);
-		}
+	handler: async (ctx, { connectionId }) => {
+		await ctx.db.delete(connectionId);
 		return null;
 	},
 });
@@ -152,8 +131,10 @@ export const exchangeCodeForTokens = internalAction({
 			}),
 		),
 	},
-	returns: exchangeTokenResponse,
-	handler: async (_, { request }) => {
+	handler: async (
+		_,
+		{ request },
+	): Promise<Infer<typeof exchangeTokenResponse>> => {
 		const baseParams: Record<string, string> = {
 			client_id: env.ASANA_CLIENT_ID,
 			client_secret: env.ASANA_CLIENT_SECRET,
@@ -190,13 +171,11 @@ export const exchangeCodeForTokens = internalAction({
 	},
 });
 
-const completeOAuthFlowArgs = {
-	state: v.string(),
-	code: v.string(),
-} as const;
-
 export const completeOAuthFlow = internalAction({
-	args: completeOAuthFlowArgs,
+	args: {
+		state: v.string(),
+		code: v.string(),
+	},
 	returns: v.null(),
 	handler: async (ctx, args) => {
 		const oauthState = await ctx.runQuery(

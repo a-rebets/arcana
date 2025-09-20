@@ -1,8 +1,7 @@
-import { type Infer, v } from "convex/values";
+import { v } from "convex/values";
 import { internal } from "$/_generated/api";
 import { action } from "$/_generated/server";
 import { env } from "$/lib/env";
-import type { exchangeTokenResponse } from "./schemas";
 import { allowedScopes } from "./scopes";
 
 export const startAsanaAuth = action({
@@ -42,7 +41,6 @@ export const startAsanaAuth = action({
 
 export const refreshTokens = action({
 	args: {},
-	returns: v.string(),
 	handler: async (ctx): Promise<string> => {
 		const connection = await ctx.runQuery(
 			internal.asana.oauth.protected.getConnection,
@@ -50,7 +48,7 @@ export const refreshTokens = action({
 		);
 		if (!connection) throw new Error("No connection found");
 
-		const tokens: Infer<typeof exchangeTokenResponse> = await ctx.runAction(
+		const tokens = await ctx.runAction(
 			internal.asana.oauth.protected.exchangeCodeForTokens,
 			{
 				request: {
@@ -60,11 +58,14 @@ export const refreshTokens = action({
 			},
 		);
 
+		const nextRefreshToken = tokens.refresh_token ?? connection.refreshToken;
+
 		await ctx.runMutation(
-			internal.asana.oauth.protected.updateConnectionTokens,
+			internal.asana.oauth.protected.updateConnectionTokensById,
 			{
+				connectionId: connection._id,
 				accessToken: tokens.access_token,
-				refreshToken: tokens.refresh_token,
+				refreshToken: nextRefreshToken,
 				expiresAt: Date.now() + tokens.expires_in * 1000,
 			},
 		);
@@ -97,7 +98,9 @@ export const disconnect = action({
 			console.error("Failed to revoke at Asana:", err);
 		}
 
-		await ctx.runMutation(internal.asana.oauth.protected.deleteConnection, {});
+		await ctx.runMutation(internal.asana.oauth.protected.deleteConnectionById, {
+			connectionId: connection._id,
+		});
 		return null;
 	},
 });

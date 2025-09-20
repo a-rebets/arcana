@@ -1,10 +1,11 @@
 import { useChat } from "@ai-sdk/react";
+import { useAuthToken } from "@convex-dev/auth/react";
 import {
 	ArrowsClockwiseIcon,
 	CopyIcon,
 	GlobeSimpleIcon,
 } from "@phosphor-icons/react";
-import { DefaultChatTransport } from "ai";
+import { DefaultChatTransport, type ToolUIPart } from "ai";
 import { Fragment, useState } from "react";
 import { Action, Actions } from "@/components/ai-elements/actions";
 import {
@@ -42,7 +43,15 @@ import {
 	SourcesContent,
 	SourcesTrigger,
 } from "@/components/ai-elements/sources";
+import {
+	Tool,
+	ToolContent,
+	ToolHeader,
+	ToolInput,
+	ToolOutput,
+} from "@/components/ai-elements/tool";
 import { EyeLoader } from "@/components/ui/loaders";
+import { useAsanaRefresh } from "@/hooks/useAsanaRefresh";
 import NavigationHeader from "./navigation";
 
 const models = [
@@ -56,13 +65,24 @@ const models = [
 	},
 ] as const;
 
+function isToolUIPart(part: any): part is ToolUIPart {
+	return part && typeof part.type === "string" && part.type.startsWith("tool-");
+}
+
 function Page() {
+	const { ready: asanaReady } = useAsanaRefresh();
+	const token = useAuthToken();
+
 	const [input, setInput] = useState("");
 	const [model, setModel] = useState<string>(models[0].value);
 	const [webSearch, setWebSearch] = useState(false);
 	const { messages, sendMessage, status, regenerate } = useChat({
 		transport: new DefaultChatTransport({
 			api: `${import.meta.env.VITE_CONVEX_API_URL}/api/chat`,
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+			credentials: "omit",
 		}),
 	});
 
@@ -162,12 +182,28 @@ function Page() {
 														i === message.parts.length - 1 &&
 														message.id === messages.at(-1)?.id
 													}
+													defaultOpen={false}
 												>
 													<ReasoningTrigger />
 													<ReasoningContent>{part.text}</ReasoningContent>
 												</Reasoning>
 											);
 										default:
+											// Handle tool calls
+											if (isToolUIPart(part)) {
+												return (
+													<Tool key={`${message.id}-${i}`}>
+														<ToolHeader type={part.type} state={part.state} />
+														<ToolContent>
+															<ToolInput input={part.input} />
+															<ToolOutput
+																output={part.output}
+																errorText={part.errorText}
+															/>
+														</ToolContent>
+													</Tool>
+												);
+											}
 											return null;
 									}
 								})}
@@ -218,7 +254,10 @@ function Page() {
 								</PromptInputModelSelectContent>
 							</PromptInputModelSelect>
 						</PromptInputTools>
-						<PromptInputSubmit disabled={!input && !status} status={status} />
+						<PromptInputSubmit
+							disabled={(!input && !status) || !asanaReady}
+							status={status}
+						/>
 					</PromptInputToolbar>
 				</PromptInput>
 			</div>

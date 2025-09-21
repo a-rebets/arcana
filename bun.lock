@@ -25,11 +25,13 @@
         "openapi-fetch": "^0.14.0",
       },
       "devDependencies": {
+        "@biomejs/biome": "2.2.4",
         "openapi-typescript": "^7.9.1",
       },
     },
     "packages/tools/asana": {
       "name": "asana-tools",
+      "version": "0.1.0",
       "dependencies": {
         "ai": "^5.0.47",
         "asana-sdk": "workspace:*",

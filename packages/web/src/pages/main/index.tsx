@@ -65,6 +65,7 @@ const models = [
 	},
 ] as const;
 
+// biome-ignore lint/suspicious/noExplicitAny: ai sdk
 function isToolUIPart(part: any): part is ToolUIPart {
 	return part && typeof part.type === "string" && part.type.startsWith("tool-");
 }

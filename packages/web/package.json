@@ -8,7 +8,7 @@
 		"dev:frontend": "vite --open",
 		"dev:backend": "convex dev",
 		"build": "vite build",
-		"lint": "tsc && biome check src/",
+		"lint": "tsc --noEmit && biome check src/",
 		"preview": "vite preview"
 	},
 	"dependencies": {

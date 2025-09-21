@@ -1,0 +1,5 @@
+{
+	"files": {
+		"includes": ["**", "!src/lib/api.d.ts"]
+	}
+}

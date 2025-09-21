@@ -19,48 +19,75 @@ This project uses [Bun workspaces](https://bun.com/docs/install/workspaces) to o
 
 ```
 packages/
-├── web/          # Main web application (arcana-web)
-└── tools/        # Integration packages for external tools
-    ├── asana/    # Asana integration
-    └── ...       # More tools / integrations
+├── web/          # Main web application (React + Convex)
+├── tools/        # AI SDK tool packages
+│   └── asana/
+├── sdk/          # Core SDK packages
+│   └── asana/
+└── doc-gen/      # Asana API documentation generator
 ```
 
 This modular structure allows for clean separation of concerns and makes it easy to add new tool integrations as independent packages.
 
 ## 🔧 Environment Variables
 
-To deploy this app, you'll need the following environment variables:
+### Frontend Environment Variables
+
+Create a `.env` file in the `packages/web/` directory with:
 
 ```bash
-# Convex
-CONVEX_SITE_URL=https://your-convex-deployment.convex.site
+# Convex URLs (replace with your deployment URLs)
+VITE_CONVEX_URL=https://your-deployment.convex.cloud
+VITE_CONVEX_API_URL=https://your-deployment.convex.site
+```
 
-# Asana OAuth
+### Backend Environment Variables
+
+Set these with `npx convex env set VARIABLE value` in the `packages/web/` directory:
+
+```bash
+# Asana OAuth (see setup instructions below)
 ASANA_CLIENT_ID=your_asana_client_id
 ASANA_CLIENT_SECRET=your_asana_client_secret
 
-# AI Models (OpenRouter)
+# AI Models (https://openrouter.ai/)
 OPENROUTER_API_KEY=your_openrouter_api_key
 
-# Email (Resend)
+# Resend, email service (https://resend.com/)
 AUTH_RESEND_KEY=your_resend_api_key
 ```
 
 ## 🚀 Quick Start
 
-Install dependencies:
+1. **Clone and install dependencies:**
 ```bash
 bun install
 ```
 
-Start development server:
+2. **Set up Convex Auth:**
+```bash
+# For development
+npx @convex-dev/auth
+
+# For production deployment
+npx @convex-dev/auth --prod
+```
+
+3. **Configure environment variables** (see Environment Variables section above)
+
+4. **Set up Asana integration:**
+   - [Create a new application](https://developers.asana.com/docs/oauth#register-an-application)
+   - Set the redirect URI to your Convex deployment URL + `/oauth/callback`
+   - Copy the Client ID and Client Secret to your environment variables
+
+5. **Start development server:**
 ```bash
 bun dev
 ```
 
-Build for production:
+1. **Build for production:**
 ```bash
-bun start
+bun build
 ```
 
 ## 🔗 Integrations

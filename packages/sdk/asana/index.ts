@@ -6,14 +6,14 @@ export type { WithRequired } from "./src/core/types";
 export { castArrayWithOptFields, castWithOptFields } from "./src/core/types";
 
 export type {
-	components as AsanaComponents,
-	paths as AsanaPaths,
+  components as AsanaComponents,
+  paths as AsanaPaths,
 } from "./src/lib/api";
 
 // Re-export resource types
 export type {
-	MembershipCompact,
-	MembershipResponse,
+  MembershipCompact,
+  MembershipResponse,
 } from "./src/resources/memberships";
 export type { ProjectCompact, ProjectResponse } from "./src/resources/projects";
 export type { SectionCompact, SectionResponse } from "./src/resources/sections";
@@ -25,8 +25,8 @@ export type { UserTaskListResponse } from "./src/resources/user-task-lists";
 export type { UserCompact } from "./src/resources/users";
 export type { WorkspaceMembershipCompact } from "./src/resources/workspace-memberships";
 export type {
-	WorkspaceCompact,
-	WorkspaceResponse,
+  WorkspaceCompact,
+  WorkspaceResponse,
 } from "./src/resources/workspaces";
 
 // Import resource creators
@@ -44,29 +44,29 @@ import { createWorkspaceMemberships } from "./src/resources/workspace-membership
 import { createWorkspaces } from "./src/resources/workspaces";
 
 export type CreateSdkOptions = {
-	baseUrl?: string;
-	token?: string;
+  baseUrl?: string;
+  token?: string;
 };
 
 export function createAsanaSdk(options?: CreateSdkOptions) {
-	const { client, setToken, getToken } = createOpenAPIClient({
-		baseUrl: options?.baseUrl,
-		token: options?.token,
-	});
+  const { client, setToken, getToken } = createOpenAPIClient({
+    baseUrl: options?.baseUrl,
+    token: options?.token,
+  });
 
-	return {
-		setToken,
-		getToken,
-		users: createUsers(client),
-		teams: createTeams(client),
-		teamMemberships: createTeamMemberships(client),
-		projects: createProjects(client),
-		workspaceMemberships: createWorkspaceMemberships(client),
-		workspaces: createWorkspaces(client),
-		tasks: createTasks(client),
-		userTaskLists: createUserTaskLists(client),
-		sections: createSections(client),
-		memberships: createMemberships(client),
-		tags: createTags(client),
-	} as const;
+  return {
+    setToken,
+    getToken,
+    users: createUsers(client),
+    teams: createTeams(client),
+    teamMemberships: createTeamMemberships(client),
+    projects: createProjects(client),
+    workspaceMemberships: createWorkspaceMemberships(client),
+    workspaces: createWorkspaces(client),
+    tasks: createTasks(client),
+    userTaskLists: createUserTaskLists(client),
+    sections: createSections(client),
+    memberships: createMemberships(client),
+    tags: createTags(client),
+  } as const;
 }

@@ -7,160 +7,160 @@ export type ProjectCompact = components["schemas"]["ProjectCompact"];
 export type ProjectResponse = components["schemas"]["ProjectResponse"];
 
 export function createProjects(client: OpenAPIClient) {
-	return {
-		async getProjectsForTeam(
-			team_gid: string,
-			opts?: {
-				includeArchived?: boolean;
-				limit?: number;
-				fields?: OptFields<"getProjectsForTeam">;
-			},
-		) {
-			const fetchPage = async (offset?: string | null) => {
-				const { data } = await client.GET("/teams/{team_gid}/projects", {
-					params: {
-						path: { team_gid },
-						query: {
-							archived: opts?.includeArchived ?? false,
-							limit: 50,
-							offset: offset ?? undefined,
-							opt_fields: opts?.fields ?? [
-								"name",
-								"members",
-								"team",
-								"team.name",
-								"workspace",
-								"workspace.name",
-							],
-						},
-					},
-				});
-				return data;
-			};
+  return {
+    async getProjectsForTeam(
+      team_gid: string,
+      opts?: {
+        includeArchived?: boolean;
+        limit?: number;
+        fields?: OptFields<"getProjectsForTeam">;
+      },
+    ) {
+      const fetchPage = async (offset?: string | null) => {
+        const { data } = await client.GET("/teams/{team_gid}/projects", {
+          params: {
+            path: { team_gid },
+            query: {
+              archived: opts?.includeArchived ?? false,
+              limit: 50,
+              offset: offset ?? undefined,
+              opt_fields: opts?.fields ?? [
+                "name",
+                "members",
+                "team",
+                "team.name",
+                "workspace",
+                "workspace.name",
+              ],
+            },
+          },
+        });
+        return data;
+      };
 
-			return paginate(fetchPage, { limitTotal: opts?.limit });
-		},
+      return paginate(fetchPage, { limitTotal: opts?.limit });
+    },
 
-		async getProjectsForWorkspace(
-			workspace_gid: string,
-			opts?: {
-				includeArchived?: boolean;
-				limit?: number;
-				fields?: OptFields<"getProjectsForWorkspace">;
-			},
-		) {
-			const fetchPage = async (offset?: string | null) => {
-				const { data } = await client.GET(
-					"/workspaces/{workspace_gid}/projects",
-					{
-						params: {
-							path: { workspace_gid },
-							query: {
-								archived: opts?.includeArchived ?? false,
-								limit: 50,
-								offset: offset ?? undefined,
-								opt_fields: opts?.fields ?? ["name", "team", "workspace"],
-							},
-						},
-					},
-				);
-				return data;
-			};
+    async getProjectsForWorkspace(
+      workspace_gid: string,
+      opts?: {
+        includeArchived?: boolean;
+        limit?: number;
+        fields?: OptFields<"getProjectsForWorkspace">;
+      },
+    ) {
+      const fetchPage = async (offset?: string | null) => {
+        const { data } = await client.GET(
+          "/workspaces/{workspace_gid}/projects",
+          {
+            params: {
+              path: { workspace_gid },
+              query: {
+                archived: opts?.includeArchived ?? false,
+                limit: 50,
+                offset: offset ?? undefined,
+                opt_fields: opts?.fields ?? ["name", "team", "workspace"],
+              },
+            },
+          },
+        );
+        return data;
+      };
 
-			return paginate(fetchPage, { limitTotal: opts?.limit });
-		},
+      return paginate(fetchPage, { limitTotal: opts?.limit });
+    },
 
-		async getProject(
-			project_gid: string,
-			opts?: { fields?: OptFields<"getProject"> },
-		) {
-			const { data } = await client.GET("/projects/{project_gid}", {
-				params: {
-					path: { project_gid },
-					query: {
-						opt_fields: opts?.fields ?? [
-							"name",
-							"team",
-							"workspace",
-							"archived",
-							"created_at",
-							"modified_at",
-						],
-					},
-				},
-			});
-			return data?.data;
-		},
+    async getProject(
+      project_gid: string,
+      opts?: { fields?: OptFields<"getProject"> },
+    ) {
+      const { data } = await client.GET("/projects/{project_gid}", {
+        params: {
+          path: { project_gid },
+          query: {
+            opt_fields: opts?.fields ?? [
+              "name",
+              "team",
+              "workspace",
+              "archived",
+              "created_at",
+              "modified_at",
+            ],
+          },
+        },
+      });
+      return data?.data;
+    },
 
-		async getProjects(opts?: {
-			workspace?: string;
-			team?: string;
-			includeArchived?: boolean;
-			limit?: number;
-			fields?: OptFields<"getProjects">;
-		}) {
-			const fetchPage = async (offset?: string | null) => {
-				const { data } = await client.GET("/projects", {
-					params: {
-						query: {
-							workspace: opts?.workspace,
-							team: opts?.team,
-							archived: opts?.includeArchived ?? false,
-							limit: 50,
-							offset: offset ?? undefined,
-							opt_fields: opts?.fields ?? [
-								"name",
-								"team",
-								"workspace",
-								"archived",
-							],
-						},
-					},
-				});
-				return data;
-			};
+    async getProjects(opts?: {
+      workspace?: string;
+      team?: string;
+      includeArchived?: boolean;
+      limit?: number;
+      fields?: OptFields<"getProjects">;
+    }) {
+      const fetchPage = async (offset?: string | null) => {
+        const { data } = await client.GET("/projects", {
+          params: {
+            query: {
+              workspace: opts?.workspace,
+              team: opts?.team,
+              archived: opts?.includeArchived ?? false,
+              limit: 50,
+              offset: offset ?? undefined,
+              opt_fields: opts?.fields ?? [
+                "name",
+                "team",
+                "workspace",
+                "archived",
+              ],
+            },
+          },
+        });
+        return data;
+      };
 
-			return paginate(fetchPage, { limitTotal: opts?.limit });
-		},
+      return paginate(fetchPage, { limitTotal: opts?.limit });
+    },
 
-		async getTaskCountsForProject(
-			project_gid: string,
-			opts?: { fields?: OptFields<"getTaskCountsForProject"> },
-		) {
-			const { data } = await client.GET("/projects/{project_gid}/task_counts", {
-				params: {
-					path: { project_gid },
-					query: {
-						opt_fields: opts?.fields ?? [
-							"num_tasks",
-							"num_incomplete_tasks",
-							"num_completed_tasks",
-						],
-					},
-				},
-			});
-			return data?.data;
-		},
+    async getTaskCountsForProject(
+      project_gid: string,
+      opts?: { fields?: OptFields<"getTaskCountsForProject"> },
+    ) {
+      const { data } = await client.GET("/projects/{project_gid}/task_counts", {
+        params: {
+          path: { project_gid },
+          query: {
+            opt_fields: opts?.fields ?? [
+              "num_tasks",
+              "num_incomplete_tasks",
+              "num_completed_tasks",
+            ],
+          },
+        },
+      });
+      return data?.data;
+    },
 
-		async getProjectsForTask(
-			task_gid: string,
-			opts?: { limit?: number; fields?: OptFields<"getProjectsForTask"> },
-		) {
-			const fetchPage = async (offset?: string | null) => {
-				const { data } = await client.GET("/tasks/{task_gid}/projects", {
-					params: {
-						path: { task_gid },
-						query: {
-							limit: 50,
-							offset: offset ?? undefined,
-							opt_fields: opts?.fields ?? ["name", "team"],
-						},
-					},
-				});
-				return data;
-			};
+    async getProjectsForTask(
+      task_gid: string,
+      opts?: { limit?: number; fields?: OptFields<"getProjectsForTask"> },
+    ) {
+      const fetchPage = async (offset?: string | null) => {
+        const { data } = await client.GET("/tasks/{task_gid}/projects", {
+          params: {
+            path: { task_gid },
+            query: {
+              limit: 50,
+              offset: offset ?? undefined,
+              opt_fields: opts?.fields ?? ["name", "team"],
+            },
+          },
+        });
+        return data;
+      };
 
-			return paginate(fetchPage, { limitTotal: opts?.limit });
-		},
-	};
+      return paginate(fetchPage, { limitTotal: opts?.limit });
+    },
+  };
 }

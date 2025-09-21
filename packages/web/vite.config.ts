@@ -6,14 +6,14 @@ import svgr from "vite-plugin-svgr";
 
 // https://vite.dev/config/
 export default defineConfig({
-	server: {
-		open: false,
-	},
-	plugins: [react(), tailwindcss(), svgr()],
-	resolve: {
-		alias: {
-			"@": path.resolve(__dirname, "./src"),
-			"@convex": path.resolve(__dirname, "./convex/_generated"),
-		},
-	},
+  server: {
+    open: false,
+  },
+  plugins: [react(), tailwindcss(), svgr()],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+      "@convex": path.resolve(__dirname, "./convex/_generated"),
+    },
+  },
 });

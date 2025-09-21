@@ -1,11 +1,11 @@
-import type { OpenAPIClient } from "../core/client";
-import type { OptFields } from "../core/types";
+import type { AsanaApiClient } from "../core/client";
+import type { OptFields } from "../core/type-utilities";
 import type { components } from "../lib/api";
 
 export type UserTaskListResponse =
   components["schemas"]["UserTaskListResponse"];
 
-export function createUserTaskLists(client: OpenAPIClient) {
+export function createUserTaskLists(client: AsanaApiClient) {
   return {
     async getUserTaskList(
       user_task_list_gid: string,

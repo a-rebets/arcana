@@ -1,49 +1,7 @@
-export type { AsanaHttpClient } from "./src/core/client";
-export { createOpenAPIClient } from "./src/core/client";
-export { paginate } from "./src/core/paginate";
-
-export type { WithRequired } from "./src/core/types";
-export { castArrayWithOptFields, castWithOptFields } from "./src/core/types";
-
-export type {
-  components as AsanaComponents,
-  paths as AsanaPaths,
-} from "./src/lib/api";
-
-// Re-export resource types
-export type {
-  MembershipCompact,
-  MembershipResponse,
-} from "./src/resources/memberships";
-export type { ProjectCompact, ProjectResponse } from "./src/resources/projects";
-export type { SectionCompact, SectionResponse } from "./src/resources/sections";
-export type { TagCompact, TagResponse } from "./src/resources/tags";
-export type { TaskCompact, TaskResponse } from "./src/resources/tasks";
-export type { TeamMembershipCompact } from "./src/resources/team-memberships";
-export type { TeamCompact } from "./src/resources/teams";
-export type { UserTaskListResponse } from "./src/resources/user-task-lists";
-export type { UserCompact } from "./src/resources/users";
-export type { WorkspaceMembershipCompact } from "./src/resources/workspace-memberships";
-export type {
-  WorkspaceCompact,
-  WorkspaceResponse,
-} from "./src/resources/workspaces";
-
-// Import resource creators
 import { createOpenAPIClient } from "./src/core/client";
-import { createMemberships } from "./src/resources/memberships";
-import { createProjects } from "./src/resources/projects";
-import { createSections } from "./src/resources/sections";
-import { createTags } from "./src/resources/tags";
-import { createTasks } from "./src/resources/tasks";
-import { createTeamMemberships } from "./src/resources/team-memberships";
-import { createTeams } from "./src/resources/teams";
-import { createUserTaskLists } from "./src/resources/user-task-lists";
-import { createUsers } from "./src/resources/users";
-import { createWorkspaceMemberships } from "./src/resources/workspace-memberships";
-import { createWorkspaces } from "./src/resources/workspaces";
+import * as resources from "./src/resources";
 
-export type CreateSdkOptions = {
+type CreateSdkOptions = {
   baseUrl?: string;
   token?: string;
 };
@@ -57,16 +15,24 @@ export function createAsanaSdk(options?: CreateSdkOptions) {
   return {
     setToken,
     getToken,
-    users: createUsers(client),
-    teams: createTeams(client),
-    teamMemberships: createTeamMemberships(client),
-    projects: createProjects(client),
-    workspaceMemberships: createWorkspaceMemberships(client),
-    workspaces: createWorkspaces(client),
-    tasks: createTasks(client),
-    userTaskLists: createUserTaskLists(client),
-    sections: createSections(client),
-    memberships: createMemberships(client),
-    tags: createTags(client),
-  } as const;
+    users: resources.users(client),
+    teams: resources.teams(client),
+    teamMemberships: resources.teamMemberships(client),
+    projects: resources.projects(client),
+    workspaceMemberships: resources.workspaceMemberships(client),
+    workspaces: resources.workspaces(client),
+    tasks: resources.tasks(client),
+    userTaskLists: resources.userTaskLists(client),
+    sections: resources.sections(client),
+    memberships: resources.memberships(client),
+    tags: resources.tags(client),
+  };
 }
+
+export type {
+  AsanaApiClient,
+  AsanaComponents,
+  AsanaPaths,
+} from "./src/core/client";
+export * from "./src/core/type-utilities";
+export * from "./src/resources/types";

@@ -1,12 +1,12 @@
-import type { OpenAPIClient } from "../core/client";
+import type { AsanaApiClient } from "../core/client";
 import { paginate } from "../core/paginate";
-import type { OptFields } from "../core/types";
+import type { OptFields } from "../core/type-utilities";
 import type { components } from "../lib/api";
 
 export type WorkspaceCompact = components["schemas"]["WorkspaceCompact"];
 export type WorkspaceResponse = components["schemas"]["WorkspaceResponse"];
 
-export function createWorkspaces(client: OpenAPIClient) {
+export function createWorkspaces(client: AsanaApiClient) {
   return {
     async getWorkspaces(opts?: {
       limit?: number;

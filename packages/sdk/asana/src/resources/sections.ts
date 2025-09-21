@@ -1,12 +1,12 @@
-import type { OpenAPIClient } from "../core/client";
+import type { AsanaApiClient } from "../core/client";
 import { paginate } from "../core/paginate";
-import type { OptFields } from "../core/types";
+import type { OptFields } from "../core/type-utilities";
 import type { components } from "../lib/api";
 
 export type SectionCompact = components["schemas"]["SectionCompact"];
 export type SectionResponse = components["schemas"]["SectionResponse"];
 
-export function createSections(client: OpenAPIClient) {
+export function createSections(client: AsanaApiClient) {
   return {
     async getSection(
       section_gid: string,

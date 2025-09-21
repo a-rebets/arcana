@@ -1,12 +1,12 @@
-import type { OpenAPIClient } from "../core/client";
+import type { AsanaApiClient } from "../core/client";
 import { paginate } from "../core/paginate";
-import type { OptFields } from "../core/types";
+import type { OptFields } from "../core/type-utilities";
 import type { components } from "../lib/api";
 
 export type TeamMembershipCompact =
   components["schemas"]["TeamMembershipCompact"];
 
-export function createTeamMemberships(client: OpenAPIClient) {
+export function createTeamMemberships(client: AsanaApiClient) {
   return {
     async getTeamMembership(
       team_membership_gid: string,

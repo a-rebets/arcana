@@ -1,12 +1,12 @@
-import type { OpenAPIClient } from "../core/client";
+import type { AsanaApiClient } from "../core/client";
 import { paginate } from "../core/paginate";
-import type { OptFields } from "../core/types";
+import type { OptFields } from "../core/type-utilities";
 import type { components } from "../lib/api";
 
 export type ProjectCompact = components["schemas"]["ProjectCompact"];
 export type ProjectResponse = components["schemas"]["ProjectResponse"];
 
-export function createProjects(client: OpenAPIClient) {
+export function createProjects(client: AsanaApiClient) {
   return {
     async getProjectsForTeam(
       team_gid: string,

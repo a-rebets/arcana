@@ -1,12 +1,12 @@
-import type { OpenAPIClient } from "../core/client";
+import type { AsanaApiClient } from "../core/client";
 import { paginate } from "../core/paginate";
-import type { OptFields } from "../core/types";
+import type { OptFields } from "../core/type-utilities";
 import type { components } from "../lib/api";
 
 export type UserCompact = components["schemas"]["UserCompact"];
 export type UserResponse = components["schemas"]["UserResponse"];
 
-export function createUsers(client: OpenAPIClient) {
+export function createUsers(client: AsanaApiClient) {
   return {
     async getUser(user_gid: string, opts?: { fields?: OptFields<"getUser"> }) {
       const { data } = await client.GET("/users/{user_gid}", {

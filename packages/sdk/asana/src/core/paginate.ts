@@ -3,7 +3,6 @@ export type PageBody<T> = {
   next_page?: { offset?: string | null } | null;
 };
 
-// Simple paginate function that preserves the item type from the data array
 export async function paginate<T>(
   fetchPage: (
     offset?: string | null,

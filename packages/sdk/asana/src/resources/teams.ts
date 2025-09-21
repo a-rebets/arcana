@@ -1,11 +1,11 @@
-import type { OpenAPIClient } from "../core/client";
+import type { AsanaApiClient } from "../core/client";
 import { paginate } from "../core/paginate";
-import type { OptFields } from "../core/types";
+import type { OptFields } from "../core/type-utilities";
 import type { components } from "../lib/api";
 
 export type TeamCompact = components["schemas"]["TeamCompact"];
 
-export function createTeams(client: OpenAPIClient) {
+export function createTeams(client: AsanaApiClient) {
   return {
     async getTeam(team_gid: string, opts?: { fields?: OptFields<"getTeam"> }) {
       const { data } = await client.GET("/teams/{team_gid}", {

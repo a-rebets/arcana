@@ -1,12 +1,12 @@
-import type { OpenAPIClient } from "../core/client";
+import type { AsanaApiClient } from "../core/client";
 import { paginate } from "../core/paginate";
-import type { OptFields } from "../core/types";
+import type { OptFields } from "../core/type-utilities";
 import type { components } from "../lib/api";
 
 export type TagCompact = components["schemas"]["TagCompact"];
 export type TagResponse = components["schemas"]["TagResponse"];
 
-export function createTags(client: OpenAPIClient) {
+export function createTags(client: AsanaApiClient) {
   return {
     async getTag(tag_gid: string, opts?: { fields?: OptFields<"getTag"> }) {
       const { data } = await client.GET("/tags/{tag_gid}", {

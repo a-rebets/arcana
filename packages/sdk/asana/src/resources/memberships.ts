@@ -1,12 +1,12 @@
-import type { OpenAPIClient } from "../core/client";
+import type { AsanaApiClient } from "../core/client";
 import { paginate } from "../core/paginate";
-import type { OptFields } from "../core/types";
+import type { OptFields } from "../core/type-utilities";
 import type { components } from "../lib/api";
 
 export type MembershipCompact = components["schemas"]["MembershipCompact"];
 export type MembershipResponse = components["schemas"]["MembershipResponse"];
 
-export function createMemberships(client: OpenAPIClient) {
+export function createMemberships(client: AsanaApiClient) {
   return {
     async getMembership(
       membership_gid: string,

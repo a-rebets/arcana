@@ -1,29 +1,20 @@
 import { tool } from "ai";
 import {
-	castExpandedArray,
-	type ProjectCompact,
-	type ProjectExpandedShape,
+	castArrayWithOptFields,
+	type ProjectResponse,
 	type TeamMembershipCompact,
-	type TeamMembershipExpandedShape,
 } from "asana-sdk";
 import type { z } from "zod";
 import { createAsanaClient } from "./http";
 import { ListUserProjectsInput } from "./schemas";
 
-type ListUserProjectsOutput = {
-	projects: Array<ProjectCompact & ProjectExpandedShape>;
-};
-
 async function getUserTeams(
 	sdk: ReturnType<typeof createAsanaClient>,
 	userGid: string,
 	workspaceGid: string,
-): Promise<string[]> {
-	const teamMemberships = castExpandedArray<
-		TeamMembershipCompact,
-		TeamMembershipExpandedShape
-	>(
-		await sdk.teams.getTeamMembershipsForUser(userGid, workspaceGid, {
+) {
+	const teamMemberships = castArrayWithOptFields<TeamMembershipCompact, "team">(
+		await sdk.teamMemberships.getTeamMembershipsForUser(userGid, workspaceGid, {
 			limit: 500,
 			fields: ["team", "team.name"],
 		}),
@@ -39,11 +30,12 @@ async function getTeamProjects(
 	teamId: string,
 	includeArchived: boolean,
 	limit?: number,
-): Promise<Array<ProjectCompact & ProjectExpandedShape>> {
-	return castExpandedArray<ProjectCompact, ProjectExpandedShape>(
+) {
+	return castArrayWithOptFields<ProjectResponse, "team" | "workspace">(
 		await sdk.projects.getProjectsForTeam(teamId, {
 			includeArchived,
 			limit,
+			fields: ["name", "team", "team.name", "workspace", "workspace.name"],
 		}),
 	);
 }
@@ -51,7 +43,7 @@ async function getTeamProjects(
 export async function listUserProjects(
 	args: z.infer<typeof ListUserProjectsInput>,
 	context: { token: string },
-): Promise<ListUserProjectsOutput> {
+) {
 	const { userGid, workspaceGid, teamGids, includeArchived, limit } =
 		ListUserProjectsInput.parse(args);
 
@@ -62,7 +54,7 @@ export async function listUserProjects(
 		teams = await getUserTeams(sdk, userGid, workspaceGid);
 	}
 
-	const projects: Array<ProjectCompact & ProjectExpandedShape> = [];
+	const projects = [];
 	for (const teamId of teams) {
 		const teamProjects = await getTeamProjects(
 			sdk,

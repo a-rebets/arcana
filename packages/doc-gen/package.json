@@ -5,7 +5,7 @@
 	"type": "module",
 	"main": "index.ts",
 	"scripts": {
-		"generate": "bun index.ts https://raw.githubusercontent.com/Asana/openapi/master/defs/asana_oas.yaml ../../docs/asana-sdk"
+		"generate": "bun index.ts https://raw.githubusercontent.com/Asana/openapi/master/defs/asana_oas.yaml ../../docs/asana-api"
 	},
 	"dependencies": {
 		"js-yaml": "^4.1.0"

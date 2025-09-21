@@ -36,7 +36,12 @@ export const ERROR_REFERENCE_CODES = [
 	"402",
 	"403",
 	"404",
+	"412",
+	"424",
 	"500",
+	"501",
+	"503",
+	"504",
 ] as const;
 
 interface ParameterInfo {

@@ -91,25 +91,7 @@ Successfully retrieved the record for a single attachment.
 
 ### 424
 
-You have exceeded one of the enforced rate limits in the API. See the [documentation on rate limiting](https://developers.asana.com/docs/#rate-limits) for more information.
-
-**Content Types:**
-
-#### application/json
-
-**Example Response:**
-
-```json
-{
-  "errors": [
-    {
-      "message": "project: Missing input",
-      "help": "For more information on API status codes and how to handle them, read the docs on errors: https://asana.github.io/developer-docs/#errors'",
-      "phrase": "6 sad squid snuggle softly"
-    }
-  ]
-}
-```
+<reference>
 
 ### 500
 
@@ -117,69 +99,15 @@ You have exceeded one of the enforced rate limits in the API. See the [documenta
 
 ### 501
 
-There is an issue between the load balancers and Asana's API.
-
-**Content Types:**
-
-#### application/json
-
-**Example Response:**
-
-```json
-{
-  "errors": [
-    {
-      "message": "project: Missing input",
-      "help": "For more information on API status codes and how to handle them, read the docs on errors: https://asana.github.io/developer-docs/#errors'",
-      "phrase": "6 sad squid snuggle softly"
-    }
-  ]
-}
-```
+<reference>
 
 ### 503
 
-Either the upstream service is unavailable to the API, or the API has been intentionally shut off.
-
-**Content Types:**
-
-#### application/json
-
-**Example Response:**
-
-```json
-{
-  "errors": [
-    {
-      "message": "project: Missing input",
-      "help": "For more information on API status codes and how to handle them, read the docs on errors: https://asana.github.io/developer-docs/#errors'",
-      "phrase": "6 sad squid snuggle softly"
-    }
-  ]
-}
-```
+<reference>
 
 ### 504
 
-This request took too long to complete.
-
-**Content Types:**
-
-#### application/json
-
-**Example Response:**
-
-```json
-{
-  "errors": [
-    {
-      "message": "project: Missing input",
-      "help": "For more information on API status codes and how to handle them, read the docs on errors: https://asana.github.io/developer-docs/#errors'",
-      "phrase": "6 sad squid snuggle softly"
-    }
-  ]
-}
-```
+<reference>
 
 ## Security
 

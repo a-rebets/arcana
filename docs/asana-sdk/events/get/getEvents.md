@@ -107,24 +107,7 @@ Successfully retrieved events.
 
 ### 412
 
-The request is missing or has an expired sync token.
-
-**Content Types:**
-
-#### application/json
-
-**Example Response:**
-
-```json
-{
-  "errors": [
-    {
-      "message": "Sync token invalid or too old. If you are attempting to keep resources in sync, you must fetch the full dataset for this query now and use the new sync token for the next sync."
-    }
-  ],
-  "sync": "de4774f6915eae04714ca93bb2f5ee81"
-}
-```
+<reference>
 
 ### 500
 

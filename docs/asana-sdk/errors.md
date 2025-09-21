@@ -112,9 +112,118 @@ Either the request method and path supplied do not specify a known action in the
 }
 ```
 
+## 412
+
+The request is missing or has an expired sync token.
+
+**Content Types:**
+
+#### application/json
+
+**Example Response:**
+
+```json
+{
+  "errors": [
+    {
+      "message": "Sync token invalid or too old. If you are attempting to keep resources in sync, you must fetch the full dataset for this query now and use the new sync token for the next sync."
+    }
+  ],
+  "sync": "de4774f6915eae04714ca93bb2f5ee81"
+}
+```
+
+## 424
+
+You have exceeded one of the enforced rate limits in the API. See the [documentation on rate limiting](https://developers.asana.com/docs/#rate-limits) for more information.
+
+**Content Types:**
+
+#### application/json
+
+**Example Response:**
+
+```json
+{
+  "errors": [
+    {
+      "message": "project: Missing input",
+      "help": "For more information on API status codes and how to handle them, read the docs on errors: https://asana.github.io/developer-docs/#errors'",
+      "phrase": "6 sad squid snuggle softly"
+    }
+  ]
+}
+```
+
 ## 500
 
 There was a problem on Asana’s end. In the event of a server error the response body should contain an error phrase. These phrases can be used by Asana support to quickly look up the incident that caused the server error. Some errors are due to server load, and will not supply an error phrase.
+
+**Content Types:**
+
+#### application/json
+
+**Example Response:**
+
+```json
+{
+  "errors": [
+    {
+      "message": "project: Missing input",
+      "help": "For more information on API status codes and how to handle them, read the docs on errors: https://asana.github.io/developer-docs/#errors'",
+      "phrase": "6 sad squid snuggle softly"
+    }
+  ]
+}
+```
+
+## 501
+
+There is an issue between the load balancers and Asana's API.
+
+**Content Types:**
+
+#### application/json
+
+**Example Response:**
+
+```json
+{
+  "errors": [
+    {
+      "message": "project: Missing input",
+      "help": "For more information on API status codes and how to handle them, read the docs on errors: https://asana.github.io/developer-docs/#errors'",
+      "phrase": "6 sad squid snuggle softly"
+    }
+  ]
+}
+```
+
+## 503
+
+Either the upstream service is unavailable to the API, or the API has been intentionally shut off.
+
+**Content Types:**
+
+#### application/json
+
+**Example Response:**
+
+```json
+{
+  "errors": [
+    {
+      "message": "project: Missing input",
+      "help": "For more information on API status codes and how to handle them, read the docs on errors: https://asana.github.io/developer-docs/#errors'",
+      "phrase": "6 sad squid snuggle softly"
+    }
+  ]
+}
+```
+
+## 504
+
+This request took too long to complete.
 
 **Content Types:**
 

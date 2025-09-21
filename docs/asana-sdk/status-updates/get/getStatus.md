@@ -43,6 +43,8 @@ Successfully retrieved the specified object's status updates.
 {
   "data": {
     "gid": "12345",
+    "resource_type": "status_update",
+    "title": "Status Update - Jun 15",
     "resource_subtype": "project_status_update",
     "text": "The project is moving forward according to plan...",
     "html_text": "<body>The project <strong>is</strong> moving forward according to plan...</body>",
@@ -53,7 +55,6 @@ Successfully retrieved the specified object's status updates.
       "name": "Greg Sanchez"
     },
     "created_at": "2012-02-22T02:06:58.147Z",
-    "created_by": {},
     "hearted": true,
     "hearts": [
       {
@@ -61,7 +62,6 @@ Successfully retrieved the specified object's status updates.
         "user": {}
       }
     ],
-    "liked": true,
     "likes": [
       {}
     ],

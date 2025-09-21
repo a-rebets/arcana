@@ -1,0 +1,28 @@
+export const usedTags = [
+	"Allocations",
+	"Attachments",
+	"Events",
+	"Goal relationships",
+	"Goals",
+	"Jobs",
+	"Memberships",
+	"Portfolios",
+	"Project briefs",
+	"Project statuses",
+	"Projects",
+	"Reactions",
+	"Rules",
+	"Sections",
+	"Status updates",
+	"Tags",
+	"Tasks",
+	"Team memberships",
+	"Teams",
+	"Time tracking entries",
+	"User task lists",
+	"Users",
+	"Workspace memberships",
+	"Workspaces",
+];
+
+export const usedMethods = ["get"];

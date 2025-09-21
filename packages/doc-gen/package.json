@@ -1,0 +1,16 @@
+{
+	"name": "doc-gen",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"main": "index.ts",
+	"scripts": {
+		"generate": "bun index.ts https://raw.githubusercontent.com/Asana/openapi/master/defs/asana_oas.yaml ../../docs/asana-sdk"
+	},
+	"dependencies": {
+		"js-yaml": "^4.1.0"
+	},
+	"devDependencies": {
+		"@types/js-yaml": "4.0.9"
+	}
+}

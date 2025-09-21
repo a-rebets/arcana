@@ -136,14 +136,14 @@ Legend: ✅ Supported • ⏳ Planned
 | Goal relationships    | ⏳   | ⏳    | ⏳   | ⏳      |
 | Goals                 | ⏳   | ⏳    | ⏳   | ⏳      |
 | Jobs                  | ⏳   | ⏳    | ⏳   | ⏳      |
-| Memberships           | ⏳   | ⏳    | ⏳   | ⏳      |
+| Memberships           | ✅   | ⏳    | ⏳   | ⏳      |
 | Portfolios            | ⏳   | ⏳    | ⏳   | ⏳      |
 | Project briefs        | ⏳   | ⏳    | ⏳   | ⏳      |
 | Project statuses      | ⏳   | ⏳    | ⏳   | ⏳      |
 | Reactions             | ⏳   | ⏳    | ⏳   | ⏳      |
-| Sections              | ⏳   | ⏳    | ⏳   | ⏳      |
+| Sections              | ✅   | ⏳    | ⏳   | ⏳      |
 | Status updates        | ⏳   | ⏳    | ⏳   | ⏳      |
-| Tags                  | ⏳   | ⏳    | ⏳   | ⏳      |
-| Tasks                 | ⏳   | ⏳    | ⏳   | ⏳      |
+| Tags                  | ✅   | ⏳    | ⏳   | ⏳      |
+| Tasks                 | ✅   | ⏳    | ⏳   | ⏳      |
 | Time tracking entries | ⏳   | ⏳    | ⏳   | ⏳      |
-| User task lists       | ⏳   | ⏳    | ⏳   | ⏳      |
+| User task lists       | ✅   | ⏳    | ⏳   | ⏳      |

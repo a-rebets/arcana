@@ -9,7 +9,8 @@
 		"dev": "bun --filter '*' dev",
 		"build": "bun --filter '*' build",
 		"lint": "bun --filter '*' lint",
-		"preview": "bun --filter '*' preview"
+		"preview": "bun --filter '*' preview",
+		"format": "bun --filter '*' format"
 	},
 	"workspaces": [
 		"packages/web",

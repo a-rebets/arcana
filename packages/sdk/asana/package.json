@@ -1,25 +1,27 @@
 {
-	"name": "asana-sdk",
-	"version": "0.1.0",
-	"private": true,
-	"type": "module",
-	"main": "./index.ts",
-	"types": "./index.ts",
-	"exports": {
-		".": {
-			"types": "./index.ts",
-			"default": "./index.ts"
-		}
-	},
-	"scripts": {
-		"generate": "openapi-typescript https://raw.githubusercontent.com/Asana/openapi/master/defs/asana_oas.yaml -o ./src/lib/api.d.ts",
-		"lint": "tsc --noEmit && biome check src/ index.ts"
-	},
-	"dependencies": {
-		"openapi-fetch": "^0.14.0"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "2.2.4",
-		"openapi-typescript": "^7.9.1"
-	}
+    "name": "asana-sdk",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "main": "./index.ts",
+    "types": "./index.ts",
+    "exports": {
+        ".": {
+            "types": "./index.ts",
+            "default": "./index.ts"
+        }
+    },
+    "scripts": {
+        "generate": "openapi-typescript https://raw.githubusercontent.com/Asana/openapi/master/defs/asana_oas.yaml -o ./src/lib/api.d.ts",
+        "lint": "tsc --noEmit && biome check src/ index.ts",
+        "format": "biome format --write src/ index.ts"
+    },
+    "dependencies": {
+        "openapi-fetch": "^0.14.0"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "2.2.4",
+        "openapi-typescript": "^7.9.1",
+        "typescript": "5.9.2"
+    }
 }

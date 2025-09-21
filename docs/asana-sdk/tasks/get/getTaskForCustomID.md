@@ -25,6 +25,13 @@ Returns a task given a custom ID shortcode.
 
 **Tags:** Tasks
 
+## Path Parameters
+
+| Name | Type | Required | Description | Constraints |
+|------|------|----------|-------------|-------------|
+| workspace_gid | string | ✅ | Globally unique identifier for the workspace or organization. | - |
+| custom_id | string | ✅ | Generated custom ID for a task. | - |
+
 ## Responses
 
 ### 200
@@ -49,15 +56,15 @@ Successfully retrieved task for given custom ID.
       "resource_type": "user"
     },
     "approval_status": "pending",
-    "assignee_status": "today",
+    "assignee_status": "upcoming",
     "completed": false,
-    "completed_at": "2024-01-01T00:00:00Z",
+    "completed_at": "2012-02-22T02:06:58.147Z",
     "completed_by": {
       "gid": "12345",
       "resource_type": "user",
       "name": "Greg Sanchez"
     },
-    "created_at": "2024-01-01T00:00:00Z",
+    "created_at": "2012-02-22T02:06:58.147Z",
     "dependencies": [
       {
         "gid": "12345",
@@ -67,11 +74,11 @@ Successfully retrieved task for given custom ID.
     "dependents": [
       {}
     ],
-    "due_at": "2024-01-01T00:00:00Z",
-    "due_on": "2024-01-01",
+    "due_at": "2019-09-15T02:06:58.147Z",
+    "due_on": "2019-09-15",
     "external": {
-      "gid": "1234",
-      "data": "A blob of information."
+      "gid": "my_gid",
+      "data": "A blob of information"
     },
     "html_notes": "<body>Mittens <em>really</em> likes the stuff from Humboldt.</body>",
     "hearted": true,
@@ -100,13 +107,13 @@ Successfully retrieved task for given custom ID.
         }
       }
     ],
-    "modified_at": "2024-01-01T00:00:00Z",
+    "modified_at": "2012-02-22T02:06:58.147Z",
     "notes": "Mittens really likes the stuff from Humboldt.",
     "num_hearts": 5,
     "num_likes": 5,
     "num_subtasks": 3,
-    "start_at": "2024-01-01T00:00:00Z",
-    "start_on": "2024-01-01",
+    "start_at": "2019-09-14T02:06:58.147Z",
+    "start_on": "2019-09-14",
     "actual_time_minutes": 200,
     "assignee": {},
     "assignee_section": {},
@@ -120,7 +127,7 @@ Successfully retrieved task for given custom ID.
           {}
         ],
         "enabled": true,
-        "representation_type": "text",
+        "representation_type": "number",
         "id_prefix": "ID",
         "is_formula_field": false,
         "date_value": {
@@ -136,20 +143,20 @@ Successfully retrieved task for given custom ID.
         "display_value": "blue",
         "description": "Development team priority",
         "precision": 2,
-        "format": "currency",
+        "format": "custom",
         "currency_code": "EUR",
         "custom_label": "gold pieces",
-        "custom_label_position": "prefix",
+        "custom_label_position": "suffix",
         "is_global_to_workspace": true,
         "has_notifications_enabled": true,
-        "asana_created_field": "a_v_requirements",
+        "asana_created_field": "priority",
         "is_value_read_only": false,
         "created_by": {},
         "people_value": [
           {}
         ],
         "privacy_setting": "public_with_guests",
-        "default_access_level": "admin",
+        "default_access_level": "user",
         "resource_subtype": "text"
       }
     ],
@@ -172,9 +179,8 @@ Successfully retrieved task for given custom ID.
     ],
     "tags": [
       {
-        "gid": "12345",
-        "resource_type": "tag",
-        "name": "Stuff to buy"
+        "gid": "59746",
+        "name": "Grade A"
       }
     ],
     "workspace": {
@@ -188,44 +194,26 @@ Successfully retrieved task for given custom ID.
 ```
 
 ### 400
+
 <reference>
 
 ### 401
+
 <reference>
 
 ### 403
+
 <reference>
 
 ### 404
+
 <reference>
 
 ### 500
+
 <reference>
 
 ## Security
 
 - **oauth2** (scopes: tasks:read)
 
-
----
-
-## Usage with the Node SDK
-
-```javascript
-const Asana = require('asana');
-
-let client = Asana.ApiClient.instance;
-let token = client.authentications['token'];
-token.accessToken = '<YOUR_ACCESS_TOKEN>';
-
-let tasksApiInstance = new Asana.TasksApi();
-let workspace_gid = "12345"; // String | Globally unique identifier for the workspace or organization.
-let custom_id = "EX-1"; // String | Generated custom ID for a task.
-
-tasksApiInstance.getTaskForCustomID(workspace_gid, custom_id).then((result) => {
-    console.log('API called successfully. Returned data: ' + JSON.stringify(result.data, null, 2));
-}, (error) => {
-    console.error(error.response.body);
-});
-
-```

@@ -10,11 +10,24 @@ Returns the complete record for a single status update.
 
 **Tags:** Project statuses
 
+## Path Parameters
+
+| Name | Type | Required | Description | Constraints |
+|------|------|----------|-------------|-------------|
+| project_status_gid | string | ✅ | The project status update to get. | - |
+
 ## Query Parameters
 
 | Name | Type | Required | Description | Default | Constraints |
 |------|------|----------|-------------|---------|-------------|
+| opt_pretty | boolean | ❌ | Provides “pretty” output. Provides the response in a “pretty” format. In the case of JSON this means doing proper line breaking and indentation to make it readable. This will take extra time and increase the response size so it is advisable only to use this during debugging. | - | - |
 | opt_fields | array | ❌ | This endpoint returns a resource which excludes some properties by default. To include those optional properties, set this query parameter to a comma-separated list of the properties you wish to include. | - | - |
+
+## Allowed optional fields
+
+```
+author,author.name,color,created_at,created_by,created_by.name,html_text,modified_at,text,title
+```
 
 ## Responses
 
@@ -42,46 +55,30 @@ Successfully retrieved the specified project's status updates.
       "resource_type": "user",
       "name": "Greg Sanchez"
     },
-    "created_at": "2024-01-01T00:00:00Z",
+    "created_at": "2012-02-22T02:06:58.147Z",
     "created_by": {},
-    "modified_at": "2024-01-01T00:00:00Z"
+    "modified_at": "2012-02-22T02:06:58.147Z"
   }
 }
 ```
 
 ### 400
+
 <reference>
 
 ### 401
+
 <reference>
 
 ### 403
+
 <reference>
 
 ### 404
+
 <reference>
 
 ### 500
+
 <reference>
 
-## Usage with the Node SDK
-
-```javascript
-const Asana = require('asana');
-
-let client = Asana.ApiClient.instance;
-let token = client.authentications['token'];
-token.accessToken = '<YOUR_ACCESS_TOKEN>';
-
-let projectStatusesApiInstance = new Asana.ProjectStatusesApi();
-let project_status_gid = "321654"; // String | The project status update to get.
-let opts = { 
-    'opt_fields': "author,author.name,color,created_at,created_by,created_by.name,html_text,modified_at,text,title"
-};
-projectStatusesApiInstance.getProjectStatus(project_status_gid, opts).then((result) => {
-    console.log('API called successfully. Returned data: ' + JSON.stringify(result.data, null, 2));
-}, (error) => {
-    console.error(error.response.body);
-});
-
-```

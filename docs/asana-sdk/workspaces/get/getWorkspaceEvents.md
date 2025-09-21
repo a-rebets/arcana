@@ -10,6 +10,19 @@ Asana limits a single sync token to 1000 events. If more than 1000 events exist 
 
 **Tags:** Workspaces
 
+## Path Parameters
+
+| Name | Type | Required | Description | Constraints |
+|------|------|----------|-------------|-------------|
+| workspace_gid | string | ✅ | Globally unique identifier for the workspace or organization. | - |
+
+## Query Parameters
+
+| Name | Type | Required | Description | Default | Constraints |
+|------|------|----------|-------------|---------|-------------|
+| opt_pretty | boolean | ❌ | Provides “pretty” output. Provides the response in a “pretty” format. In the case of JSON this means doing proper line breaking and indentation to make it readable. This will take extra time and increase the response size so it is advisable only to use this during debugging. | - | - |
+| sync | string | ❌ | A sync token received from the last request, or none on first sync. Events will be returned from the point in time that the sync token was generated. *Note: On your first request, omit the sync token. The response will be the same as for an expired sync token, and will include a new valid sync token. If the sync token is too old (which may happen from time to time) the API will return a `412 Precondition Failed` error, and include a fresh sync token in the response.* | - | - |
+
 ## Responses
 
 ### 200
@@ -39,7 +52,7 @@ Successfully retrieved events.
       "type": "task",
       "action": "changed",
       "parent": {},
-      "created_at": "2024-01-01T00:00:00Z",
+      "created_at": "2012-02-22T02:06:58.147Z",
       "change": {
         "field": "assignee",
         "action": "changed",
@@ -64,38 +77,22 @@ Successfully retrieved events.
 ```
 
 ### 400
+
 <reference>
 
 ### 401
+
 <reference>
 
 ### 403
+
 <reference>
 
 ### 404
+
 <reference>
 
 ### 500
+
 <reference>
 
-## Usage with the Node SDK
-
-```javascript
-const Asana = require('asana');
-
-let client = Asana.ApiClient.instance;
-let token = client.authentications['token'];
-token.accessToken = '<YOUR_ACCESS_TOKEN>';
-
-let workspacesApiInstance = new Asana.WorkspacesApi();
-let workspace_gid = "12345"; // String | Globally unique identifier for the workspace or organization.
-let opts = { 
-    'sync': "de4774f6915eae04714ca93bb2f5ee81"
-};
-workspacesApiInstance.getWorkspaceEvents(workspace_gid, opts).then((result) => {
-    console.log('API called successfully. Returned data: ' + JSON.stringify(result.data, null, 2));
-}, (error) => {
-    console.error(error.response.body);
-});
-
-```

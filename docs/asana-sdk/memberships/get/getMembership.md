@@ -8,6 +8,18 @@
 
 **Tags:** Memberships
 
+## Path Parameters
+
+| Name | Type | Required | Description | Constraints |
+|------|------|----------|-------------|-------------|
+| membership_gid | string | ✅ | Globally unique identifier for the membership. | - |
+
+## Query Parameters
+
+| Name | Type | Required | Description | Default | Constraints |
+|------|------|----------|-------------|---------|-------------|
+| opt_pretty | boolean | ❌ | Provides “pretty” output. Provides the response in a “pretty” format. In the case of JSON this means doing proper line breaking and indentation to make it readable. This will take extra time and increase the response size so it is advisable only to use this during debugging. | - | - |
+
 ## Responses
 
 ### 200
@@ -41,8 +53,8 @@ Successfully retrieved the record for a single membership.
         "name": "Greg Sanchez"
       }
     },
-    "role": "commenter",
-    "access_level": "viewer",
+    "role": "editor",
+    "access_level": "editor",
     "goal": {},
     "user": {},
     "workspace": {
@@ -55,36 +67,22 @@ Successfully retrieved the record for a single membership.
 ```
 
 ### 400
+
 <reference>
 
 ### 401
+
 <reference>
 
 ### 403
+
 <reference>
 
 ### 404
+
 <reference>
 
 ### 500
+
 <reference>
 
-## Usage with the Node SDK
-
-```javascript
-const Asana = require('asana');
-
-let client = Asana.ApiClient.instance;
-let token = client.authentications['token'];
-token.accessToken = '<YOUR_ACCESS_TOKEN>';
-
-let membershipsApiInstance = new Asana.MembershipsApi();
-let membership_gid = "12345"; // String | Globally unique identifier for the membership.
-
-membershipsApiInstance.getMembership(membership_gid).then((result) => {
-    console.log('API called successfully. Returned data: ' + JSON.stringify(result.data, null, 2));
-}, (error) => {
-    console.error(error.response.body);
-});
-
-```

@@ -41,11 +41,77 @@ For example, if the gid of the custom field is 12345, these query parameter to f
 
 **Tags:** Tasks
 
+## Path Parameters
+
+| Name | Type | Required | Description | Constraints |
+|------|------|----------|-------------|-------------|
+| workspace_gid | string | ✅ | Globally unique identifier for the workspace or organization. | - |
+
 ## Query Parameters
 
 | Name | Type | Required | Description | Default | Constraints |
 |------|------|----------|-------------|---------|-------------|
+| opt_pretty | boolean | ❌ | Provides “pretty” output. Provides the response in a “pretty” format. In the case of JSON this means doing proper line breaking and indentation to make it readable. This will take extra time and increase the response size so it is advisable only to use this during debugging. | - | - |
+| text | string | ❌ | Performs full-text search on both task name and description | - | - |
+| resource_subtype | string | ❌ | Filters results by the task's resource_subtype | milestone | enum: [default_task, milestone] |
+| assignee.any | string | ❌ | Comma-separated list of user identifiers | - | - |
+| assignee.not | string | ❌ | Comma-separated list of user identifiers | - | - |
+| portfolios.any | string | ❌ | Comma-separated list of portfolio IDs | - | - |
+| projects.any | string | ❌ | Comma-separated list of project IDs | - | - |
+| projects.not | string | ❌ | Comma-separated list of project IDs | - | - |
+| projects.all | string | ❌ | Comma-separated list of project IDs | - | - |
+| sections.any | string | ❌ | Comma-separated list of section or column IDs | - | - |
+| sections.not | string | ❌ | Comma-separated list of section or column IDs | - | - |
+| sections.all | string | ❌ | Comma-separated list of section or column IDs | - | - |
+| tags.any | string | ❌ | Comma-separated list of tag IDs | - | - |
+| tags.not | string | ❌ | Comma-separated list of tag IDs | - | - |
+| tags.all | string | ❌ | Comma-separated list of tag IDs | - | - |
+| teams.any | string | ❌ | Comma-separated list of team IDs | - | - |
+| followers.any | string | ❌ | Comma-separated list of user identifiers | - | - |
+| followers.not | string | ❌ | Comma-separated list of user identifiers | - | - |
+| created_by.any | string | ❌ | Comma-separated list of user identifiers | - | - |
+| created_by.not | string | ❌ | Comma-separated list of user identifiers | - | - |
+| assigned_by.any | string | ❌ | Comma-separated list of user identifiers | - | - |
+| assigned_by.not | string | ❌ | Comma-separated list of user identifiers | - | - |
+| liked_by.not | string | ❌ | Comma-separated list of user identifiers | - | - |
+| commented_on_by.not | string | ❌ | Comma-separated list of user identifiers | - | - |
+| due_on.before | string (date) | ❌ | ISO 8601 date string | - | - |
+| due_on.after | string (date) | ❌ | ISO 8601 date string | - | - |
+| due_on | string (date) | ❌ | ISO 8601 date string or `null` | - | - |
+| due_at.before | string (date-time) | ❌ | ISO 8601 datetime string | - | - |
+| due_at.after | string (date-time) | ❌ | ISO 8601 datetime string | - | - |
+| start_on.before | string (date) | ❌ | ISO 8601 date string | - | - |
+| start_on.after | string (date) | ❌ | ISO 8601 date string | - | - |
+| start_on | string (date) | ❌ | ISO 8601 date string or `null` | - | - |
+| created_on.before | string (date) | ❌ | ISO 8601 date string | - | - |
+| created_on.after | string (date) | ❌ | ISO 8601 date string | - | - |
+| created_on | string (date) | ❌ | ISO 8601 date string or `null` | - | - |
+| created_at.before | string (date-time) | ❌ | ISO 8601 datetime string | - | - |
+| created_at.after | string (date-time) | ❌ | ISO 8601 datetime string | - | - |
+| completed_on.before | string (date) | ❌ | ISO 8601 date string | - | - |
+| completed_on.after | string (date) | ❌ | ISO 8601 date string | - | - |
+| completed_on | string (date) | ❌ | ISO 8601 date string or `null` | - | - |
+| completed_at.before | string (date-time) | ❌ | ISO 8601 datetime string | - | - |
+| completed_at.after | string (date-time) | ❌ | ISO 8601 datetime string | - | - |
+| modified_on.before | string (date) | ❌ | ISO 8601 date string | - | - |
+| modified_on.after | string (date) | ❌ | ISO 8601 date string | - | - |
+| modified_on | string (date) | ❌ | ISO 8601 date string or `null` | - | - |
+| modified_at.before | string (date-time) | ❌ | ISO 8601 datetime string | - | - |
+| modified_at.after | string (date-time) | ❌ | ISO 8601 datetime string | - | - |
+| is_blocking | boolean | ❌ | Filter to incomplete tasks with dependents | - | - |
+| is_blocked | boolean | ❌ | Filter to tasks with incomplete dependencies | - | - |
+| has_attachment | boolean | ❌ | Filter to tasks with attachments | - | - |
+| completed | boolean | ❌ | Filter to completed tasks | - | - |
+| is_subtask | boolean | ❌ | Filter to subtasks | - | - |
+| sort_by | string | ❌ | One of `due_date`, `created_at`, `completed_at`, `likes`, or `modified_at`, defaults to `modified_at` | modified_at | enum: [due_date, created_at, completed_at, likes, modified_at] |
+| sort_ascending | boolean | ❌ | Default `false` | - | - |
 | opt_fields | array | ❌ | This endpoint returns a resource which excludes some properties by default. To include those optional properties, set this query parameter to a comma-separated list of the properties you wish to include. | - | - |
+
+## Allowed optional fields
+
+```
+actual_time_minutes,approval_status,assignee,assignee.name,assignee_section,assignee_section.name,assignee_status,completed,completed_at,completed_by,completed_by.name,created_at,created_by,custom_fields,custom_fields.asana_created_field,custom_fields.created_by,custom_fields.created_by.name,custom_fields.currency_code,custom_fields.custom_label,custom_fields.custom_label_position,custom_fields.date_value,custom_fields.date_value.date,custom_fields.date_value.date_time,custom_fields.default_access_level,custom_fields.description,custom_fields.display_value,custom_fields.enabled,custom_fields.enum_options,custom_fields.enum_options.color,custom_fields.enum_options.enabled,custom_fields.enum_options.name,custom_fields.enum_value,custom_fields.enum_value.color,custom_fields.enum_value.enabled,custom_fields.enum_value.name,custom_fields.format,custom_fields.has_notifications_enabled,custom_fields.id_prefix,custom_fields.is_formula_field,custom_fields.is_global_to_workspace,custom_fields.is_value_read_only,custom_fields.multi_enum_values,custom_fields.multi_enum_values.color,custom_fields.multi_enum_values.enabled,custom_fields.multi_enum_values.name,custom_fields.name,custom_fields.number_value,custom_fields.people_value,custom_fields.people_value.name,custom_fields.precision,custom_fields.privacy_setting,custom_fields.representation_type,custom_fields.resource_subtype,custom_fields.text_value,custom_fields.type,custom_type,custom_type.name,custom_type_status_option,custom_type_status_option.name,dependencies,dependents,due_at,due_on,external,external.data,followers,followers.name,hearted,hearts,hearts.user,hearts.user.name,html_notes,is_rendered_as_separator,liked,likes,likes.user,likes.user.name,memberships,memberships.project,memberships.project.name,memberships.section,memberships.section.name,modified_at,name,notes,num_hearts,num_likes,num_subtasks,parent,parent.created_by,parent.name,parent.resource_subtype,permalink_url,projects,projects.name,resource_subtype,start_at,start_on,tags,tags.name,workspace,workspace.name
+```
 
 ## Responses
 
@@ -77,106 +143,26 @@ Successfully retrieved the section's tasks.
 ```
 
 ### 400
+
 <reference>
 
 ### 401
+
 <reference>
 
 ### 403
+
 <reference>
 
 ### 404
+
 <reference>
 
 ### 500
+
 <reference>
 
 ## Security
 
 - **oauth2** (scopes: tasks:read)
 
-
----
-
-## Usage with the Node SDK
-
-```javascript
-const Asana = require('asana');
-
-let client = Asana.ApiClient.instance;
-let token = client.authentications['token'];
-token.accessToken = '<YOUR_ACCESS_TOKEN>';
-
-let tasksApiInstance = new Asana.TasksApi();
-let workspace_gid = "12345"; // String | Globally unique identifier for the workspace or organization.
-let opts = { 
-    'text': "Bug", 
-    'resource_subtype': "milestone", 
-    'assignee.any': "12345,23456,34567", 
-    'assignee.not': "12345,23456,34567", 
-    'portfolios.any': "12345,23456,34567", 
-    'projects.any': "12345,23456,34567", 
-    'projects.not': "12345,23456,34567", 
-    'projects.all': "12345,23456,34567", 
-    'sections.any': "12345,23456,34567", 
-    'sections.not': "12345,23456,34567", 
-    'sections.all': "12345,23456,34567", 
-    'tags.any': "12345,23456,34567", 
-    'tags.not': "12345,23456,34567", 
-    'tags.all': "12345,23456,34567", 
-    'teams.any': "12345,23456,34567", 
-    'followers.any': "12345,23456,34567", 
-    'followers.not': "12345,23456,34567", 
-    'created_by.any': "12345,23456,34567", 
-    'created_by.not': "12345,23456,34567", 
-    'assigned_by.any': "12345,23456,34567", 
-    'assigned_by.not': "12345,23456,34567", 
-    'liked_by.not': "12345,23456,34567", 
-    'commented_on_by.not': "12345,23456,34567", 
-    'due_on.before': "2019-09-15", 
-    'due_on.after': "2019-09-15", 
-    'due_on': "2019-09-15", 
-    'due_at.before': "2019-04-15T01:01:46.055Z", 
-    'due_at.after': "2019-04-15T01:01:46.055Z", 
-    'start_on.before': "2019-09-15", 
-    'start_on.after': "2019-09-15", 
-    'start_on': "2019-09-15", 
-    'created_on.before': "2019-09-15", 
-    'created_on.after': "2019-09-15", 
-    'created_on': "2019-09-15", 
-    'created_at.before': "2019-04-15T01:01:46.055Z", 
-    'created_at.after': "2019-04-15T01:01:46.055Z", 
-    'completed_on.before': "2019-09-15", 
-    'completed_on.after': "2019-09-15", 
-    'completed_on': "2019-09-15", 
-    'completed_at.before': "2019-04-15T01:01:46.055Z", 
-    'completed_at.after': "2019-04-15T01:01:46.055Z", 
-    'modified_on.before': "2019-09-15", 
-    'modified_on.after': "2019-09-15", 
-    'modified_on': "2019-09-15", 
-    'modified_at.before': "2019-04-15T01:01:46.055Z", 
-    'modified_at.after': "2019-04-15T01:01:46.055Z", 
-    'is_blocking': false, 
-    'is_blocked': false, 
-    'has_attachment': false, 
-    'completed': false, 
-    'is_subtask': false, 
-    'sort_by': "modified_at", 
-    'sort_ascending': false, 
-    'opt_fields': "actual_time_minutes,approval_status,assignee,assignee.name,assignee_section,assignee_section.name,assignee_status,completed,completed_at,completed_by,completed_by.name,created_at,created_by,custom_fields,custom_fields.asana_created_field,custom_fields.created_by,custom_fields.created_by.name,custom_fields.currency_code,custom_fields.custom_label,custom_fields.custom_label_position,custom_fields.date_value,custom_fields.date_value.date,custom_fields.date_value.date_time,custom_fields.default_access_level,custom_fields.description,custom_fields.display_value,custom_fields.enabled,custom_fields.enum_options,custom_fields.enum_options.color,custom_fields.enum_options.enabled,custom_fields.enum_options.name,custom_fields.enum_value,custom_fields.enum_value.color,custom_fields.enum_value.enabled,custom_fields.enum_value.name,custom_fields.format,custom_fields.has_notifications_enabled,custom_fields.id_prefix,custom_fields.is_formula_field,custom_fields.is_global_to_workspace,custom_fields.is_value_read_only,custom_fields.multi_enum_values,custom_fields.multi_enum_values.color,custom_fields.multi_enum_values.enabled,custom_fields.multi_enum_values.name,custom_fields.name,custom_fields.number_value,custom_fields.people_value,custom_fields.people_value.name,custom_fields.precision,custom_fields.privacy_setting,custom_fields.representation_type,custom_fields.resource_subtype,custom_fields.text_value,custom_fields.type,custom_type,custom_type.name,custom_type_status_option,custom_type_status_option.name,dependencies,dependents,due_at,due_on,external,external.data,followers,followers.name,hearted,hearts,hearts.user,hearts.user.name,html_notes,is_rendered_as_separator,liked,likes,likes.user,likes.user.name,memberships,memberships.project,memberships.project.name,memberships.section,memberships.section.name,modified_at,name,notes,num_hearts,num_likes,num_subtasks,parent,parent.created_by,parent.name,parent.resource_subtype,permalink_url,projects,projects.name,resource_subtype,start_at,start_on,tags,tags.name,workspace,workspace.name"
-};
-// Custom fields query
-opts['custom_fields.123.is_set'] = true; // Boolean | Replace "123" with <YOUR_CUSTOM_FIELD_GID>. NOTE: searching for multiple exact matches of a custom field, searching for multi-enum custom field
-opts['custom_fields.123.value'] = '456'; // String, Number, Enum option ID | Replace "123" with <YOUR_CUSTOM_FIELD_GID>. NOTE: searching for multiple exact matches of a custom field, searching for multi-enum custom field
-opts['custom_fields.123.starts_with'] = 'start'; // String | Replace "123" with <YOUR_CUSTOM_FIELD_GID>. NOTE: searching for multiple exact matches of a custom field, searching for multi-enum custom field
-opts['custom_fields.123.ends_with'] = 'end'; // String | Replace "123" with <YOUR_CUSTOM_FIELD_GID>. NOTE: searching for multiple exact matches of a custom field, searching for multi-enum custom field
-opts['custom_fields.123.contains'] = 'first'; // String | Replace "123" with <YOUR_CUSTOM_FIELD_GID>. NOTE: searching for multiple exact matches of a custom field, searching for multi-enum custom field
-opts['custom_fields.123.less_than'] = 10; // Number | Replace "123" with <YOUR_CUSTOM_FIELD_GID>. NOTE: searching for multiple exact matches of a custom field, searching for multi-enum custom field
-opts['custom_fields.123.greater_than'] = 100; // Number | Replace "123" with <YOUR_CUSTOM_FIELD_GID>. NOTE: searching for multiple exact matches of a custom field, searching for multi-enum custom field
-tasksApiInstance.searchTasksForWorkspace(workspace_gid, opts).then((result) => {
-    console.log('API called successfully. Returned data: ' + JSON.stringify(result.data, null, 2));
-}, (error) => {
-    console.error(error.response.body);
-});
-
-```

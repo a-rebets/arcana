@@ -1,4 +1,4 @@
-import type { components, operations } from "../lib/api";
+import type { operations } from "../lib/api";
 
 export type OptFields<T extends keyof operations> = NonNullable<
 	operations[T]["parameters"]["query"]
@@ -8,19 +8,17 @@ export type OptFields<T extends keyof operations> = NonNullable<
 	? Exclude<F, undefined>
 	: never;
 
-// Casting helpers for SDK clients to assert expanded shapes after using opt_fields
-export type ProjectExpandedShape = {
-	team?: components["schemas"]["TeamCompact"];
-	workspace?: components["schemas"]["WorkspaceCompact"];
-	members?: Array<components["schemas"]["UserCompact"]>;
-};
+export type WithRequired<T, K extends keyof T> = Omit<T, K> &
+	Required<Pick<T, K>>;
 
-export type TeamMembershipExpandedShape = {
-	team?: components["schemas"]["TeamCompact"];
-};
+export function castWithOptFields<T, K extends keyof T>(
+	value: T,
+): WithRequired<T, K> {
+	return value as unknown as WithRequired<T, K>;
+}
 
-export function castExpandedArray<TBase, TExpanded>(
-	arr: Array<TBase>,
-): Array<TBase & TExpanded> {
-	return arr as unknown as Array<TBase & TExpanded>;
+export function castArrayWithOptFields<T, K extends keyof T>(
+	arr: Array<T>,
+): Array<WithRequired<T, K>> {
+	return arr as unknown as Array<WithRequired<T, K>>;
 }

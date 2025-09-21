@@ -4,6 +4,7 @@ import type { OptFields } from "../core/types";
 import type { components } from "../lib/api";
 
 export type ProjectCompact = components["schemas"]["ProjectCompact"];
+export type ProjectResponse = components["schemas"]["ProjectResponse"];
 
 export function createProjects(client: OpenAPIClient) {
 	return {
@@ -113,6 +114,46 @@ export function createProjects(client: OpenAPIClient) {
 								"workspace",
 								"archived",
 							],
+						},
+					},
+				});
+				return data;
+			};
+
+			return paginate(fetchPage, { limitTotal: opts?.limit });
+		},
+
+		async getTaskCountsForProject(
+			project_gid: string,
+			opts?: { fields?: OptFields<"getTaskCountsForProject"> },
+		) {
+			const { data } = await client.GET("/projects/{project_gid}/task_counts", {
+				params: {
+					path: { project_gid },
+					query: {
+						opt_fields: opts?.fields ?? [
+							"num_tasks",
+							"num_incomplete_tasks",
+							"num_completed_tasks",
+						],
+					},
+				},
+			});
+			return data?.data;
+		},
+
+		async getProjectsForTask(
+			task_gid: string,
+			opts?: { limit?: number; fields?: OptFields<"getProjectsForTask"> },
+		) {
+			const fetchPage = async (offset?: string | null) => {
+				const { data } = await client.GET("/tasks/{task_gid}/projects", {
+					params: {
+						path: { task_gid },
+						query: {
+							limit: 50,
+							offset: offset ?? undefined,
+							opt_fields: opts?.fields ?? ["name", "team"],
 						},
 					},
 				});

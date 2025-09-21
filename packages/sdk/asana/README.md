@@ -12,17 +12,17 @@ TypeScript SDK for the Asana API, built based on the OpenAPI specification.
 ## Installation
 
 ```bash
-npm install @your-org/asana-sdk
+npm install asana-sdk
 # or
-yarn add @your-org/asana-sdk
+yarn add asana-sdk
 # or
-bun add @your-org/asana-sdk
+bun add asana-sdk
 ```
 
 ## Quick Start
 
 ```typescript
-import { createAsanaSdk } from '@your-org/asana-sdk';
+import { createAsanaSdk } from 'asana-sdk';
 
 // Initialize the SDK
 const asana = createAsanaSdk({
@@ -79,23 +79,71 @@ for await (const membership of memberships) {
 }
 ```
 
+## Working with opt_fields (type-safe expansions)
+
+Asana returns compact objects by default. Optional properties (like `team`, `workspace`, `members`) are only present when requested via `opt_fields`.
+
+This SDK provides utilities to assert those fields are present after you request them, without redefining types:
+
+- `WithRequired<T, K>`: Type utility to make `K` keys required in `T`.
+- `castWithOptFields<T, K>(value)` and `castArrayWithOptFields<T, K>(arr)`: Runtime no-ops that instruct TypeScript that you actually requested `K` with `opt_fields`, so those keys are present at runtime.
+
+Examples
+
+```ts
+import { WithRequired, castArrayWithOptFields, type ProjectResponse } from 'asana-sdk';
+
+type ProjectWithTeamAndWorkspace = WithRequired<ProjectResponse, 'team' | 'workspace'>;
+
+// List projects in a team with required team/workspace present
+const projects: Array<ProjectWithTeamAndWorkspace> = castArrayWithOptFields<ProjectResponse, 'team' | 'workspace'>(
+  await asana.projects.getProjectsForTeam(teamGid, {
+    fields: ['name', 'team', 'team.name', 'workspace', 'workspace.name'],
+  }),
+);
+
+// Team memberships: require team presence
+import { castArrayWithOptFields, type TeamMembershipCompact, type WithRequired } from 'asana-sdk';
+type TeamMembershipWithTeam = WithRequired<TeamMembershipCompact, 'team'>;
+
+const teamMemberships: Array<TeamMembershipWithTeam> = castArrayWithOptFields<TeamMembershipCompact, 'team'>(
+  await asana.teamMemberships.getTeamMembershipsForUser('me', workspaceGid, {
+    fields: ['team', 'team.name'],
+  }),
+);
+```
+
+Notes
+- Always include the fields you plan to access in `fields` (mapped to Asana `opt_fields`).
+- Prefer `ProjectResponse` for project lists when you need richer fields; otherwise `ProjectCompact` is fine.
+- These casts are runtime no-ops; they only help TypeScript understand your `opt_fields` contract.
+
 ## Supported Collections
 
-| Collection                | Status | Description                                         |
-| ------------------------- | ------ | --------------------------------------------------- |
-| **Projects**              | 🚧      | Get projects, project details, and project listings |
-| **Teams**                 | 🚧      | Get team information and user team memberships      |
-| **Users**                 | 🚧      | Get user profiles and information                   |
-| **Workspace Memberships** | 🚧      | Get workspace membership details                    |
-| Custom Fields             | ⏳      | Custom field management                             |
-| Memberships               | ⏳      | Project and team membership management              |
-| Project Memberships       | ⏳      | Project-specific membership operations              |
-| Project Statuses          | ⏳      | Project status updates and management               |
-| Stories                   | ⏳      | Comments and activity feed                          |
-| Tasks                     | ⏳      | Task creation, updates, and management              |
-| Team Memberships          | ⏳      | Team-specific membership operations                 |
-| User Task Lists           | ⏳      | Personal task list management                       |
-| Workspaces                | ⏳      | Workspace settings and management                   |
+Legend: ✅ Supported • ⏳ Planned
 
-🚧 = Partial support (read operations only)  
-⏳ = Planned for future releases
+| Collection            | GET | POST | PUT | DELETE |
+| --------------------- | --- | ---- | --- | ------ |
+| Workspaces            | ✅   | ⏳    | ⏳   | ⏳      |
+| Workspace memberships | ✅   | ⏳    | ⏳   | ⏳      |
+| Projects              | ✅   | ⏳    | ⏳   | ⏳      |
+| Team memberships      | ✅   | ⏳    | ⏳   | ⏳      |
+| Teams                 | ✅   | ⏳    | ⏳   | ⏳      |
+| Users                 | ✅   | ⏳    | ⏳   | ⏳      |
+| Allocations           | ⏳   | ⏳    | ⏳   | ⏳      |
+| Attachments           | ⏳   | ⏳    | ⏳   | ⏳      |
+| Events                | ⏳   | ⏳    | ⏳   | ⏳      |
+| Goal relationships    | ⏳   | ⏳    | ⏳   | ⏳      |
+| Goals                 | ⏳   | ⏳    | ⏳   | ⏳      |
+| Jobs                  | ⏳   | ⏳    | ⏳   | ⏳      |
+| Memberships           | ⏳   | ⏳    | ⏳   | ⏳      |
+| Portfolios            | ⏳   | ⏳    | ⏳   | ⏳      |
+| Project briefs        | ⏳   | ⏳    | ⏳   | ⏳      |
+| Project statuses      | ⏳   | ⏳    | ⏳   | ⏳      |
+| Reactions             | ⏳   | ⏳    | ⏳   | ⏳      |
+| Sections              | ⏳   | ⏳    | ⏳   | ⏳      |
+| Status updates        | ⏳   | ⏳    | ⏳   | ⏳      |
+| Tags                  | ⏳   | ⏳    | ⏳   | ⏳      |
+| Tasks                 | ⏳   | ⏳    | ⏳   | ⏳      |
+| Time tracking entries | ⏳   | ⏳    | ⏳   | ⏳      |
+| User task lists       | ⏳   | ⏳    | ⏳   | ⏳      |

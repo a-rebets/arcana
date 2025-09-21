@@ -1,8 +1,8 @@
-# Arcana: AI-Powered Productivity Integration
+# Arcana: chat with your productivity tools
 
-Arcana is an AI-powered application that integrates with productivity platforms, starting with Asana. Our goal is to build high-quality, type-safe tools and SDKs that allow LLM models to seamlessly interact with productivity applications, providing users with natural language access to their work data and insights.
+Arcana is an AI-powered application that integrates with productivity platforms, starting with Asana. Our goal is to build high-quality, type-safe tools that allow LLM models to seamlessly interact with productivity applications, providing users with natural language access to their work data and insights.
 
-This document explains how to navigate the Asana SDK documentation and development guidelines for AI agents working on the Arcana app.
+This document explains how to navigate the project and provides development guidelines for agents working on the Arcana app.
 
 ## Asana SDK Documentation Structure
 
@@ -62,19 +62,18 @@ packages/sdk/asana/ (Core SDK)
   - `src/resources/*.ts` - Resource creators (e.g. `createWorkspaces`)
   - `src/lib/api.d.ts` - Generated OpenAPI types (do not edit)
 
-#### 2. **packages/tools/asana/** - AI SDK Tools
+#### 2. **packages/tools/asana** - AI SDK Tools
 - **Purpose**: High-level AI tools that wrap the SDK for conversational AI
 - **Exports**: Tool definitions with Zod schemas for AI SDK
 - **Dependencies**: `asana-sdk`
 - **Key Files**:
-  - `src/index.ts` - Tool exports
   - `src/http.ts` - SDK client factory with token
   - `src/schemas.ts` - Zod validation schemas
   - `src/listUserProjects.ts` - example tool
 
 #### 3. **packages/web/** - Main Application
 - **Purpose**: Convex backend with AI chat interface
-- **Dependencies**: `packages/tools/asana/`
+- **Dependencies**: `asana-tools`
 - **Key Files**:
   - `convex/chat.ts` - AI chat handler (tools, step runner, context)
   - `convex/asana/oauth/*.ts` - OAuth token management
@@ -189,7 +188,7 @@ Use this as the source of truth for valid `opt_fields`, path parameters, and res
   - Check the specific operation in `operations` for the default response envelope and available `parameters.query.opt_fields`
 - In the SDK:
   - Use `OptFields<"operationName">` to request valid fields
-  - When you’ve requested expansions for arrays, use `castExpandedArray<Base, Expanded>` to safely access expanded properties
+  - When you've requested expansions for arrays, use `castArrayWithOptFields<T, K>` to safely access expanded properties
 
 
 ### 2. **Resource Creator Pattern**
@@ -202,7 +201,21 @@ Use this as the source of truth for valid `opt_fields`, path parameters, and res
 - Use the shared `paginate(fetchPage, { limitTotal })` helper for list endpoints. `fetchPage` must accept an `offset` and pass `limit`/`offset` to the client.
 
 ### 5. **Expanded Shapes Casting**
-- When using `opt_fields` to expand nested objects, define an expanded shape type and use `castExpandedArray<Base, Expanded>` to access expanded fields safely.
+- When using `opt_fields` to expand nested objects, define an expanded shape type and use `castWithOptFields<T, K>` or `castArrayWithOptFields<T, K>` to access expanded fields safely.
+- Use `WithRequired<T, K>` type utility to make specific keys required in the type.
+
+```typescript
+// Example: Projects with team and workspace expanded
+import { WithRequired, castArrayWithOptFields, type ProjectResponse } from 'asana-sdk';
+
+type ProjectWithTeamAndWorkspace = WithRequired<ProjectResponse, 'team' | 'workspace'>;
+
+const projects: Array<ProjectWithTeamAndWorkspace> = castArrayWithOptFields<ProjectResponse, 'team' | 'workspace'>(
+  await asana.projects.getProjectsForTeam(teamGid, {
+    fields: ['name', 'team', 'team.name', 'workspace', 'workspace.name'],
+  }),
+);
+```
 
 ### 6. **Expose Types Clearly**
 - Export compact and expanded types from resource files and re-export them from the SDK index to keep types discoverable.

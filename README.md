@@ -4,6 +4,8 @@
 
 Arcana is a conversational AI assistant that connects to your work tools, starting with Asana. Chat naturally with your data to get instant insights, visualizations, and trends from your projects and tasks.
 
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/a-rebets/arcana?utm_source=oss&utm_medium=github&utm_campaign=a-rebets%2Farcana&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+
 ## 🛠 Tech Stack
 
 - **Frontend**: React + Vite + TailwindCSS

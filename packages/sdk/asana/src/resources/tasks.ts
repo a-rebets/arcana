@@ -6,6 +6,13 @@ import type { components, operations } from "../lib/api";
 export type TaskCompact = components["schemas"]["TaskCompact"];
 export type TaskResponse = components["schemas"]["TaskResponse"];
 
+const DEFAULT_TASK_COMPACT_FIELDS = [
+  "name",
+  "assignee",
+  "completed",
+  "due_on",
+] as const;
+
 export function createTasks(client: AsanaApiClient) {
   return {
     async getTask(task_gid: string, opts?: { fields?: OptFields<"getTask"> }) {
@@ -82,12 +89,7 @@ export function createTasks(client: AsanaApiClient) {
               completed_since: opts?.completedSince,
               limit: 50,
               offset: offset ?? undefined,
-              opt_fields: opts?.fields ?? [
-                "name",
-                "assignee",
-                "completed",
-                "due_on",
-              ],
+              opt_fields: opts?.fields ?? DEFAULT_TASK_COMPACT_FIELDS,
             },
           },
         });
@@ -113,12 +115,7 @@ export function createTasks(client: AsanaApiClient) {
               completed_since: opts?.completedSince,
               limit: 50,
               offset: offset ?? undefined,
-              opt_fields: opts?.fields ?? [
-                "name",
-                "assignee",
-                "completed",
-                "due_on",
-              ],
+              opt_fields: opts?.fields ?? DEFAULT_TASK_COMPACT_FIELDS,
             },
           },
         });
@@ -146,12 +143,7 @@ export function createTasks(client: AsanaApiClient) {
                 completed_since: opts?.completedSince,
                 limit: 50,
                 offset: offset ?? undefined,
-                opt_fields: opts?.fields ?? [
-                  "name",
-                  "assignee",
-                  "completed",
-                  "due_on",
-                ],
+                opt_fields: opts?.fields ?? DEFAULT_TASK_COMPACT_FIELDS,
               },
             },
           },
@@ -176,12 +168,7 @@ export function createTasks(client: AsanaApiClient) {
             query: {
               limit: 50,
               offset: offset ?? undefined,
-              opt_fields: opts?.fields ?? [
-                "name",
-                "assignee",
-                "completed",
-                "due_on",
-              ],
+              opt_fields: opts?.fields ?? DEFAULT_TASK_COMPACT_FIELDS,
             },
           },
         });
@@ -205,12 +192,7 @@ export function createTasks(client: AsanaApiClient) {
             query: {
               limit: 50,
               offset: offset ?? undefined,
-              opt_fields: opts?.fields ?? [
-                "name",
-                "assignee",
-                "completed",
-                "due_on",
-              ],
+              opt_fields: opts?.fields ?? DEFAULT_TASK_COMPACT_FIELDS,
             },
           },
         });
@@ -234,12 +216,7 @@ export function createTasks(client: AsanaApiClient) {
             query: {
               limit: 50,
               offset: offset ?? undefined,
-              opt_fields: opts?.fields ?? [
-                "name",
-                "assignee",
-                "completed",
-                "due_on",
-              ],
+              opt_fields: opts?.fields ?? DEFAULT_TASK_COMPACT_FIELDS,
             },
           },
         });
@@ -263,12 +240,7 @@ export function createTasks(client: AsanaApiClient) {
             query: {
               limit: 50,
               offset: offset ?? undefined,
-              opt_fields: opts?.fields ?? [
-                "name",
-                "assignee",
-                "completed",
-                "due_on",
-              ],
+              opt_fields: opts?.fields ?? DEFAULT_TASK_COMPACT_FIELDS,
             },
           },
         });

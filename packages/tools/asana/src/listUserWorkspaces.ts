@@ -2,24 +2,19 @@ import { tool } from "ai";
 import type { WorkspaceCompact } from "asana-sdk";
 import { createAsanaClient } from "./http";
 import { ListUserWorkspacesInput } from "./schemas";
+import type { ToolLabels } from "./types";
 
-type WorkspaceItem = {
-  gid: string;
-  name: string;
-};
-
-type ListUserWorkspacesOutput = {
-  workspaces: Array<WorkspaceItem>;
-};
-
-export async function listUserWorkspaces(
-  args: { limit?: number },
-  context: { token: string },
-): Promise<ListUserWorkspacesOutput> {
-  const sdk = createAsanaClient(context.token);
+async function listUserWorkspaces({
+  token,
+  limit,
+}: {
+  limit?: number;
+  token: string;
+}) {
+  const sdk = createAsanaClient(token);
   const workspaces: Array<WorkspaceCompact> =
     await sdk.workspaces.getWorkspaces({
-      limit: args.limit,
+      limit,
       fields: ["name"],
     });
 
@@ -31,7 +26,7 @@ export async function listUserWorkspaces(
   };
 }
 
-export const listUserWorkspacesTool = tool({
+const listUserWorkspacesTool = tool({
   description: "List workspaces the user has access to (id and name).",
   inputSchema: ListUserWorkspacesInput,
   execute: async (input, opts) => {
@@ -42,6 +37,16 @@ export const listUserWorkspacesTool = tool({
         "Missing Asana access token in experimental_context.asanaToken",
       );
     }
-    return listUserWorkspaces(input, { token });
+    return listUserWorkspaces({ token, ...input });
   },
 });
+
+const labels: ToolLabels = {
+  "input-streaming": "Listing workspaces for the user...",
+  "output-available": "Listed workspaces",
+};
+
+export default {
+  tool: listUserWorkspacesTool,
+  labels,
+};

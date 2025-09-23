@@ -227,7 +227,7 @@ const projects: Array<ProjectWithTeamAndWorkspace> = castArrayWithOptFields<Proj
 
 These apply to any integration (Asana, Calendar, Notion, etc.).
 
-### 1. **Wrap SDKs, Don’t Call HTTP Directly**
+### 1. **Wrap SDKs, Don't Call HTTP Directly**
 - Tools should delegate to the corresponding SDK; avoid ad-hoc HTTP requests.
 
 ### 2. **Pass Auth via Context**
@@ -242,6 +242,40 @@ These apply to any integration (Asana, Calendar, Notion, etc.).
 ### 5. **Multi-Step Ready**
 - Keep tool inputs/outputs small and composable so the model can chain multiple tools when needed.
 
+### 6. **Tool Labels for UI State**
+- **Purpose**: Provide user-friendly labels that describe tool execution states in the UI
+- **Tool Part Types**: AI SDK generates tool part types as `tool-{package}_{toolName}` (e.g., `tool-asana_listUserProjectsTool`)
+- **Implementation**: Export labels alongside tools for UI integration
+
+```typescript
+// In individual tool files (e.g., src/listUserProjects.ts)
+const labels: ToolLabels = {
+  "input-streaming": "Listing projects for the user...",
+  "output-available": "Listed projects",
+};
+
+export default {
+  tool: listUserProjectsTool,
+  labels,
+};
+
+// In package index.ts - Import and re-export
+import listUserProjectsTool from "./src/listUserProjects";
+
+export const asanaTools = {
+  asana_listUserProjectsTool: listUserProjectsTool.tool,
+};
+
+export const asanaToolLabels: Record<keyof AsanaTools, ToolLabels> = {
+  asana_listUserProjectsTool: listUserProjectsTool.labels,
+};
+```
+
+#### Label Guidelines
+- **input-streaming**: What the tool is currently doing (present tense)
+- **output-available**: What the tool accomplished (past tense)
+- **Be specific and concise**: Use clear action verbs, avoid generic terms like "Working..." or "Done"
+
 ### Common Mistakes to Avoid
 
 **SDK Development:**
@@ -254,4 +288,7 @@ These apply to any integration (Asana, Calendar, Notion, etc.).
 - **Don't** skip input validation in tools
 - **Don't** expose raw API responses in tools (transform them)
 - **Don't** forget to pass tokens through the context chain
+- **Don't** forget to export tool labels from individual tool files
+- **Don't** forget to include tool labels in the package's main export mapping
+- **Don't** use generic or verbose labels that don't clearly describe the tool's action
 

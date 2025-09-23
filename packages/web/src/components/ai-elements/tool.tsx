@@ -1,14 +1,14 @@
+import {
+  CaretDownIcon,
+  CheckCircleIcon,
+  CircleIcon,
+  ClockIcon,
+  GearSixIcon,
+  XCircleIcon,
+} from "@phosphor-icons/react";
 import { useUpdateEffect } from "@react-hookz/web";
 import type { ToolUIPart } from "ai";
 import type { ToolLabels } from "asana-tools";
-import {
-  CheckCircleIcon,
-  ChevronDownIcon,
-  CircleIcon,
-  ClockIcon,
-  WrenchIcon,
-  XCircleIcon,
-} from "lucide-react";
 import { motion } from "motion/react";
 import { type ComponentProps, type ReactNode, useState } from "react";
 import AsanaIcon from "@/assets/asana-icon.svg?react";
@@ -84,7 +84,7 @@ export function ToolHeader({
           {isAsana ? (
             <AsanaIcon className="size-4 text-asana" />
           ) : (
-            <WrenchIcon className="size-4 text-muted-foreground" />
+            <GearSixIcon className="size-4 text-muted-foreground" />
           )}
           <TextLoop
             items={Object.values(labels)}
@@ -97,7 +97,7 @@ export function ToolHeader({
           </motion.div>
         </motion.div>
         <motion.div layout="position">
-          <ChevronDownIcon className="size-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+          <CaretDownIcon className="size-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
         </motion.div>
       </Button>
     </DisclosureTrigger>

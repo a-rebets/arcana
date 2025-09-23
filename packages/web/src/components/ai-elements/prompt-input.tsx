@@ -1,11 +1,13 @@
 import {
   ArrowUpIcon,
   CircleNotchIcon,
+  ImagesSquareIcon,
+  PaperclipIcon,
+  PlusIcon,
   SquareIcon,
   XIcon,
 } from "@phosphor-icons/react";
 import type { ChatStatus, FileUIPart } from "ai";
-import { ImageIcon, PaperclipIcon, PlusIcon } from "lucide-react";
 import { nanoid } from "nanoid";
 import {
   type ChangeEventHandler,
@@ -179,7 +181,7 @@ export const PromptInputActionAddAttachments = ({
         attachments.openFileDialog();
       }}
     >
-      <ImageIcon className="mr-2 size-4" /> {label}
+      <ImagesSquareIcon className="mr-2 size-4" /> {label}
     </DropdownMenuItem>
   );
 };

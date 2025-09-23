@@ -1,4 +1,4 @@
-import { BrainIcon, CaretDownIcon } from "@phosphor-icons/react";
+import { CaretDownIcon, SparkleIcon } from "@phosphor-icons/react";
 import { useControllableState } from "@radix-ui/react-use-controllable-state";
 import type { ComponentProps } from "react";
 import { createContext, memo, useContext, useEffect, useState } from "react";
@@ -134,7 +134,7 @@ export const ReasoningTrigger = memo(
       >
         {children ?? (
           <>
-            <BrainIcon className="size-4" />
+            <SparkleIcon className="size-4" weight="fill" />
             {getThinkingMessage(isStreaming, duration)}
             <CaretDownIcon
               className={cn(

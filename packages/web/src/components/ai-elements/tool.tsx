@@ -61,7 +61,7 @@ export function ToolHeader({
   const [internalState, setInternalState] = useState(state);
 
   useUpdateEffect(() => {
-    const delay = state === "output-available" ? 500 : 0;
+    const delay = state === "output-available" ? 300 : 0;
     setTimeout(() => setInternalState(state), delay);
   }, [state]);
 

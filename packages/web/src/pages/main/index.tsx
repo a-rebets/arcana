@@ -1,93 +1,60 @@
-import { useChat } from "@ai-sdk-tools/store";
-import { useAuthToken } from "@convex-dev/auth/react";
-import { GlobeSimpleIcon } from "@phosphor-icons/react";
-import { DefaultChatTransport } from "ai";
-import { useState } from "react";
+import { api } from "@convex/api";
+import { useQuery } from "convex/react";
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router";
 import {
-  PromptInput,
-  PromptInputBody,
-  PromptInputButton,
-  type PromptInputMessage,
-  PromptInputSubmit,
-  PromptInputTextarea,
-  PromptInputToolbar,
-  PromptInputTools,
-} from "@/components/ai-elements/prompt-input";
-import { useAsanaRefresh } from "@/hooks/useAsanaRefresh";
-import { ConversationPanel } from "./chat/conversation";
+  Conversation,
+  ConversationContent,
+  ConversationScrollButton,
+} from "@/components/ai-elements/conversation";
+import { useLiveChat } from "@/hooks/use-live-chat";
+import { useSyncChat } from "@/hooks/use-sync-chat";
+import type { ArcanaUIMessage } from "@/lib/convex-agent";
+import { ChatInput } from "./chat/input";
+import { ChatMessages } from "./chat/messages";
 import NavigationHeader from "./navigation";
 
 function Page() {
-  const { ready: asanaReady } = useAsanaRefresh();
-  const token = useAuthToken();
-
-  const [input, setInput] = useState("");
-  const [webSearch, setWebSearch] = useState(false);
-
-  const { sendMessage, status } = useChat({
-    transport: new DefaultChatTransport({
-      api: `${import.meta.env.VITE_CONVEX_API_URL}/api/chat`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "omit",
-    }),
-  });
-
-  const handleSubmit = (message: PromptInputMessage) => {
-    const hasText = Boolean(message.text);
-    const hasAttachments = Boolean(message.files?.length);
-
-    if (!(hasText || hasAttachments)) {
-      return;
-    }
-
-    sendMessage(
-      {
-        text: message.text || "Sent with attachments",
-        files: message.files,
-      },
-      {
-        body: {
-          webSearch: webSearch,
-        },
-      },
-    );
-    setInput("");
-  };
-
   return (
     <main className="h-screen grid grid-rows-[auto_1fr] grid-cols-1">
       <NavigationHeader className="sticky top-0 left-0 right-0 z-50" />
       <div className="max-w-4xl mx-auto px-6 pb-6 relative min-h-0 flex flex-col w-full">
-        <ConversationPanel />
-        <PromptInput onSubmit={handleSubmit} globalDrop multiple>
-          <PromptInputBody>
-            <PromptInputTextarea
-              onChange={(e) => setInput(e.target.value)}
-              value={input}
-            />
-          </PromptInputBody>
-          <PromptInputToolbar>
-            <PromptInputTools>
-              <PromptInputButton
-                variant={webSearch ? "default" : "ghost"}
-                onClick={() => setWebSearch(!webSearch)}
-                hoverScale={1}
-              >
-                <GlobeSimpleIcon size={16} />
-                <span>Search</span>
-              </PromptInputButton>
-            </PromptInputTools>
-            <PromptInputSubmit
-              disabled={(!input && !status) || !asanaReady}
-              status={status}
-            />
-          </PromptInputToolbar>
-        </PromptInput>
+        <Conversation className="flex-1 min-h-0">
+          <ConversationContent>
+            <ChatMessages />
+          </ConversationContent>
+          <ConversationScrollButton />
+        </Conversation>
+        <ChatInput />
       </div>
     </main>
   );
 }
 
-export default Page;
+function WithMessages() {
+  const navigate = useNavigate();
+
+  const { threadId } = useParams<{ threadId: string }>();
+  const exists = useQuery(
+    api.ai.threads.checkIfThreadExists,
+    threadId ? { threadId } : "skip",
+  );
+
+  useEffect(() => {
+    if (threadId && exists === false) navigate("/", { replace: true });
+  }, [threadId, exists, navigate]);
+
+  useSyncChat<ArcanaUIMessage>({
+    threadId: threadId,
+    listQuery: api.ai.messages.listThreadMessages,
+    initialNumItems: 25,
+  });
+
+  useLiveChat<ArcanaUIMessage>({
+    threadId: threadId,
+  });
+
+  return <Page />;
+}
+
+export default WithMessages;

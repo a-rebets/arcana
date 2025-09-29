@@ -14,7 +14,7 @@ type ReasoningContextValue = {
   isStreaming: boolean;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-  duration: number;
+  duration?: number;
 };
 
 const ReasoningContext = createContext<ReasoningContextValue | null>(null);
@@ -35,7 +35,6 @@ export type ReasoningProps = ComponentProps<typeof Collapsible> & {
   duration?: number;
 };
 
-const AUTO_CLOSE_DELAY = 1000;
 const MS_IN_S = 1000;
 
 export const Reasoning = memo(
@@ -56,10 +55,8 @@ export const Reasoning = memo(
     });
     const [duration, setDuration] = useControllableState({
       prop: durationProp,
-      defaultProp: 0,
+      defaultProp: undefined,
     });
-
-    const [hasAutoClosed, setHasAutoClosed] = useState(false);
     const [startTime, setStartTime] = useState<number | null>(null);
 
     // Track duration when streaming starts and ends
@@ -67,25 +64,13 @@ export const Reasoning = memo(
       if (isStreaming) {
         if (startTime === null) {
           setStartTime(Date.now());
+          setDuration(0);
         }
       } else if (startTime !== null) {
         setDuration(Math.ceil((Date.now() - startTime) / MS_IN_S));
         setStartTime(null);
       }
     }, [isStreaming, startTime, setDuration]);
-
-    // Auto-open when streaming starts, auto-close when streaming ends (once only)
-    useEffect(() => {
-      if (defaultOpen && !isStreaming && isOpen && !hasAutoClosed) {
-        // Add a small delay before closing to allow user to see the content
-        const timer = setTimeout(() => {
-          setIsOpen(false);
-          setHasAutoClosed(true);
-        }, AUTO_CLOSE_DELAY);
-
-        return () => clearTimeout(timer);
-      }
-    }, [isStreaming, isOpen, defaultOpen, setIsOpen, hasAutoClosed]);
 
     const handleOpenChange = (newOpen: boolean) => {
       setIsOpen(newOpen);
@@ -115,7 +100,7 @@ const getThinkingMessage = (isStreaming: boolean, duration?: number) => {
     return <p>Thinking...</p>;
   }
   if (duration === undefined) {
-    return <p>Thought for a few seconds</p>;
+    return <p>Thought for a bit</p>;
   }
   return <p>Thought for {duration} seconds</p>;
 };

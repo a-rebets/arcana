@@ -1,21 +1,21 @@
 {
-	"name": "arcana",
-	"version": "1.0.0",
-	"devDependencies": {
-		"@types/node": "24.5.2",
-		"typescript": "5.9.2"
-	},
-	"scripts": {
-		"dev": "bun --filter '*' dev",
-		"build": "bun --filter '*' build",
-		"lint": "bun --filter '*' lint",
-		"preview": "bun --filter '*' preview",
-		"format": "bun --filter '*' format"
-	},
-	"workspaces": [
-		"packages/web",
-		"packages/tools/*",
-		"packages/sdk/*",
-		"packages/doc-gen"
-	]
+    "name": "arcana",
+    "version": "1.0.0",
+    "devDependencies": {
+        "@types/node": "24.5.2",
+        "typescript": "5.9.2"
+    },
+    "scripts": {
+        "dev": "bun --filter '*' dev",
+        "build": "bun --filter '*' build",
+        "lint": "bun --filter '*' lint",
+        "preview": "bun --filter '*' preview",
+        "format": "bun --filter '*' format"
+    },
+    "workspaces": [
+        "packages/web",
+        "packages/tools/*",
+        "packages/sdk/*",
+        "packages/doc-gen"
+    ]
 }

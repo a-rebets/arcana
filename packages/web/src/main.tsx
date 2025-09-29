@@ -16,54 +16,55 @@ import WelcomePage from "./pages/welcome/index";
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL);
 const convexQueryClient = new ConvexQueryClient(convex);
 const queryClient = new QueryClient({
-	defaultOptions: {
-		queries: {
-			queryKeyHashFn: convexQueryClient.hashFn(),
-			queryFn: convexQueryClient.queryFn(),
-		},
-	},
+  defaultOptions: {
+    queries: {
+      queryKeyHashFn: convexQueryClient.hashFn(),
+      queryFn: convexQueryClient.queryFn(),
+    },
+  },
 });
 convexQueryClient.connect(queryClient);
 
 const elem = document.getElementById("root");
 if (!elem) {
-	throw new Error("Root element not found");
+  throw new Error("Root element not found");
 }
 
 createRoot(elem).render(
-	<StrictMode>
-		<ConvexAuthProvider client={convex}>
-			<QueryClientProvider client={queryClient}>
-				<ThemeProvider
-					storageKey="arcana-theme"
-					enableSystem={false}
-					attribute="class"
-				>
-					<App />
-				</ThemeProvider>
-			</QueryClientProvider>
-		</ConvexAuthProvider>
-	</StrictMode>,
+  <StrictMode>
+    <ConvexAuthProvider client={convex}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider
+          storageKey="arcana-theme"
+          enableSystem={false}
+          attribute="class"
+        >
+          <App />
+        </ThemeProvider>
+      </QueryClientProvider>
+    </ConvexAuthProvider>
+  </StrictMode>,
 );
 
 function App() {
-	return (
-		<BrowserRouter>
-			<Routes>
-				<Route element={<Gate policy="redirectIfAuthed" />}>
-					<Route path="/welcome" element={<WelcomePage />} />
-				</Route>
-				<Route element={<Gate policy="requireAuth" />}>
-					<Route element={<Gate policy="requireOnboardingCompleted" />}>
-						<Route path="/" element={<MainPage />} />
-					</Route>
-					<Route element={<Gate policy="redirectIfOnboarded" />}>
-						<Route path="/onboarding" element={<OnboardingPage />} />
-					</Route>
-				</Route>
-				<Route path="*" element={<NotFoundPage />} />
-			</Routes>
-			<Toaster richColors position="bottom-right" />
-		</BrowserRouter>
-	);
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route element={<Gate policy="redirectIfAuthed" />}>
+          <Route path="/welcome" element={<WelcomePage />} />
+        </Route>
+        <Route element={<Gate policy="requireAuth" />}>
+          <Route element={<Gate policy="requireOnboardingCompleted" />}>
+            <Route path="/" element={<MainPage />} />
+            <Route path="/chat/:threadId" element={<MainPage />} />
+          </Route>
+          <Route element={<Gate policy="redirectIfOnboarded" />}>
+            <Route path="/onboarding" element={<OnboardingPage />} />
+          </Route>
+        </Route>
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+      <Toaster richColors position="bottom-right" />
+    </BrowserRouter>
+  );
 }

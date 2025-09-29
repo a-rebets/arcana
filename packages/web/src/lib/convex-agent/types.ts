@@ -1,11 +1,9 @@
-import type {
-  ReasoningUIPart,
-  TextUIPart,
-  ToolUIPart,
-  UIDataTypes,
-  UIMessage,
-} from "ai";
+import type { UIMessage } from "@convex-dev/agent";
+import type { ReasoningUIPart, TextUIPart, ToolUIPart, UIDataTypes } from "ai";
 import type { AsanaTools } from "asana-tools";
+import type { UsePaginatedQueryResult } from "convex/react";
+
+export type ChatSyncStatus = UsePaginatedQueryResult<unknown>["status"];
 
 export type ArcanaUIMessage = UIMessage<never, UIDataTypes, AsanaTools>;
 

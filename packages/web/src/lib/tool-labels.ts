@@ -1,5 +1,5 @@
 import { asanaToolLabels } from "asana-tools";
-import type { ArcanaToolUIPart } from "@/pages/main/chat/types";
+import type { ArcanaToolUIPart } from "@/lib/convex-agent/types";
 
 export const toolLabels = {
   ...asanaToolLabels,

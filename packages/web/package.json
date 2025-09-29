@@ -15,6 +15,7 @@
     "dependencies": {
         "@ai-sdk-tools/store": "^0.1.2",
         "@ai-sdk/react": "^2.0.41",
+        "@convex-dev/agent": "0.2.10",
         "@convex-dev/auth": "^0.0.88",
         "@convex-dev/react-query": "^0.0.0-alpha.11",
         "@hookform/resolvers": "^5.2.1",
@@ -54,7 +55,8 @@
         "tailwindcss": "^4.1.11",
         "tailwindcss-animate": "^1.0.7",
         "use-stick-to-bottom": "^1.1.1",
-        "zod": "^4.1.8"
+        "zod": "^4.1.8",
+        "zustand": "5.0.8"
     },
     "devDependencies": {
         "@biomejs/biome": "2.2.4",

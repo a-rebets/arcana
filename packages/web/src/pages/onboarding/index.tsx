@@ -12,38 +12,38 @@ import { OnboardingCard } from "./card";
 import { type OnboardingFormValues, onboardingFormSchema } from "./schema";
 
 function Page() {
-	const [activeIndex, setActiveIndex] = useState(0);
-	const { mutate: updateUserInfo, isPending } = useMutation({
-		mutationFn: useConvexMutation(api.accounts.updateUserInfo),
-	});
+  const [activeIndex, setActiveIndex] = useState(0);
+  const { mutate: updateUserInfo, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.core.accounts.updateUserInfo),
+  });
 
-	const form = useForm<OnboardingFormValues>({
-		resolver: zodResolver(onboardingFormSchema),
-		defaultValues: {
-			name: "",
-			gradient: getRandomGradient(),
-		},
-	});
+  const form = useForm<OnboardingFormValues>({
+    resolver: zodResolver(onboardingFormSchema),
+    defaultValues: {
+      name: "",
+      gradient: getRandomGradient(),
+    },
+  });
 
-	const onSubmit = (_data: OnboardingFormValues) => {
-		activeIndex === 2 ? null : setActiveIndex(activeIndex + 1);
-		if (_data.name && _data.gradient) {
-			updateUserInfo({
-				profileColors: _data.gradient,
-				name: _data.name,
-			});
-		}
-	};
+  const onSubmit = (_data: OnboardingFormValues) => {
+    activeIndex === 2 ? null : setActiveIndex(activeIndex + 1);
+    if (_data.name && _data.gradient) {
+      updateUserInfo({
+        profileColors: _data.gradient,
+        name: _data.name,
+      });
+    }
+  };
 
-	return (
-		<main className="min-h-screen w-full flex items-center justify-center onboarding-layout">
-			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)}>
-					<OnboardingCard activeIndex={activeIndex} loading={isPending} />
-				</form>
-			</Form>
-		</main>
-	);
+  return (
+    <main className="min-h-screen w-full flex items-center justify-center onboarding-layout">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <OnboardingCard activeIndex={activeIndex} loading={isPending} />
+        </form>
+      </Form>
+    </main>
+  );
 }
 
 export default Page;

@@ -4,9 +4,9 @@ import {
   type ProjectResponse,
   type TeamMembershipCompact,
 } from "asana-sdk";
-import type { z } from "zod";
 import { type AsanaSdkClient, createAsanaClient } from "./http";
 import { ListUserProjectsInput } from "./schemas";
+import type { ToolLabels } from "./types";
 
 async function getUserTeams(
   sdk: AsanaSdkClient,
@@ -35,19 +35,29 @@ async function getTeamProjects(
     await sdk.projects.getProjectsForTeam(teamId, {
       includeArchived,
       limit,
-      fields: ["name", "team", "team.name", "workspace", "workspace.name"],
+      fields: ["name"],
     }),
   );
 }
 
-export async function listUserProjects(
-  args: z.infer<typeof ListUserProjectsInput>,
-  context: { token: string },
-) {
-  const { userGid, workspaceGid, teamGids, includeArchived, limit } =
-    ListUserProjectsInput.parse(args);
+type ListUserProjectsParams = {
+  limit?: number;
+  userGid: string;
+  workspaceGid: string;
+  teamGids?: string[];
+  includeArchived: boolean;
+  token: string;
+};
 
-  const sdk = createAsanaClient(context.token);
+async function listUserProjects({
+  token,
+  userGid,
+  workspaceGid,
+  teamGids,
+  includeArchived,
+  limit,
+}: ListUserProjectsParams) {
+  const sdk = createAsanaClient(token);
 
   let teams: string[] = teamGids ?? [];
   if (!teams.length) {
@@ -74,7 +84,7 @@ export async function listUserProjects(
   return { projects: limitedProjects };
 }
 
-export const listUserProjectsTool = tool({
+const listUserProjectsTool = tool({
   description:
     "List projects a user is a member of within a workspace, optionally filtering by teams.",
   inputSchema: ListUserProjectsInput,
@@ -86,6 +96,16 @@ export const listUserProjectsTool = tool({
         "Missing Asana access token in experimental_context.asanaToken",
       );
     }
-    return listUserProjects(input, { token });
+    return listUserProjects({ token, ...input });
   },
 });
+
+const labels: ToolLabels = {
+  "input-streaming": "Listing projects for the user...",
+  "output-available": "Listed projects",
+};
+
+export default {
+  tool: listUserProjectsTool,
+  labels,
+};

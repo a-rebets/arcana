@@ -1,52 +1,52 @@
-import { internal } from "$/_generated/api";
-import { httpAction } from "$/_generated/server";
+import { internal } from "../../_generated/api";
+import { httpAction } from "../../_generated/server";
 
 export const handleCallback = httpAction(async (ctx, request) => {
-	const url = new URL(request.url);
-	const code = url.searchParams.get("code");
-	const state = url.searchParams.get("state");
-	const error = url.searchParams.get("error");
+  const url = new URL(request.url);
+  const code = url.searchParams.get("code");
+  const state = url.searchParams.get("state");
+  const error = url.searchParams.get("error");
 
-	if (error) {
-		return new Response(closePopupHTML(`OAuth error: ${error}`), {
-			headers: { "Content-Type": "text/html; charset=utf-8" },
-		});
-	}
+  if (error) {
+    return new Response(closePopupHTML(`OAuth error: ${error}`), {
+      headers: { "Content-Type": "text/html; charset=utf-8" },
+    });
+  }
 
-	if (!code || !state) {
-		return new Response(closePopupHTML("Missing code or state"), {
-			headers: { "Content-Type": "text/html; charset=utf-8" },
-		});
-	}
+  if (!code || !state) {
+    return new Response(closePopupHTML("Missing code or state"), {
+      headers: { "Content-Type": "text/html; charset=utf-8" },
+    });
+  }
 
-	try {
-		await ctx.runAction(internal.asana.oauth.protected.completeOAuthFlow, {
-			state,
-			code,
-		});
+  try {
+    await ctx.runAction(internal.asana.oauth.protected.completeOAuthFlow, {
+      state,
+      code,
+    });
 
-		return new Response(closePopupHTML("success"), {
-			headers: { "Content-Type": "text/html; charset=utf-8" },
-		});
-	} catch (error) {
-		console.error("OAuth callback error:", error);
-		try {
-			if (state) {
-				await ctx.runMutation(internal.asana.oauth.protected.deleteOAuthState, {
-					state,
-				});
-			}
-		} catch (cleanupErr) {
-			console.error("Failed to cleanup OAuth state:", cleanupErr);
-		}
-		return new Response(closePopupHTML("Connection failed"), {
-			headers: { "Content-Type": "text/html; charset=utf-8" },
-		});
-	}
+    return new Response(closePopupHTML("success"), {
+      headers: { "Content-Type": "text/html; charset=utf-8" },
+    });
+  } catch (error) {
+    console.error("OAuth callback error:", error);
+    try {
+      if (state) {
+        await ctx.runMutation(internal.asana.oauth.protected.deleteOAuthState, {
+          state,
+        });
+      }
+    } catch (cleanupErr) {
+      console.error("Failed to cleanup OAuth state:", cleanupErr);
+    }
+    return new Response(closePopupHTML("Connection failed"), {
+      headers: { "Content-Type": "text/html; charset=utf-8" },
+    });
+  }
 });
 
 function closePopupHTML(message: string) {
-	return `
+  return `
       <html>
         <head>
           <style>

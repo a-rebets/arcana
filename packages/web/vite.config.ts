@@ -6,7 +6,7 @@ import svgr from "vite-plugin-svgr";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [reactRouter(), tailwindcss(), svgr()],
+  plugins: [tailwindcss(),  svgr(), reactRouter()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

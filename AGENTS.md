@@ -4,6 +4,147 @@ Arcana is an AI-powered application that integrates with productivity platforms,
 
 This document explains how to navigate the project and provides development guidelines for agents working on the Arcana app.
 
+
+## Package Architecture & Dependencies
+
+The Arcana project uses a modular architecture with three interconnected packages that work together to provide AI-powered Asana integration:
+
+### Package Relationships
+
+```
+packages/web/ (Main Application)
+    ↓ depends on
+packages/tools/asana/ (AI SDK Tools)
+    ↓ depends on  
+packages/sdk/asana/ (Core SDK)
+```
+
+#### 1. **packages/sdk/asana/** - Core SDK
+- **Purpose**: Low-level Asana API client with full type safety
+- **Exports**: HTTP client, type definitions, resource methods
+- **Key Files**: 
+  - `src/index.ts` - Main SDK exports and resource wiring
+  - `src/core/client.ts` - OpenAPI HTTP client and auth middleware
+  - `src/core/type-utilities.ts` - `OptFields`, expanded shape helpers
+  - `src/resources/*.ts` - Resource creators (e.g. `createWorkspaces`)
+  - `src/lib/api.d.ts` - Generated OpenAPI types (do not edit)
+
+#### 2. **packages/tools/asana** - AI SDK Tools
+- **Purpose**: High-level AI tools that wrap the SDK for conversational AI
+- **Exports**: Tool definitions with Zod schemas for AI SDK
+- **Dependencies**: `asana-sdk`
+- **Key Files**:
+  - `src/http.ts` - SDK client factory with token
+  - `src/schemas.ts` - Zod validation schemas
+  - `src/listUserProjects.ts` - example tool
+
+#### 3. **packages/web/** - Main Application
+- **Purpose**: React app with Convex backend
+- **Dependencies**: `asana-tools`
+- **Key Files**:
+  - `convex/ai/chat.ts` - chat endpoint for SSE streaming
+  - `convex/core/*` - general Convex functions for the app
+  - `convex/asana/oauth/*` - OAuth token management
+  - `convex/http.ts` - HTTP router registration
+  - `convex/lib/env.ts` - Environment configuration
+
+### Data Flow
+
+1. **Authentication**: OAuth tokens are stored in Convex and passed via `experimental_context`
+2. **Tool Execution**: AI calls tools → tools use SDK → SDK makes HTTP requests to Asana
+3. **Multi-step Processing**: Convex handler orchestrates multiple tool calls using `stopWhen`
+4. **Response Streaming**: Results are streamed back to the frontend via AI SDK's streaming
+
+### Token Management
+
+```typescript
+// In convex/chat.ts
+const connection = await ctx.runQuery(internal.asana.oauth.protected.getConnection, {});
+const result = streamText({
+  // ...
+  experimental_context: {
+    asanaToken: connection?.accessToken, // Token flows down to tools
+  },
+});
+
+// In tools/asana/src/listUserProjects.ts
+execute: async (input, opts) => {
+  const ctx = opts.experimental_context as { asanaToken?: string };
+  const token = ctx.asanaToken; // Token extracted and passed to SDK
+  return listUserProjects(input, { token });
+}
+```
+
+
+## Frontend Architecture (React Router v7 Framework Mode)
+
+Arcana uses React Router v7 in Framework mode, which provides file-based routing with type safety and server-side rendering capabilities.
+
+### Route Configuration
+
+Routes are defined in `packages/web/src/routes.ts` using a nested layout structure:
+
+- **Public routes** (`/welcome`) - wrapped in `layouts/nav/public.tsx` to redirect authenticated users
+- **Protected routes** - wrapped in `layouts/nav/protected.tsx` to require authentication
+- **Catch-all route** (`*`) - handles 404s without auth requirements
+
+The configuration uses `layout()` and `route()` functions from `@react-router/dev/routes` to create a type-safe route tree.
+
+### Layout System
+
+The app uses nested layouts for authentication and onboarding guards:
+
+- **`layouts/nav/public.tsx`** - Redirects authenticated users away from public pages
+- **`layouts/nav/protected.tsx`** - Requires authentication, redirects to `/welcome` if not authenticated
+- **`layouts/nav/onboarded.tsx`** - Requires completed onboarding, redirects to `/onboarding` if not done
+- **`layouts/nav/not-onboarded.tsx`** - Redirects completed users away from onboarding
+
+### Route Modules
+
+Each route file can export:
+
+```typescript
+import type { Route } from "./+types/index";
+
+// Optional: Load data for the route
+export async function loader({ params }: Route.LoaderArgs) {
+  return { data: "value" };
+}
+
+// Optional: Handle form submissions
+export async function action({ request }: Route.ActionArgs) {
+  // Handle POST/PUT/DELETE
+}
+
+// Optional: Add metadata (body classes, etc.)
+export const handle = {
+  bodyClasses: "grid place-items-center min-h-screen",
+};
+
+// Required: The component
+export default function Component({ 
+  loaderData, 
+  params 
+}: Route.ComponentProps) {
+  return <div>{loaderData.data}</div>;
+}
+```
+
+### Type Safety
+
+React Router generates types automatically:
+- Import `Route` from `"./+types/<routeName>"` in each route file
+- Get typed `params`, `loaderData`, `actionData` based on your route configuration
+- Types are regenerated when you change `routes.ts` and run `bun run lint` or `bun run dev`
+
+### Working with Routes
+
+1. **Adding a new route**: Add to `routes.ts` and create the corresponding file
+2. **Adding auth guards**: Wrap routes in appropriate layout components
+3. **Route-specific styles**: Use `handle.bodyClasses` and access via `useMatches()` in root layout
+4. **Dynamic segments**: Use `:paramName` in route paths, access via `params.paramName`
+
+
 ## Asana SDK Documentation Structure
 
 The documentation is located in `docs/asana-api/` and organized by API resources:
@@ -27,6 +168,7 @@ The documentation is located in `docs/asana-api/` and organized by API resources
 - **Content**: Consolidated error responses (400, 401, 403, 404, 500) with descriptions and examples
 - **Usage**: Referenced by `<reference>` tags in endpoint files
 
+
 ## AI SDK Documentation
 
 Additional documentation for AI SDK patterns and best practices:
@@ -35,77 +177,20 @@ Additional documentation for AI SDK patterns and best practices:
 - **Content**: AI SDK implementation guides and patterns
 - **Key Files**:
   - `tool-calling.md` - Tool calling patterns and examples
-  - `ui-message-persistence.md` - Message persistence strategies
   - `ui-tool-usage.md` - UI patterns for tool usage display
 
-## Package Architecture & Dependencies
 
-The Arcana project uses a modular architecture with three interconnected packages that work together to provide AI-powered Asana integration:
+## Convex Agents SDK Documentation
 
-### Package Relationships
+Additional documentation for Convex Agents:
 
-```
-packages/web/ (Main Application)
-    ↓ depends on
-packages/tools/asana/ (AI SDK Tools)
-    ↓ depends on  
-packages/sdk/asana/ (Core SDK)
-```
-
-#### 1. **packages/sdk/asana/** - Core SDK
-- **Purpose**: Low-level Asana API client with full type safety
-- **Exports**: HTTP client, type definitions, resource methods
-- **Key Files**: 
-  - `src/index.ts` - Main SDK exports and resource wiring
-  - `src/core/client.ts` - OpenAPI HTTP client and auth middleware
-  - `src/core/types.ts` - `OptFields`, expanded shape helpers
-  - `src/resources/*.ts` - Resource creators (e.g. `createWorkspaces`)
-  - `src/lib/api.d.ts` - Generated OpenAPI types (do not edit)
-
-#### 2. **packages/tools/asana** - AI SDK Tools
-- **Purpose**: High-level AI tools that wrap the SDK for conversational AI
-- **Exports**: Tool definitions with Zod schemas for AI SDK
-- **Dependencies**: `asana-sdk`
+- **Location**: `docs/convex-sdk/`
+- **Content**: Convex Agents implementation guides and patterns
 - **Key Files**:
-  - `src/http.ts` - SDK client factory with token
-  - `src/schemas.ts` - Zod validation schemas
-  - `src/listUserProjects.ts` - example tool
+  - `agent-usage.md` - Agent usage patterns and examples
+  - `messages.md` - Messages patterns and examples
+  - `threads.md` - Threads patterns and examples
 
-#### 3. **packages/web/** - Main Application
-- **Purpose**: Convex backend with AI chat interface
-- **Dependencies**: `asana-tools`
-- **Key Files**:
-  - `convex/chat.ts` - AI chat handler (tools, step runner, context)
-  - `convex/asana/oauth/*.ts` - OAuth token management
-  - `convex/http.ts` - HTTP router registration
-  - `convex/lib/env.ts` - Environment configuration
-
-### Data Flow
-
-1. **Authentication**: OAuth tokens are stored in Convex and passed via `experimental_context`
-2. **Tool Execution**: AI calls tools → tools use SDK → SDK makes HTTP requests to Asana
-3. **Multi-step Processing**: Convex handler orchestrates multiple tool calls using `stopWhen: stepCountIs(10)`
-4. **Response Streaming**: Results are streamed back to the frontend via AI SDK's streaming
-
-### Token Management
-
-```typescript
-// In convex/chat.ts
-const connection = await ctx.runQuery(internal.asana.oauth.protected.getConnection, {});
-const result = streamText({
-  // ...
-  experimental_context: {
-    asanaToken: connection?.accessToken, // Token flows down to tools
-  },
-});
-
-// In tools/asana/src/listUserProjects.ts
-execute: async (input, opts) => {
-  const ctx = opts.experimental_context as { asanaToken?: string };
-  const token = ctx.asanaToken; // Token extracted and passed to SDK
-  return listUserProjects(input, { token });
-}
-```
 
 ## Development Guidelines
 

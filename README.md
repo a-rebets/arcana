@@ -8,10 +8,10 @@ Arcana is a conversational AI assistant that connects to your work tools, starti
 
 ## 🛠 Tech Stack
 
-- **Frontend**: React + Vite + TailwindCSS
+- **Frontend**: React + Vite + TailwindCSS + React Router v7 (Framework mode)
 - **Backend**: Convex (database, API, real-time)
 - **Authentication**: Convex Auth + Resend
-- **AI**: Vercel AI SDK with models served by OpenRouter
+- **AI**: Convex Agents + Vercel AI SDK, models served by OpenRouter
 - **Data Fetching**: TanStack Query
 - **Runtime**: Bun
 

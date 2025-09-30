@@ -1,5 +1,3 @@
-import "./index.css";
-
 import { api } from "@convex/api";
 import { useConvexMutation } from "@convex-dev/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,6 +8,10 @@ import { Form } from "@/components/ui/form";
 import { getRandomGradient } from "@/lib/colors";
 import { OnboardingCard } from "./card";
 import { type OnboardingFormValues, onboardingFormSchema } from "./schema";
+
+export const handle = {
+  bodyClasses: "asana-bg",
+};
 
 function Page() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -36,7 +38,7 @@ function Page() {
   };
 
   return (
-    <main className="min-h-screen w-full flex items-center justify-center onboarding-layout">
+    <main className="min-h-screen w-full flex items-center justify-center">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <OnboardingCard activeIndex={activeIndex} loading={isPending} />

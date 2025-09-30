@@ -1,3 +1,0 @@
-body:has(.welcome-layout) {
-    @apply grid place-items-center min-w-[320px] min-h-screen relative;
-}

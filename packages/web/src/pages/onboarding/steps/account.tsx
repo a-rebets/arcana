@@ -56,7 +56,7 @@ export function AccountStep() {
       <Button
         size="lg"
         variant="outline"
-        className="w-5/6 rounded-lg h-fit py-2"
+        className="w-5/6 rounded-lg h-fit min-h-16 py-2"
         hoverScale={1.01}
         onClick={handleConnectAsana}
         disabled={isLoading}

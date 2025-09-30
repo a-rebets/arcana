@@ -1,7 +1,7 @@
 import { api } from "@convex/api";
 import { useQuery } from "convex/react";
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 import {
   Conversation,
   ConversationContent,
@@ -9,12 +9,34 @@ import {
 } from "@/components/ai-elements/conversation";
 import { useLiveChat } from "@/hooks/use-live-chat";
 import { useSyncChat } from "@/hooks/use-sync-chat";
-import type { ArcanaUIMessage } from "@/lib/convex-agent";
+import type { Route } from "./+types/";
 import { ChatInput } from "./chat/input";
 import { ChatMessages } from "./chat/messages";
 import NavigationHeader from "./navigation";
 
-function Page() {
+function Page({ params }: Route.ComponentProps) {
+  const navigate = useNavigate();
+  const exists = useQuery(
+    api.ai.threads.checkIfThreadExists,
+    params.threadId ? { threadId: params.threadId } : "skip",
+  );
+
+  useEffect(() => {
+    if (params.threadId && exists === false) {
+      navigate("/", { replace: true });
+    }
+  }, [params.threadId, exists, navigate]);
+
+  useSyncChat({
+    threadId: params.threadId,
+    listQuery: api.ai.messages.listThreadMessages,
+    initialNumItems: 25,
+  });
+
+  useLiveChat({
+    threadId: params.threadId,
+  });
+
   return (
     <main className="h-screen grid grid-rows-[auto_1fr] grid-cols-1">
       <NavigationHeader className="sticky top-0 left-0 right-0 z-50" />
@@ -31,30 +53,4 @@ function Page() {
   );
 }
 
-function WithMessages() {
-  const navigate = useNavigate();
-
-  const { threadId } = useParams<{ threadId: string }>();
-  const exists = useQuery(
-    api.ai.threads.checkIfThreadExists,
-    threadId ? { threadId } : "skip",
-  );
-
-  useEffect(() => {
-    if (threadId && exists === false) navigate("/", { replace: true });
-  }, [threadId, exists, navigate]);
-
-  useSyncChat<ArcanaUIMessage>({
-    threadId: threadId,
-    listQuery: api.ai.messages.listThreadMessages,
-    initialNumItems: 25,
-  });
-
-  useLiveChat<ArcanaUIMessage>({
-    threadId: threadId,
-  });
-
-  return <Page />;
-}
-
-export default WithMessages;
+export default Page;

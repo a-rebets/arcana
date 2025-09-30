@@ -25,7 +25,8 @@
         "paths": {
             "@/*": ["./src/*"],
             "@convex/*": ["./convex/_generated/*"]
-        }
+        },
+        "rootDirs": [".", "./.react-router/types"]
     },
-    "include": ["./src"]
+    "include": ["./src", ".react-router/types/**/*"]
 }

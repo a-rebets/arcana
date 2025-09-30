@@ -1,5 +1,3 @@
-import "./index.css";
-
 import {
   BinocularsIcon,
   ChatCircleDotsIcon,
@@ -12,6 +10,11 @@ import { Button } from "@/components/animate-ui/components/buttons/button";
 import { cn } from "@/lib/utils";
 import { LoginDialog } from "./login-dialog";
 
+export const handle = {
+  bodyClasses:
+    "grid grid-rows-1 place-items-center min-w-[320px] min-h-screen relative",
+};
+
 function Page() {
   return (
     <>
@@ -22,7 +25,7 @@ function Page() {
           "bg-[radial-gradient(ellipse_at_bottom,_#262626_0%,_#000_100%)]",
         )}
       />
-      <main className="container mx-auto p-8 text-center relative z-10 flex flex-col min-h-full justify-center items-center pointer-events-none welcome-layout">
+      <main className="container mx-auto p-8 text-center relative z-10 flex flex-col h-full justify-center items-center pointer-events-none">
         <div className="flex flex-col justify-center items-center gap-8 bg-background/90 rounded-xl p-8 w-[40rem] pointer-events-auto shadow-[inset_0_-56px_80px_-48px_rgb(0_0_0_/_.5)]">
           <div className="select-none">
             <img

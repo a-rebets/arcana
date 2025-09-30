@@ -195,6 +195,15 @@
             height: 15px;
         }
     }
+
+    @keyframes bg-slide {
+        from {
+            background-position: 0 0;
+        }
+        to {
+            background-position: 256px 224px;
+        }
+    }
 }
 
 @utility animate-eye {
@@ -205,10 +214,18 @@
     * {
         @apply border-border outline-ring/50;
     }
-    body {
-        @apply bg-background text-foreground;
-    }
-    #root {
-        @apply size-full;
+
+    .asana-bg::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        opacity: 0.05;
+        background: url("@/assets/logo.svg");
+        background-size: 256px;
+        background-repeat: repeat;
+        transform: rotate(-12deg) scale(1.35);
+        animation: bg-slide 30s linear infinite;
+        pointer-events: none;
     }
 }

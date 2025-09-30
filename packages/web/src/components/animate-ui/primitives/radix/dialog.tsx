@@ -1,5 +1,3 @@
-"use client";
-
 import { AnimatePresence, type HTMLMotionProps, motion } from "motion/react";
 import { Dialog as DialogPrimitive } from "radix-ui";
 import type * as React from "react";

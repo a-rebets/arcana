@@ -75,7 +75,7 @@ export type DisclosureProps = {
   className?: string;
   variants?: { expanded: Variant; collapsed: Variant };
   transition?: Transition;
-};
+} & React.HTMLProps<HTMLDivElement>;
 
 export function Disclosure({
   open: openProp = false,
@@ -84,10 +84,11 @@ export function Disclosure({
   className,
   transition,
   variants,
+  ...props
 }: DisclosureProps) {
   return (
     <MotionConfig transition={transition}>
-      <div className={className}>
+      <div className={className} {...props}>
         <DisclosureProvider
           open={openProp}
           onOpenChange={onOpenChange}

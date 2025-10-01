@@ -1,16 +1,23 @@
 import { createThread } from "@convex-dev/agent";
+import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
+import { z } from "zod";
 import { components, internal } from "../_generated/api";
-import { action, internalMutation, query } from "../_generated/server";
+import {
+  action,
+  internalAction,
+  internalMutation,
+  query,
+} from "../_generated/server";
 import { requireUserId } from "../helpers";
-import { arcanaAgent } from "./agent";
+import { arcanaAgent, threadTitlesAgent } from "./agent";
 
 export const create = internalMutation({
   args: { title: v.optional(v.string()), userId: v.id("users") },
   handler: async (ctx, { title, userId }) => {
     const threadId = await createThread(ctx, components.agent, {
       userId,
-      title: title ?? "New thread",
+      title: title ?? "New chat",
     });
     return threadId;
   },
@@ -29,19 +36,23 @@ export const startNewThread = action({
       threadId,
       prompt,
     });
+    await ctx.scheduler.runAfter(0, internal.ai.threads.generateTitle, {
+      threadId,
+      prompt,
+    });
     return threadId;
   },
 });
 
 export const listByUser = query({
-  args: { cursor: v.optional(v.string()), numItems: v.optional(v.number()) },
-  handler: async (ctx, { cursor = null, numItems = 20 }) => {
+  args: { paginationOpts: paginationOptsValidator },
+  handler: async (ctx, { paginationOpts }) => {
     const userId = await requireUserId(ctx);
     const res = await ctx.runQuery(
       components.agent.threads.listThreadsByUserId,
-      { userId, paginationOpts: { cursor, numItems } },
+      { userId, paginationOpts },
     );
-    return res.page;
+    return res;
   },
 });
 
@@ -52,5 +63,32 @@ export const checkIfThreadExists = query({
       threadId,
     });
     return thread !== null;
+  },
+});
+
+export const generateTitle = internalAction({
+  args: { threadId: v.string(), prompt: v.string() },
+  handler: async (ctx, { threadId, prompt }) => {
+    const titleSchema = z.object({
+      title: z
+        .string()
+        .min(20)
+        .max(40)
+        .describe("Informative, neutral thread title"),
+    });
+
+    const result = await threadTitlesAgent.generateObject(
+      ctx,
+      { threadId },
+      {
+        prompt: `User request: "${prompt}"`,
+        schema: titleSchema,
+      },
+    );
+
+    await ctx.runMutation(components.agent.threads.updateThread, {
+      threadId,
+      patch: { title: result.object.title },
+    });
   },
 });

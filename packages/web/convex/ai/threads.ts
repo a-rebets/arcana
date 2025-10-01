@@ -56,6 +56,25 @@ export const listByUser = query({
   },
 });
 
+export const searchByTitle = query({
+  args: {
+    searchTerm: v.string(),
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, { searchTerm, limit = 50 }) => {
+    const userId = await requireUserId(ctx);
+    const threads = await ctx.runQuery(
+      components.agent.threads.searchThreadTitles,
+      {
+        query: searchTerm,
+        userId,
+        limit,
+      },
+    );
+    return threads;
+  },
+});
+
 export const checkIfThreadExists = query({
   args: { threadId: v.string() },
   handler: async (ctx, { threadId }) => {

@@ -11,9 +11,15 @@ export function useChatStoreSelector<
   return useStore(store, useShallow(selector));
 }
 
-function createFieldSelector<K extends keyof AgentChatStore>(field: K) {
+function createFieldSelector<
+  TMessage extends AIUIMessage = AIUIMessage,
+  K extends keyof AgentChatStore<TMessage> = keyof AgentChatStore<TMessage>,
+>(field: K) {
   return (storeId = "arcana-chat") => {
-    return useChatStoreSelector((s) => s[field], storeId);
+    return useChatStoreSelector<TMessage, AgentChatStore<TMessage>[K]>(
+      (s) => s[field],
+      storeId,
+    );
   };
 }
 
@@ -24,12 +30,22 @@ export const useChatQueryStatus = createFieldSelector("queryStatus");
 export const useChatInitialSyncDone = createFieldSelector("initialSyncDone");
 
 // Derived selectors
-export function useChatMessagesCount(storeId = "arcana-chat"): number {
-  return useChatStoreSelector((s) => s.messages.length, storeId);
+export function useChatMessagesCount<
+  TMessage extends AIUIMessage = AIUIMessage,
+>(storeId = "arcana-chat"): number {
+  return useChatStoreSelector<TMessage, number>(
+    (s) => s.messages.length,
+    storeId,
+  );
 }
 
-export function useChatActions(storeId = "arcana-chat") {
-  return useChatStoreSelector(
+export function useChatActions<TMessage extends AIUIMessage = AIUIMessage>(
+  storeId = "arcana-chat",
+) {
+  return useChatStoreSelector<
+    TMessage,
+    Pick<AgentChatStore<TMessage>, "sendMessage" | "regenerate" | "loadMore">
+  >(
     (s) => ({
       sendMessage: s.sendMessage,
       regenerate: s.regenerate,

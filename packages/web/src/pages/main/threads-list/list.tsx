@@ -8,7 +8,7 @@ import {
   motion,
   type Transition,
 } from "motion/react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { Toggle } from "@/components/ui/toggle";
 import { cn } from "@/lib/utils";
@@ -58,11 +58,21 @@ function ThreadsList({
   zIndexResetDelay = 500,
   ...props
 }: ThreadsListProps) {
+  const selectedThreadRef = useRef<HTMLDivElement | null>(null);
   const [pinnedIds, setPinnedIds] = useState<Set<string>>(new Set());
 
   const [togglingGroup, setTogglingGroup] = useState<
     TimeGroup | "pinned" | null
   >(null);
+
+  useEffect(() => {
+    if (selectedThreadRef.current) {
+      selectedThreadRef.current?.scrollIntoView({
+        behavior: "instant",
+        block: "center",
+      });
+    }
+  }, []);
 
   const listItems = useMemo<ThreadItem[]>(
     () =>
@@ -131,6 +141,7 @@ function ThreadsList({
                 key={item._id}
                 item={item}
                 onToggle={toggleStatus}
+                ref={item.current ? selectedThreadRef : undefined}
               />
             ))}
           </div>
@@ -166,6 +177,7 @@ function ThreadsList({
                     key={item._id}
                     item={item}
                     onToggle={toggleStatus}
+                    ref={item.current ? selectedThreadRef : undefined}
                   />
                 ))}
               </div>
@@ -180,12 +192,14 @@ function ThreadsList({
 type ThreadListItemProps = {
   item: ThreadItem;
   onToggle: (id: string) => void;
+  ref?: React.RefObject<HTMLDivElement | null>;
 };
 
-function ThreadListItem({ item, onToggle }: ThreadListItemProps) {
+function ThreadListItem({ item, onToggle, ref }: ThreadListItemProps) {
   const navigate = useNavigate();
   return (
     <motion.div
+      ref={ref}
       layoutId={`item-${item._id}`}
       transition={itemTransition}
       onClick={() => navigate(`/chat/${item._id}`)}

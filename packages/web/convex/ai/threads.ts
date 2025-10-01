@@ -92,8 +92,8 @@ export const generateTitle = internalAction({
       const titleSchema = z.object({
         title: z
           .string()
-          .min(20)
-          .max(40)
+          .min(15)
+          .max(50)
           .describe("Informative, neutral thread title"),
       });
 
@@ -103,6 +103,7 @@ export const generateTitle = internalAction({
         {
           prompt: `User request: "${prompt}"`,
           schema: titleSchema,
+          temperature: 0,
         },
       );
 

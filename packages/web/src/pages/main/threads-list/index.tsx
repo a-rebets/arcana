@@ -7,10 +7,10 @@ import {
   MagnifyingGlassIcon,
   QuestionIcon,
 } from "@phosphor-icons/react";
-import { useMediaQuery, useToggle } from "@react-hookz/web";
+import { useClickOutside, useMediaQuery, useToggle } from "@react-hookz/web";
 import { useQuery } from "@tanstack/react-query";
 import { type UsePaginatedQueryResult, usePaginatedQuery } from "convex/react";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import {
@@ -40,6 +40,7 @@ ThreadTitle.displayName = "ThreadTitle";
 export function ThreadsBox({ className }: { className?: string }) {
   const { threadId } = useParams();
   const isMobile = useMediaQuery("only screen and (max-width : 768px)");
+  const boxRef = useRef<HTMLDivElement>(null);
 
   const [open, toggleOpen] = useToggle(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -72,6 +73,12 @@ export function ThreadsBox({ className }: { className?: string }) {
       loadMore(15);
     }
   }, [threadId, paginatedThreads, loadMore, status, searchTerm]);
+
+  useClickOutside(boxRef, () => {
+    if (isMobile && open) {
+      toggleOpen(false);
+    }
+  });
 
   const scrollHandler = useCallback(
     (e: Event) => {
@@ -106,6 +113,7 @@ export function ThreadsBox({ className }: { className?: string }) {
       open={open}
       onOpenChange={toggleOpen}
       onMouseLeave={() => !isMobile && toggleOpen(false)}
+      ref={boxRef}
     >
       <DisclosureTrigger>
         <Button
@@ -137,7 +145,7 @@ export function ThreadsBox({ className }: { className?: string }) {
                 placeholder="Find something..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="md:text-[0.8rem] shadow-none rounded-none w-full border-b border-x-0 border-t-0 focus-visible:outline-0 focus-visible:ring-0 px-0.5 focus-visible:border-foreground/40"
+                className="text-[0.8rem] shadow-none rounded-none w-full border-b border-x-0 border-t-0 focus-visible:outline-0 focus-visible:ring-0 px-0.5 focus-visible:border-foreground/40"
               />
             </div>
             <ThreadsBoxContent

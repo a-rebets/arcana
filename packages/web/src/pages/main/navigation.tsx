@@ -92,10 +92,10 @@ export default function NavigationHeader({
 function ThreadsSection() {
   const navigate = useNavigate();
   return (
-    <div className="flex gap-2">
-      <ThreadsBox className="w-full flex-1" />
+    <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 grid-rows-1">
+      <ThreadsBox />
       <Button
-        className="h-[2.4rem] w-20 rounded-xl border dark:border-0"
+        className="h-[2.4rem] w-20 rounded-xl border dark:border-0 shrink-0"
         variant="accent"
         hoverScale={1}
         onClick={() => navigate("/")}

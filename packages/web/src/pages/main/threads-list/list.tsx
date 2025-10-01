@@ -220,7 +220,7 @@ function ThreadListItem({ item, onToggle, ref }: ThreadListItemProps) {
         pressed={item.pinned}
         onPressedChange={() => onToggle(item._id)}
         onClick={(event) => event.stopPropagation()}
-        className="md:h-7 md:px-1 md:min-w-7 shrink-0 transition-opacity duration-250 data-[state=off]:opacity-0 group-hover:data-[state=off]:opacity-100 data-[state=on]:border-foreground/10 data-[state=on]:bg-transparent hover:data-[state=on]:border-foreground/40 data-[state=on]:text-foreground/60 hover:data-[state=on]:text-foreground/80"
+        className="md:h-7 md:px-1 md:min-w-7 shrink-0 transition-opacity duration-250 md:data-[state=off]:opacity-0 group-hover:data-[state=off]:opacity-100 data-[state=on]:border-foreground/10 data-[state=on]:bg-transparent hover:data-[state=on]:border-foreground/40 data-[state=on]:text-foreground/60 hover:data-[state=on]:text-foreground/80"
       >
         <PushPinSimpleIcon className="size-4" />
       </Toggle>

@@ -157,6 +157,9 @@
     --color-sidebar: var(--sidebar-background);
     --animate-accordion-down: accordion-down 0.2s ease-out;
     --animate-accordion-up: accordion-up 0.2s ease-out;
+    --animate-progress-indeterminate: progress-indeterminate 0.8s ease-in-out
+        infinite;
+    --animate-eye: eye 2.5s ease-in-out infinite;
 
     @keyframes accordion-down {
         from {
@@ -204,10 +207,15 @@
             background-position: 256px 224px;
         }
     }
-}
 
-@utility animate-eye {
-    animation: eye 2.5s ease-in-out infinite;
+    @keyframes progress-indeterminate {
+        0% {
+            transform: translateX(-100%);
+        }
+        100% {
+            transform: translateX(100%);
+        }
+    }
 }
 
 @layer base {

@@ -39,7 +39,7 @@ function Page({ params }: Route.ComponentProps) {
 
   return (
     <main className="h-screen grid grid-rows-[auto_1fr] grid-cols-1">
-      <NavigationHeader className="sticky top-0 left-0 right-0 z-50" />
+      <NavigationHeader className="sticky top-0 left-0 right-0 z-30" />
       <div className="max-w-4xl mx-auto px-6 pb-6 relative min-h-0 flex flex-col w-full">
         <Conversation className="flex-1 min-h-0">
           <ConversationContent>

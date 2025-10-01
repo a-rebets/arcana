@@ -91,9 +91,9 @@ export function ThreadsBox({ className }: { className?: string }) {
   const threads = searchTerm ? searchResults : paginatedThreads;
 
   const currentThreadTitle = useMemo(() => {
-    if (!threads) return;
-    return threads.find((thread) => thread._id === threadId)?.title;
-  }, [threadId, threads]);
+    if (!paginatedThreads) return;
+    return paginatedThreads.find((thread) => thread._id === threadId)?.title;
+  }, [threadId, paginatedThreads]);
 
   const noThreads = !threads?.length && !searchTerm;
 

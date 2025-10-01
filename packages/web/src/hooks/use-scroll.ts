@@ -1,15 +1,19 @@
 import { useCallback, useRef } from "react";
 
-export function useScroll(callback: (e: Event) => void) {
+export function useScroll<T extends HTMLElement = HTMLElement>(
+  callback: (e: Event) => void,
+  options: AddEventListenerOptions = { passive: true },
+) {
   const cleanupRef = useRef<(() => void) | null>(null);
 
   return useCallback(
-    (el: HTMLDivElement | null) => {
+    (el: T | null) => {
       cleanupRef.current?.();
       if (!el) return;
-      el.addEventListener("scroll", callback);
-      cleanupRef.current = () => el.removeEventListener("scroll", callback);
+      el.addEventListener("scroll", callback, options);
+      cleanupRef.current = () =>
+        el.removeEventListener("scroll", callback, options);
     },
-    [callback],
+    [callback, options],
   );
 }

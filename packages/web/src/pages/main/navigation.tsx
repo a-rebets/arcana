@@ -1,5 +1,5 @@
 import { CardsIcon, HouseIcon, PlusIcon } from "@phosphor-icons/react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import ThemeToggle from "@/components/theme-toggle";
 import {
@@ -55,12 +55,12 @@ export default function NavigationHeader({
         >
           <MobileNavigation className="md:hidden" />
           <div className="flex items-center gap-6">
-            <a
-              href="/"
+            <Link
+              to="/"
               className="text-primary hover:text-primary/90 font-display text-2xl"
             >
               arcana
-            </a>
+            </Link>
             <DesktopNavigation className="max-md:hidden" />
           </div>
         </div>

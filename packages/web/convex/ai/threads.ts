@@ -88,26 +88,30 @@ export const checkIfThreadExists = query({
 export const generateTitle = internalAction({
   args: { threadId: v.string(), prompt: v.string() },
   handler: async (ctx, { threadId, prompt }) => {
-    const titleSchema = z.object({
-      title: z
-        .string()
-        .min(20)
-        .max(40)
-        .describe("Informative, neutral thread title"),
-    });
+    try {
+      const titleSchema = z.object({
+        title: z
+          .string()
+          .min(20)
+          .max(40)
+          .describe("Informative, neutral thread title"),
+      });
 
-    const result = await threadTitlesAgent.generateObject(
-      ctx,
-      { threadId },
-      {
-        prompt: `User request: "${prompt}"`,
-        schema: titleSchema,
-      },
-    );
+      const result = await threadTitlesAgent.generateObject(
+        ctx,
+        { threadId },
+        {
+          prompt: `User request: "${prompt}"`,
+          schema: titleSchema,
+        },
+      );
 
-    await ctx.runMutation(components.agent.threads.updateThread, {
-      threadId,
-      patch: { title: result.object.title },
-    });
+      await ctx.runMutation(components.agent.threads.updateThread, {
+        threadId,
+        patch: { title: result.object.title },
+      });
+    } catch (error) {
+      console.error(`Failed to generate title for thread ${threadId}:`, error);
+    }
   },
 });

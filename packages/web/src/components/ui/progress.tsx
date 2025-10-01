@@ -24,13 +24,17 @@ function Progress({
       <ProgressPrimitive.Indicator
         data-slot="progress-indicator"
         className={cn(
-          "bg-primary h-full w-full flex-1 transition-all",
-          "data-[state=indeterminate]:animate-progress-indeterminate",
+          "bg-primary h-full w-full flex-1 transition-transform",
+          "data-[state=indeterminate]:animate-progress-indeterminate motion-reduce:animate-none",
           indicatorClassName,
         )}
         style={
           value !== null && value !== undefined
-            ? { transform: `translateX(-${100 - value}%)` }
+            ? {
+                transform: `translateX(-${
+                  100 - Math.max(0, Math.min(100, value))
+                }%)`,
+              }
             : undefined
         }
       />

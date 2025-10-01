@@ -192,7 +192,7 @@ function ThreadsList({
 type ThreadListItemProps = {
   item: ThreadItem;
   onToggle: (id: string) => void;
-  ref?: React.RefObject<HTMLDivElement | null>;
+  ref?: React.Ref<HTMLDivElement>;
 };
 
 function ThreadListItem({ item, onToggle, ref }: ThreadListItemProps) {
@@ -205,7 +205,7 @@ function ThreadListItem({ item, onToggle, ref }: ThreadListItemProps) {
       onClick={() => navigate(`/chat/${item._id}`)}
       className={cn(
         "flex items-center justify-between gap-5 rounded-lg pl-3 pr-1 py-1 cursor-pointer border border-input/50 dark:hover:bg-accent/30 hover:bg-accent/70 group",
-        item.current && "bg-accent/70 dark:bg-accent/30",
+        item.current && "bg-input/70 dark:bg-accent/60",
       )}
     >
       <div className="flex-1 text-sm truncate select-none">{item.title}</div>
@@ -219,6 +219,7 @@ function ThreadListItem({ item, onToggle, ref }: ThreadListItemProps) {
         }
         pressed={item.pinned}
         onPressedChange={() => onToggle(item._id)}
+        onClick={(event) => event.stopPropagation()}
         className="md:h-7 md:px-1 md:min-w-7 shrink-0 transition-opacity duration-250 data-[state=off]:opacity-0 group-hover:data-[state=off]:opacity-100 data-[state=on]:border-foreground/10 data-[state=on]:bg-transparent hover:data-[state=on]:border-foreground/40 data-[state=on]:text-foreground/60 hover:data-[state=on]:text-foreground/80"
       >
         <PushPinSimpleIcon className="size-4" />

@@ -19,7 +19,6 @@ import {
   Fragment,
   type HTMLAttributes,
   type KeyboardEventHandler,
-  type RefObject,
   useCallback,
   useContext,
   useEffect,
@@ -51,7 +50,7 @@ type AttachmentsContext = {
   remove: (id: string) => void;
   clear: () => void;
   openFileDialog: () => void;
-  fileInputRef: RefObject<HTMLInputElement | null>;
+  fileInputRef: React.Ref<HTMLInputElement | null>;
 };
 
 const AttachmentsContext = createContext<AttachmentsContext | null>(null);

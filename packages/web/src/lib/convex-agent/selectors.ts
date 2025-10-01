@@ -11,11 +11,12 @@ export function useChatStoreSelector<
   return useStore(store, useShallow(selector));
 }
 
-function createFieldSelector<
-  TMessage extends AIUIMessage = AIUIMessage,
-  K extends keyof AgentChatStore<TMessage> = keyof AgentChatStore<TMessage>,
->(field: K) {
-  return (storeId = "arcana-chat") => {
+function createFieldSelector<K extends keyof AgentChatStore<AIUIMessage>>(
+  field: K,
+) {
+  return <TMessage extends AIUIMessage = AIUIMessage>(
+    storeId = "arcana-chat",
+  ) => {
     return useChatStoreSelector<TMessage, AgentChatStore<TMessage>[K]>(
       (s) => s[field],
       storeId,

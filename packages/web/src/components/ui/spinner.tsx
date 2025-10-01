@@ -43,6 +43,10 @@ const CircleFilled = ({
 );
 
 const Ellipsis = ({ size = 24, ...props }: SpinnerVariantProps) => {
+  const id1 = useId();
+  const id2 = useId();
+  const id3 = useId();
+
   return (
     <svg
       height={size}
@@ -55,10 +59,10 @@ const Ellipsis = ({ size = 24, ...props }: SpinnerVariantProps) => {
       <circle cx="4" cy="12" fill="currentColor" r="2">
         <animate
           attributeName="cy"
-          begin="0;ellipsis3.end+0.25s"
+          begin={`0;${id3}.end+0.25s`}
           calcMode="spline"
           dur="0.6s"
-          id={useId()}
+          id={id1}
           keySplines=".33,.66,.66,1;.33,0,.66,.33"
           values="12;6;12"
         />
@@ -66,9 +70,10 @@ const Ellipsis = ({ size = 24, ...props }: SpinnerVariantProps) => {
       <circle cx="12" cy="12" fill="currentColor" r="2">
         <animate
           attributeName="cy"
-          begin="ellipsis1.begin+0.1s"
+          begin={`${id1}.begin+0.1s`}
           calcMode="spline"
           dur="0.6s"
+          id={id2}
           keySplines=".33,.66,.66,1;.33,0,.66,.33"
           values="12;6;12"
         />
@@ -76,10 +81,10 @@ const Ellipsis = ({ size = 24, ...props }: SpinnerVariantProps) => {
       <circle cx="20" cy="12" fill="currentColor" r="2">
         <animate
           attributeName="cy"
-          begin="ellipsis1.begin+0.2s"
+          begin={`${id1}.begin+0.2s`}
           calcMode="spline"
           dur="0.6s"
-          id={useId()}
+          id={id3}
           keySplines=".33,.66,.66,1;.33,0,.66,.33"
           values="12;6;12"
         />

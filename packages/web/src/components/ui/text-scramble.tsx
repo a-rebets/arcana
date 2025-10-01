@@ -67,7 +67,7 @@ export function TextScramble({
       setDisplayText(scrambledText);
       currentStep++;
 
-      if (currentStep > totalSteps) {
+      if (currentStep >= totalSteps) {
         clearInterval(interval);
         setDisplayText(children);
       }
@@ -79,7 +79,7 @@ export function TextScramble({
   }, [children, baseWord, duration, speed, characterSet]);
 
   return (
-    <MotionComponent className={className} {...props}>
+    <MotionComponent className={className} aria-label={children} {...props}>
       {displayText}
     </MotionComponent>
   );

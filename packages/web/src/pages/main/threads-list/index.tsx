@@ -76,10 +76,9 @@ export function ThreadsBox({ className }: { className?: string }) {
   const scrollHandler = useCallback(
     (e: Event) => {
       const el = e.currentTarget as HTMLElement;
-      if (
-        el.scrollTop === el.scrollHeight - el.clientHeight &&
-        status === "CanLoadMore"
-      ) {
+      const isNearBottom =
+        el.scrollTop >= el.scrollHeight - el.clientHeight - 5;
+      if (isNearBottom && status === "CanLoadMore") {
         setTimeout(() => loadMore(15), 300);
       }
     },
@@ -100,7 +99,7 @@ export function ThreadsBox({ className }: { className?: string }) {
   return (
     <Disclosure
       className={cn(
-        "rounded-xl border bg-background/80 dark:bg-background/90 backdrop-blur-md h-fit",
+        "rounded-xl border bg-background/85 dark:bg-background/90 backdrop-blur-md h-fit",
         open && "shadow-xl dark:shadow-none",
         className,
       )}

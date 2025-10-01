@@ -8,6 +8,7 @@ import type { OnboardingFormValues } from "../schema";
 export function ColorStep() {
   const { setValue, watch } = useFormContext<OnboardingFormValues>();
   const gradient = watch("gradient");
+  const name = watch("name");
 
   const handleShuffleColors = () => {
     setValue("gradient", getRandomGradient());
@@ -22,7 +23,9 @@ export function ColorStep() {
             getGradientClasses(gradient),
           )}
         >
-          <span className="font-accent text-3xl">Artem</span>
+          <span className="font-accent text-3xl truncate">
+            {name || "Your Name"}
+          </span>
         </div>
       </div>
       <Button

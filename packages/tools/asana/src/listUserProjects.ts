@@ -6,7 +6,6 @@ import {
 } from "asana-sdk";
 import { type AsanaSdkClient, createAsanaClient } from "./http";
 import { ListUserProjectsInput } from "./schemas";
-import type { ToolLabels } from "./types";
 
 async function getUserTeams(
   sdk: AsanaSdkClient,
@@ -100,10 +99,10 @@ const listUserProjectsTool = tool({
   },
 });
 
-const labels: ToolLabels = {
+const labels = {
   "input-streaming": "Listing projects for the user...",
   "output-available": "Listed projects",
-};
+} as const;
 
 export default {
   tool: listUserProjectsTool,

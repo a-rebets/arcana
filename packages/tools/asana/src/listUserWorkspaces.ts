@@ -2,7 +2,6 @@ import { tool } from "ai";
 import type { WorkspaceCompact } from "asana-sdk";
 import { createAsanaClient } from "./http";
 import { ListUserWorkspacesInput } from "./schemas";
-import type { ToolLabels } from "./types";
 
 async function listUserWorkspaces({
   token,
@@ -41,10 +40,10 @@ const listUserWorkspacesTool = tool({
   },
 });
 
-const labels: ToolLabels = {
+const labels = {
   "input-streaming": "Listing workspaces for the user...",
   "output-available": "Listed workspaces",
-};
+} as const;
 
 export default {
   tool: listUserWorkspacesTool,

@@ -1,16 +1,13 @@
+import type { WithoutSystemFields } from "convex/server";
 import { type Infer, v } from "convex/values";
 import { internal } from "../../_generated/api";
-import type { Doc } from "../../_generated/dataModel";
+import type { Doc, Id } from "../../_generated/dataModel";
 import {
   internalAction,
   internalMutation,
   internalQuery,
 } from "../../_generated/server";
-import {
-  asanaConnectionFields,
-  type exchangeTokenResponse,
-  tokenFields,
-} from "../../asana/oauth/schemas";
+import type { exchangeTokenResponse } from "../../asana/oauth/schemas";
 import { requireUserId } from "../../helpers";
 import { env } from "../../lib/env";
 
@@ -45,9 +42,10 @@ export const getOAuthState = internalQuery({
 });
 
 export const getConnection = internalQuery({
-  args: {},
-  handler: async (ctx): Promise<Doc<"asanaConnections"> | null> => {
-    const userId = await requireUserId(ctx);
+  args: {
+    userId: v.id("users"),
+  },
+  handler: async (ctx, { userId }): Promise<Doc<"asanaConnections"> | null> => {
     return await ctx.db
       .query("asanaConnections")
       .withIndex("by_user", (q) => q.eq("userId", userId))
@@ -57,51 +55,30 @@ export const getConnection = internalQuery({
 
 export const deleteOAuthState = internalMutation({
   args: { state: v.string() },
-  returns: v.null(),
   handler: async (ctx, { state }) => {
     const oauthState = await ctx.db
       .query("oauthStates")
       .withIndex("by_state", (q) => q.eq("state", state))
       .first();
-
     if (oauthState) {
       await ctx.db.delete(oauthState._id);
     }
-    return null;
-  },
-});
-
-export const saveConnection = internalMutation({
-  args: asanaConnectionFields,
-  returns: v.null(),
-  handler: async (ctx, args) => {
-    const existing = await ctx.db
-      .query("asanaConnections")
-      .withIndex("by_user", (q) => q.eq("userId", args.userId))
-      .first();
-
-    if (existing) {
-      await ctx.db.patch(existing._id, { ...args });
-    } else {
-      await ctx.db.insert("asanaConnections", { ...args });
-    }
-    return null;
   },
 });
 
 export const updateConnectionTokensById = internalMutation({
-  args: {
-    connectionId: v.id("asanaConnections"),
-    ...tokenFields,
-  },
-  returns: v.null(),
-  handler: async (ctx, args) => {
-    await ctx.db.patch(args.connectionId, {
+  handler: async (
+    ctx,
+    args: Pick<
+      Doc<"asanaConnections">,
+      "_id" | "accessToken" | "refreshToken" | "expiresAt"
+    >,
+  ) => {
+    await ctx.db.patch(args._id, {
       accessToken: args.accessToken,
       refreshToken: args.refreshToken,
       expiresAt: args.expiresAt,
     });
-    return null;
   },
 });
 
@@ -173,7 +150,6 @@ export const completeOAuthFlow = internalAction({
     state: v.string(),
     code: v.string(),
   },
-  returns: v.null(),
   handler: async (ctx, args) => {
     const oauthState = await ctx.runQuery(
       internal.asana.oauth.protected.getOAuthState,
@@ -194,7 +170,7 @@ export const completeOAuthFlow = internalAction({
       },
     );
 
-    await ctx.runMutation(internal.asana.oauth.protected.saveConnection, {
+    await ctx.runMutation(internal.asana.oauth.protected.saveNewTokens, {
       userId: oauthState.userId,
       accessToken: tokens.access_token,
       refreshToken: tokens.refresh_token,
@@ -202,16 +178,33 @@ export const completeOAuthFlow = internalAction({
       asanaUserId: tokens.data.gid,
       asanaUserName: tokens.data.name,
       asanaUserEmail: tokens.data.email,
+      oauthStateId: oauthState._id,
+    });
+  },
+});
+
+export const saveNewTokens = internalMutation({
+  handler: async (
+    ctx,
+    args: WithoutSystemFields<Doc<"asanaConnections">> & {
+      oauthStateId: Id<"oauthStates">;
+    },
+  ) => {
+    const connection = await ctx.db
+      .query("asanaConnections")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .first();
+
+    if (connection) {
+      await ctx.db.patch(connection._id, { ...args });
+    } else {
+      await ctx.db.insert("asanaConnections", { ...args });
+    }
+
+    await ctx.db.patch(args.userId, {
+      onboardingCompletedTime: Date.now(),
     });
 
-    await ctx.runMutation(internal.core.accounts.completeOnboarding, {
-      id: oauthState.userId,
-    });
-
-    await ctx.runMutation(internal.asana.oauth.protected.deleteOAuthState, {
-      state: args.state,
-    });
-
-    return null;
+    await ctx.db.delete(args.oauthStateId);
   },
 });

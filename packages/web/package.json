@@ -8,7 +8,7 @@
         "dev:frontend": "react-router dev",
         "dev:backend": "convex dev",
         "build": "react-router build",
-        "lint": "react-router typegen && tsc --noEmit && biome check src/",
+        "lint": "react-router typegen && tsc --noEmit && biome check .",
         "format": "biome format --write src/ convex/"
     },
     "dependencies": {
@@ -38,6 +38,8 @@
         "@t3-oss/env-core": "^0.13.8",
         "@vercel/react-router": "1.2.3",
         "ai": "^5.0.47",
+        "ajv": "8.17.1",
+        "ajv-formats": "^3.0.1",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "convex": "1.27.3",
@@ -59,6 +61,8 @@
         "tailwindcss": "^4.1.11",
         "tailwindcss-animate": "^1.0.7",
         "use-stick-to-bottom": "^1.1.1",
+        "vega": "5.33.0",
+        "vega-lite": "5.23.0",
         "zod": "^4.1.8",
         "zustand": "5.0.8"
     },

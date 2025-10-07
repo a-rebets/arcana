@@ -1,5 +1,4 @@
 import { ArrowsClockwiseIcon, CopyIcon } from "@phosphor-icons/react";
-import { asanaToolLabels } from "asana-tools";
 import { Fragment, useCallback, useEffect } from "react";
 import { useStickToBottomContext } from "use-stick-to-bottom";
 import { Action, Actions } from "@/components/ai-elements/actions";
@@ -37,7 +36,11 @@ import type {
   ArcanaUIMessage,
   ArcanaUIMessagePart,
 } from "@/lib/convex-agent/types";
-import type { ExtractToolName, RawArcanaUIToolType } from "@/lib/tool-labels";
+import {
+  type ExtractToolName,
+  type RawArcanaUIToolType,
+  toolLabels,
+} from "@/lib/tool-labels";
 import { cn } from "@/lib/utils";
 
 export const ChatMessages = () => {
@@ -214,14 +217,7 @@ function ToolCall({
   return (
     <Tool>
       <ToolHeader
-        labels={
-          isAsana
-            ? asanaToolLabels[fullToolName]
-            : {
-                "input-streaming": `Using "${fullToolName}" tool...`,
-                "output-available": `Got results from "${fullToolName}" tool`,
-              }
-        }
+        labels={toolLabels[fullToolName]}
         state={part.state}
         isAsana={isAsana}
       />

@@ -8,10 +8,8 @@ import {
 } from "@phosphor-icons/react";
 import { useUpdateEffect } from "@react-hookz/web";
 import type { ToolUIPart } from "ai";
-import type { ToolLabels } from "asana-tools";
 import { motion } from "motion/react";
 import { type ComponentProps, type ReactNode, useState } from "react";
-import AsanaIcon from "@/assets/asana-icon.svg?react";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import {
   Disclosure,
@@ -19,6 +17,7 @@ import {
   DisclosureTrigger,
 } from "@/components/ui/disclosure";
 import { TextLoop } from "@/components/ui/text-loop";
+import type { ToolLabels } from "@/lib/tool-labels";
 import { cn } from "@/lib/utils";
 import { CodeBlock } from "./code-block";
 
@@ -49,6 +48,7 @@ export type ToolHeaderProps = {
   className?: string;
   isAsana?: boolean;
   labels: ToolLabels;
+  children?: ReactNode;
 };
 
 export function ToolHeader({
@@ -56,6 +56,7 @@ export function ToolHeader({
   state,
   isAsana,
   labels,
+  children,
   ...props
 }: ToolHeaderProps) {
   const [internalState, setInternalState] = useState(state);
@@ -81,11 +82,7 @@ export function ToolHeader({
         }}
       >
         <motion.div className="flex items-center gap-2" layout="position">
-          {isAsana ? (
-            <AsanaIcon className="size-4 text-asana" />
-          ) : (
-            <GearSixIcon className="size-4 text-muted-foreground" />
-          )}
+          {children || <GearSixIcon className="size-4 text-muted-foreground" />}
           <TextLoop
             items={Object.values(labels)}
             itemsWithShimmer={[0]}

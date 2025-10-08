@@ -1,6 +1,11 @@
-import { ArrowsClockwiseIcon, CopyIcon } from "@phosphor-icons/react";
+import {
+  ArrowsClockwiseIcon,
+  CopyIcon,
+  FilesIcon,
+} from "@phosphor-icons/react";
 import { Fragment, useCallback, useEffect } from "react";
 import { useStickToBottomContext } from "use-stick-to-bottom";
+import AsanaIcon from "@/assets/asana-icon.svg?react";
 import { Action, Actions } from "@/components/ai-elements/actions";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import {
@@ -37,11 +42,16 @@ import type {
   ArcanaUIMessagePart,
 } from "@/lib/convex-agent/types";
 import {
-  type ExtractToolName,
+  type RawArcanaUIToolPackage,
   type RawArcanaUIToolType,
   toolLabels,
 } from "@/lib/tool-labels";
 import { cn } from "@/lib/utils";
+
+const ToolIcons = {
+  asana: <AsanaIcon className="size-4 text-asana" />,
+  artifacts: <FilesIcon className="size-4 text-muted-foreground" />,
+};
 
 export const ChatMessages = () => {
   const { scrollRef } = useStickToBottomContext();
@@ -120,8 +130,15 @@ function MessageParts({
       default:
         if (isToolPart(part)) {
           try {
-            const { fullName } = parseToolType(part.type);
-            return <ToolCall part={part} fullToolName={fullName} key={key} />;
+            const { fullName, package: packageName } = parseToolType(part.type);
+            return (
+              <ToolCall
+                part={part}
+                fullToolName={fullName}
+                packageName={packageName}
+                key={key}
+              />
+            );
           } catch {
             return null;
           }
@@ -209,18 +226,17 @@ function MessageReasoning({
 function ToolCall({
   part,
   fullToolName,
+  packageName,
 }: {
   part: ArcanaToolUIPart;
-  fullToolName: ExtractToolName<ArcanaToolUIPart["type"]>;
+  fullToolName: RawArcanaUIToolType;
+  packageName?: RawArcanaUIToolPackage;
 }) {
-  const isAsana = fullToolName.includes("asana");
   return (
     <Tool>
-      <ToolHeader
-        labels={toolLabels[fullToolName]}
-        state={part.state}
-        isAsana={isAsana}
-      />
+      <ToolHeader labels={toolLabels[fullToolName]} state={part.state}>
+        {packageName ? ToolIcons[packageName] : null}
+      </ToolHeader>
       <ToolContent>
         <ToolInput input={part.input} />
         <ToolOutput output={part.output} errorText={part.errorText} />
@@ -235,7 +251,7 @@ function parseToolType(toolType: ArcanaToolUIPart["type"]) {
     throw new Error(`Invalid tool type format: ${toolType}`);
   }
   return {
-    package: match[1],
+    package: match[1] as RawArcanaUIToolPackage,
     fullName: `${match[1]}_${match[2]}` as RawArcanaUIToolType,
   };
 }

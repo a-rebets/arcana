@@ -21,8 +21,17 @@ export const toolLabels = {
   ...artifactsToolLabels,
 };
 
+export type ToolLabels = Record<"input-streaming" | "output-available", string>;
+
 export type ExtractToolName<T extends string> = T extends `tool-${infer U}`
   ? U
   : never;
 
+export type ExtractPackageName<T extends string> =
+  T extends `tool-${infer Package}_${string}` ? Package : never;
+
 export type RawArcanaUIToolType = ExtractToolName<ArcanaToolUIPart["type"]>;
+
+export type RawArcanaUIToolPackage = ExtractPackageName<
+  ArcanaToolUIPart["type"]
+>;

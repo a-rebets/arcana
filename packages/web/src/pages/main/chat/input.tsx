@@ -1,4 +1,4 @@
-import { GlobeSimpleIcon } from "@phosphor-icons/react";
+import { FilesIcon, GlobeSimpleIcon } from "@phosphor-icons/react";
 import { useParams } from "react-router";
 import {
   PromptInput,
@@ -9,17 +9,23 @@ import {
   PromptInputToolbar,
   PromptInputTools,
 } from "@/components/ai-elements/prompt-input";
+import {
+  useArtifactsPanelActions,
+  useArtifactsPanelState,
+} from "@/hooks/use-artifacts-store";
 import { useAsanaRefresh } from "@/hooks/use-asana-refresh";
 import { useChatInput } from "@/hooks/use-chat-input";
 import { useChatStatus } from "@/lib/convex-agent";
 
 export const ChatInput = ({ className }: { className?: string }) => {
-  const { threadId } = useParams<{ threadId: string }>();
+  const { threadId } = useParams();
 
   const { ready: asanaReady } = useAsanaRefresh();
   const inputHelpers = useChatInput(threadId);
-
   const status = useChatStatus();
+
+  const isArtifactsPanelOpen = useArtifactsPanelState();
+  const { toggle: toggleArtifactsPanel } = useArtifactsPanelActions();
 
   return (
     <PromptInput
@@ -41,8 +47,16 @@ export const ChatInput = ({ className }: { className?: string }) => {
             onClick={inputHelpers.toggleWebSearch}
             hoverScale={1}
           >
-            <GlobeSimpleIcon size={16} />
+            <GlobeSimpleIcon weight="bold" />
             <span>Search</span>
+          </PromptInputButton>
+          <PromptInputButton
+            variant={isArtifactsPanelOpen ? "default" : "ghost"}
+            onClick={toggleArtifactsPanel}
+            hoverScale={1}
+          >
+            <FilesIcon weight="bold" />
+            <span>Artifacts</span>
           </PromptInputButton>
         </PromptInputTools>
         <PromptInputSubmit

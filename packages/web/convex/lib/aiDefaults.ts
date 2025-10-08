@@ -35,6 +35,10 @@ export const CHART_PROMPT = `
         NEVER use \`data.url\` or \`data.values\`. The actual data will be injected automatically after compilation.
         Use transforms for aggregations, calculations, filters as needed.
     </data_handling>
+    <sizing>
+        DO NOT specify \`width\` or \`height\` in your specs - responsive sizing is handled automatically by the system.
+        If you must specify size for some reason, use \`"width": "container"\` and \`"height": "container"\`.
+    </sizing>
     <compliance>
         100% Vega-Lite v5 compliant: include "$schema" URL. Default visible titles/axes/legends. Tooltips: primitive values only—no "[object Object]". Dynamic titles: "title: { text: { expr: '...' } }", not "title: { expr: '...' }".
     </compliance>

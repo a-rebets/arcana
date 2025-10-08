@@ -50,11 +50,14 @@ function generateModifyChartPrompt(
   schema: string,
   datasetName: string,
 ): string {
+  // vlSpec is stored as a JSON string, parse and pretty-print it
+  const vlSpec = JSON.parse(existingArtifact.vlSpec);
+
   return `${task}
 
 Current Vega-Lite Spec:
 \`\`\`json
-${JSON.stringify(existingArtifact.vlSpec, null, 2)}
+${JSON.stringify(vlSpec, null, 2)}
 \`\`\`
 
 Dataset Title: "${datasetName}"

@@ -5,6 +5,7 @@ import Ajv from "ajv";
 import addFormats from "ajv-formats";
 import { v } from "convex/values";
 import { compile, type TopLevelSpec } from "vega-lite";
+import type { LayoutSizeMixins } from "vega-lite/build/src/spec";
 import vlSchema from "vega-lite/build/vega-lite-schema.json";
 import { internal } from "../_generated/api";
 import type { Id } from "../_generated/dataModel";
@@ -21,7 +22,9 @@ ajv.addFormat("color-hex", () => true);
 
 const validateVegaLite = ajv.compile(vlSchema);
 
-function isVegaLiteSpec(spec: unknown): spec is TopLevelSpec {
+function isVegaLiteSpec(
+  spec: unknown,
+): spec is TopLevelSpec & LayoutSizeMixins {
   return validateVegaLite(spec);
 }
 
@@ -48,18 +51,23 @@ export const processAndStoreChart = internalAction({
       );
     }
 
+    vlSpec.width = "container";
+    vlSpec.height = "container";
+    vlSpec.autosize = {
+      type: "fit",
+      resize: true,
+      contains: "padding",
+    };
     vlSpec.datasets = {
       current: args.dataset,
     };
+
     const vegaSpec = compile(vlSpec).spec;
 
     if (!vegaSpec) {
       throw new Error("Failed to compile Vega-Lite spec");
     }
 
-    // Store specs as JSON strings to avoid Convex type validation issues
-    // (Vega specs contain signal references and other non-Convex types)
-    // Store vlSpec without datasets (just the structure)
     const artifactId = await ctx.runMutation(
       internal.artifacts.protected.createArtifact,
       {

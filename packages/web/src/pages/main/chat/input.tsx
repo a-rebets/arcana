@@ -13,7 +13,7 @@ import { useAsanaRefresh } from "@/hooks/use-asana-refresh";
 import { useChatInput } from "@/hooks/use-chat-input";
 import { useChatStatus } from "@/lib/convex-agent";
 
-export const ChatInput = () => {
+export const ChatInput = ({ className }: { className?: string }) => {
   const { threadId } = useParams<{ threadId: string }>();
 
   const { ready: asanaReady } = useAsanaRefresh();
@@ -22,7 +22,12 @@ export const ChatInput = () => {
   const status = useChatStatus();
 
   return (
-    <PromptInput onSubmit={inputHelpers.handleSubmit} globalDrop multiple>
+    <PromptInput
+      onSubmit={inputHelpers.handleSubmit}
+      globalDrop
+      multiple
+      className={className}
+    >
       <PromptInputBody>
         <PromptInputTextarea
           onChange={inputHelpers.handleInputChange}

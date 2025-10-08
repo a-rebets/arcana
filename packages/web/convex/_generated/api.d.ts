@@ -15,6 +15,7 @@ import type * as ai_threads from "../ai/threads.js";
 import type * as artifacts_hashing from "../artifacts/hashing.js";
 import type * as artifacts_index from "../artifacts/index.js";
 import type * as artifacts_protected from "../artifacts/protected.js";
+import type * as artifacts_public from "../artifacts/public.js";
 import type * as artifacts_schemas from "../artifacts/schemas.js";
 import type * as artifacts_tools_chart from "../artifacts/tools/chart.js";
 import type * as artifacts_tools_dataset from "../artifacts/tools/dataset.js";
@@ -57,6 +58,7 @@ declare const fullApi: ApiFromModules<{
   "artifacts/hashing": typeof artifacts_hashing;
   "artifacts/index": typeof artifacts_index;
   "artifacts/protected": typeof artifacts_protected;
+  "artifacts/public": typeof artifacts_public;
   "artifacts/schemas": typeof artifacts_schemas;
   "artifacts/tools/chart": typeof artifacts_tools_chart;
   "artifacts/tools/dataset": typeof artifacts_tools_dataset;

@@ -5,9 +5,9 @@ import { createDatasetTool, listDatasetsTool } from "./tools/dataset";
 export * from "./schemas";
 
 export const artifactsTools = {
-  artifacts_createDatasetTool: createDatasetTool,
-  artifacts_listDatasetsTool: listDatasetsTool,
-  artifacts_createOrUpdateChartTool: createOrUpdateChartTool,
+  datasets_createDatasetTool: createDatasetTool,
+  datasets_listDatasetsTool: listDatasetsTool,
+  charts_createOrUpdateChartTool: createOrUpdateChartTool,
 };
 
 export type ArtifactsTools = InferUITools<typeof artifactsTools>;

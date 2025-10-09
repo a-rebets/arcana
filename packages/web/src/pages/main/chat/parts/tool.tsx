@@ -1,4 +1,4 @@
-import { FilesIcon } from "@phosphor-icons/react";
+import { FilesIcon, PresentationChartIcon } from "@phosphor-icons/react";
 import AsanaIcon from "@/assets/asana-icon.svg?react";
 import {
   Tool,
@@ -16,21 +16,18 @@ import {
 
 const ToolIcons = {
   asana: <AsanaIcon className="size-4 text-asana" />,
-  artifacts: <FilesIcon className="size-4 text-muted-foreground" />,
+  datasets: <FilesIcon className="size-4 text-muted-foreground" />,
+  charts: <PresentationChartIcon className="size-4 text-muted-foreground" />,
 };
 
 function ToolCall({ part }: { part: ArcanaToolUIPart }) {
   const toolInfo = parseToolType(part.type);
+  const defaultLabels = getDefaultToolLabels(part.type);
+  const labels = toolInfo ? toolLabels[toolInfo.fullName] : defaultLabels;
+
   return (
     <Tool>
-      <ToolHeader
-        labels={
-          toolInfo
-            ? toolLabels[toolInfo.fullName]
-            : getDefaultToolLabels(part.type)
-        }
-        state={part.state}
-      >
+      <ToolHeader labels={labels ?? defaultLabels} state={part.state}>
         {toolInfo ? ToolIcons[toolInfo.package] : null}
       </ToolHeader>
       <ToolContent>

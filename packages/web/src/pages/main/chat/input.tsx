@@ -1,4 +1,4 @@
-import { FilesIcon, GlobeSimpleIcon } from "@phosphor-icons/react";
+import { GlobeSimpleIcon, PresentationChartIcon } from "@phosphor-icons/react";
 import { useParams } from "react-router";
 import {
   PromptInput,
@@ -55,7 +55,7 @@ export const ChatInput = ({ className }: { className?: string }) => {
             onClick={toggleArtifactsPanel}
             hoverScale={1}
           >
-            <FilesIcon weight="bold" />
+            <PresentationChartIcon weight="bold" />
             <span>Artifacts</span>
           </PromptInputButton>
         </PromptInputTools>

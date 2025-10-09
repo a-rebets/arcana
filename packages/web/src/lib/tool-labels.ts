@@ -2,19 +2,19 @@ import { asanaToolLabels } from "asana-tools";
 import type { ArcanaToolUIPart } from "@/lib/convex-agent/types";
 
 const artifactsToolLabels = {
-  artifacts_listDatasetsTool: {
+  datasets_listDatasetsTool: {
     "input-streaming": "Listing available datasets...",
     "output-available": "Datasets loaded",
   },
-  artifacts_createDatasetTool: {
+  datasets_createDatasetTool: {
     "input-streaming": "Creating a dataset...",
     "output-available": "Dataset saved",
   },
-  artifacts_createOrUpdateChartTool: {
+  charts_createOrUpdateChartTool: {
     "input-streaming": "Generating the chart, may take a minute...",
     "output-available": "Chart created successfully",
   },
-};
+} as const;
 
 export const toolLabels = {
   ...asanaToolLabels,

@@ -1,17 +1,17 @@
 import { api } from "@convex/api";
 import { useQuery } from "convex/react";
 import { useRef } from "react";
-import { useParams } from "react-router";
 import { useVegaEmbed } from "react-vega";
 import type { EmbedOptions, VisualizationSpec } from "vega-embed";
 import { CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import { useChatId } from "@/lib/convex-agent";
 
 const options: EmbedOptions = {
   actions: false,
 };
 
 export function ArtifactsContent() {
-  const { threadId } = useParams();
+  const threadId = useChatId();
   const artifacts = useQuery(
     api.artifacts.public.listArtifactsByThread,
     threadId

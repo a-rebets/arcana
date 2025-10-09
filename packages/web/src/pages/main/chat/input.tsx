@@ -1,5 +1,4 @@
 import { GlobeSimpleIcon, PresentationChartIcon } from "@phosphor-icons/react";
-import { useParams } from "react-router";
 import {
   PromptInput,
   PromptInputBody,
@@ -15,10 +14,10 @@ import {
 } from "@/hooks/use-artifacts-store";
 import { useAsanaRefresh } from "@/hooks/use-asana-refresh";
 import { useChatInput } from "@/hooks/use-chat-input";
-import { useChatStatus } from "@/lib/convex-agent";
+import { useChatId, useChatStatus } from "@/lib/convex-agent";
 
 export const ChatInput = ({ className }: { className?: string }) => {
-  const { threadId } = useParams();
+  const threadId = useChatId();
 
   const { ready: asanaReady } = useAsanaRefresh();
   const inputHelpers = useChatInput(threadId);

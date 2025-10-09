@@ -11,7 +11,6 @@ import { useClickOutside, useMediaQuery, useToggle } from "@react-hookz/web";
 import { useQuery } from "@tanstack/react-query";
 import { type UsePaginatedQueryResult, usePaginatedQuery } from "convex/react";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import {
   Disclosure,
@@ -24,6 +23,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
 import { TextScramble } from "@/components/ui/text-scramble";
 import { useScroll } from "@/hooks/use-scroll";
+import { useChatId } from "@/lib/convex-agent";
 import { cn } from "@/lib/utils";
 import { ThreadsList } from "./list";
 
@@ -38,7 +38,7 @@ const ThreadTitle = memo(({ title }: { title: string | undefined }) => {
 ThreadTitle.displayName = "ThreadTitle";
 
 export function ThreadsBox({ className }: { className?: string }) {
-  const { threadId } = useParams();
+  const threadId = useChatId();
   const isMobile = useMediaQuery("only screen and (max-width : 768px)");
   const boxRef = useRef<HTMLDivElement>(null);
 

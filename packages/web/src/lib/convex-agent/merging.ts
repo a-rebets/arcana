@@ -1,10 +1,10 @@
+import type { UIMessage } from "@convex-dev/agent";
 import type { UIMessage as AIUIMessage } from "ai";
 
 export function mergeLiveMessages<T extends AIUIMessage>(
   current: ReadonlyArray<T>,
   incoming: ReadonlyArray<T>,
 ): Array<T> | null {
-  // LIVE: hydrate empty store or append/update tail-only
   if (current.length === 0) {
     return [...incoming] as Array<T>;
   }
@@ -18,7 +18,6 @@ export function mergeLiveMessages<T extends AIUIMessage>(
 
   for (const msg of incoming) {
     if (msg.id === lastId) {
-      // Inclusive update for last message (multi-part streaming)
       if (messages[lastIndex] !== msg) {
         messages[lastIndex] = msg;
         changed = true;
@@ -26,35 +25,43 @@ export function mergeLiveMessages<T extends AIUIMessage>(
       continue;
     }
     if (!knownIds.has(msg.id)) {
-      // New tail message
       messages.push(msg);
       changed = true;
     }
-    // Ignore updates to earlier messages
   }
 
   return changed ? (messages as Array<T>) : null;
 }
 
+function isConvexUIMessageArray<T extends AIUIMessage>(
+  messages: Array<T>,
+): messages is Array<T & UIMessage> {
+  return "_creationTime" in messages[0];
+}
+
 export function mergeSyncMessages<T extends AIUIMessage>(
-  current: ReadonlyArray<T>,
-  incoming: ReadonlyArray<T>,
+  current: Array<T>,
+  incoming: Array<T>,
   isInitialSync: boolean,
 ): Array<T> | null {
-  // SYNC: hydrate empty store or prepend before first (inclusive)
   if (current.length === 0 || isInitialSync) {
-    return [...incoming] as Array<T>;
+    return [...incoming];
   }
 
-  const firstId = current[0].id;
-  const boundary = incoming.findIndex((m) => m.id === firstId);
+  if (!isConvexUIMessageArray(current) || !isConvexUIMessageArray(incoming)) {
+    return null;
+  }
 
-  // No overlap yet; wait for a page that contains the boundary
-  if (boundary === -1) return null;
+  // Only accept messages strictly older than the first (oldest) current message
+  const olderMessages = incoming.filter(
+    (m) => m._creationTime < current[0]._creationTime,
+  );
 
-  // If no messages to prepend, it's a no-op (sync only handles older messages)
-  if (boundary === 0) return null;
+  if (olderMessages.length === 0) {
+    return null;
+  }
 
-  // Prepending older messages: take everything up to and including boundary
-  return [...incoming.slice(0, boundary + 1), ...current.slice(1)] as Array<T>;
+  return [...olderMessages, ...current].sort(
+    (a, b) => a._creationTime - b._creationTime,
+  );
 }

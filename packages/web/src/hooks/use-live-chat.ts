@@ -5,26 +5,30 @@ import {
   useToggle,
   useUpdateEffect,
 } from "@react-hookz/web";
-import type { UIMessage } from "ai";
 import { DefaultChatTransport } from "ai";
 import { useCallback, useEffect, useMemo } from "react";
-import { getAgentChatStore, useChatMessages } from "@/lib/convex-agent";
+import {
+  type ArcanaUIMessage,
+  getAgentChatStore,
+  useChatMessages,
+} from "@/lib/convex-agent";
 
 type UseLiveChatOptions = {
   storeId?: string;
   threadId?: string;
 };
 
-export function useLiveChat<TMessage extends UIMessage = UIMessage>(
-  opts: UseLiveChatOptions,
-) {
+export function useLiveChat(opts: UseLiveChatOptions) {
   const { storeId = "arcana-chat", threadId } = opts;
   const token = useAuthToken();
-  const store = useMemo(() => getAgentChatStore<TMessage>(storeId), [storeId]);
+  const store = useMemo(
+    () => getAgentChatStore<ArcanaUIMessage>(storeId),
+    [storeId],
+  );
   const globalMessages = useChatMessages();
   const [liveChatEnabled, toggleLiveChat] = useToggle(false);
 
-  const { messages, status, sendMessage, error } = useChat<TMessage>({
+  const { messages, status, sendMessage, error } = useChat<ArcanaUIMessage>({
     id: threadId,
     transport: new DefaultChatTransport({
       api: `${import.meta.env.VITE_CONVEX_API_URL}/api/chat`,
@@ -73,10 +77,12 @@ export function useLiveChat<TMessage extends UIMessage = UIMessage>(
   useEffect(resetLiveChat, [threadId]);
 
   useDeepCompareEffect(() => {
-    if (!liveChatEnabled) return;
-    // logWithTimestamp(
-    //   `running live hook, status: ${status}, messages: ${messages.length}`,
-    // );
+    if (!liveChatEnabled || !threadId) return;
+    //     logWithTimestamp(
+    //       `running live hook:
+    // [status] ${status}
+    // [messages count] ${messages.length}`,
+    //     );
     store.getState()._syncState(
       {
         messages,
@@ -85,7 +91,7 @@ export function useLiveChat<TMessage extends UIMessage = UIMessage>(
       },
       { source: "live" },
     );
-  }, [error, status, liveChatEnabled, messages]);
+  }, [error, status, liveChatEnabled, messages, threadId]);
 
   // Pick up the global status to submit if we're in a new thread
   useUpdateEffect(() => {

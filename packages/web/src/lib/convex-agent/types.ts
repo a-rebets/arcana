@@ -1,5 +1,11 @@
 import type { UIMessage } from "@convex-dev/agent";
-import type { ReasoningUIPart, TextUIPart, ToolUIPart, UIDataTypes } from "ai";
+import type {
+  ReasoningUIPart,
+  SourceUrlUIPart,
+  TextUIPart,
+  ToolUIPart,
+  UIDataTypes,
+} from "ai";
 import type { AsanaTools } from "asana-tools";
 import type { UsePaginatedQueryResult } from "convex/react";
 import type { ArtifactsTools } from "../../../convex/artifacts";
@@ -27,4 +33,9 @@ export type ArcanaTextUIPart = Extract<
 export type ArcanaReasoningUIPart = Extract<
   ArcanaUIMessagePart,
   { type: ReasoningUIPart["type"] }
+>;
+
+export type ArcanaSourcesUIPart = Extract<
+  ArcanaUIMessagePart,
+  { type: SourceUrlUIPart["type"] }
 >;

@@ -6,6 +6,7 @@ import {
   type ArcanaTextUIPart,
   type ArcanaUIMessage,
   useChatActions,
+  useChatStatus,
 } from "@/lib/convex-agent";
 import { cn } from "@/lib/utils";
 
@@ -18,15 +19,21 @@ export function MessageText({
   part: ArcanaTextUIPart;
   isLast: boolean;
 }) {
+  const status = useChatStatus();
   const { regenerate } = useChatActions();
+
+  const showActions = role === "assistant" && isLast && status === "ready";
   return (
     <>
-      <Message from={role} className={cn(role === "assistant" && "py-0")}>
+      <Message
+        from={role}
+        className={cn("mb-4", role === "assistant" && "py-0", isLast && "mb-0")}
+      >
         <MessageContent className="rounded-2xl">
           <Response>{part.text}</Response>
         </MessageContent>
       </Message>
-      {role === "assistant" && isLast && (
+      {showActions && (
         <Actions className="mt-2">
           <Action onClick={() => regenerate()} label="Retry">
             <ArrowsClockwiseIcon className="size-4" />

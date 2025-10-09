@@ -71,9 +71,30 @@ ${schema}
 const chartModel = (chartsAgent.options.languageModel as LanguageModelV2)
   .modelId;
 
+const chartToolDescription = `Create new Vega-Lite charts or modify existing ones.
+
+**Usage Scenarios:**
+1. **Create new chart**: Provide only 'datasetId'
+2. **Modify existing chart (same data)**: Provide only 'artifactId'
+3. **Modify existing chart (different data)**: Provide BOTH 'artifactId' AND 'datasetId'
+
+**Task Parameter Guidelines:**
+Write a detailed, structured task description including:
+- Chart type (bar, line, scatter, etc.)
+- Encodings (which fields map to x/y/color/size)
+- Interactions (tooltips, filters, selections)
+- Sorting/aggregations if needed
+- Any specific visual requirements
+
+Be specific and comprehensive rather than vague. Good task descriptions lead to better charts.
+
+Examples:
+(good) "Create a horizontal bar chart showing student scores. Y-axis: student names, X-axis: scores. Color by grade_level. Add tooltips with name, score, and grade. Sort by score descending."
+(bad) "make a chart showing the data"
+(bad) "visualize this"`;
+
 const createOrUpdateChartTool = createTool({
-  description:
-    "Create a new chart from a dataset OR modify an existing chart. The task parameter describes what visualization the user wants.",
+  description: chartToolDescription,
   args: createOrUpdateChartSchema,
   handler: async (ctx, args): Promise<string> => {
     if (!args.datasetId && !args.artifactId) {
@@ -112,9 +133,11 @@ const createOrUpdateChartTool = createTool({
         throw new Error(`Artifact not found: ${args.artifactId}`);
       }
 
-      dataset = await ctx.runQuery(internal.artifacts.protected.getDataset, {
-        datasetId: existingArtifact.datasetId,
-      });
+      if (!dataset) {
+        dataset = await ctx.runQuery(internal.artifacts.protected.getDataset, {
+          datasetId: existingArtifact.datasetId,
+        });
+      }
 
       parentArtifactId = existingArtifact._id;
     }

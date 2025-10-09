@@ -1,6 +1,7 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useRef } from "react";
 import { useStickToBottomContext } from "use-stick-to-bottom";
 import { EyeLoader } from "@/components/ui/loaders";
+import { useScroll } from "@/hooks/use-scroll";
 import {
   useChatActions,
   useChatMessages,
@@ -21,24 +22,26 @@ export function ChatMessages() {
   const queryStatus = useChatQueryStatus();
   const messages = useChatMessages<ArcanaUIMessage>();
 
+  const chatInitialized = useRef(false);
+
   const scrollHandler = useCallback(
     (event: Event) => {
       const el = event.currentTarget as HTMLElement;
-      if (el.scrollTop <= 300 && queryStatus === "CanLoadMore") {
-        loadMore(10);
+      if (
+        el.scrollTop <= 300 &&
+        queryStatus === "CanLoadMore" &&
+        chatInitialized.current
+      ) {
+        loadMore?.(20);
+      }
+      if (!chatInitialized.current && el.scrollTop > 350) {
+        chatInitialized.current = true;
       }
     },
     [queryStatus, loadMore],
   );
 
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    el.addEventListener("scroll", scrollHandler);
-    return () => {
-      el.removeEventListener("scroll", scrollHandler);
-    };
-  }, [scrollRef, scrollHandler]);
+  useScroll(scrollHandler, { passive: true }, scrollRef);
 
   return (
     <>

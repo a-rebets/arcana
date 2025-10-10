@@ -1,13 +1,11 @@
 import type { InferUITools } from "ai";
 import listUserProjectsTool from "./src/listUserProjects";
 import listUserWorkspacesTool from "./src/listUserWorkspaces";
-import type { ToolLabels } from "./src/types";
 
 export type {
   ListUserProjectsInput,
   ListUserWorkspacesInput,
 } from "./src/schemas";
-export * from "./src/types";
 
 export const asanaTools = {
   asana_listUserProjectsTool: listUserProjectsTool.tool,
@@ -16,7 +14,7 @@ export const asanaTools = {
 
 export type AsanaTools = InferUITools<typeof asanaTools>;
 
-export const asanaToolLabels: Record<keyof AsanaTools, ToolLabels> = {
+export const asanaToolLabels = {
   asana_listUserProjectsTool: listUserProjectsTool.labels,
   asana_listUserWorkspacesTool: listUserWorkspacesTool.labels,
 };

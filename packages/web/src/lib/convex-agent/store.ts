@@ -28,8 +28,8 @@ const getGlobalStoreInstances = <T>(): StoreMap<T> => {
 
 export interface AgentChatActions {
   sendMessage: (args: { text: string; webSearch?: boolean }) => Promise<void>;
-  regenerate: () => Promise<void>;
-  loadMore: (numItems: number) => void;
+  regenerate?: () => Promise<void>;
+  loadMore?: (numItems: number) => void;
 }
 
 export interface AgentChatStore<TMessage extends AIUIMessage = AIUIMessage>
@@ -55,13 +55,9 @@ function createAgentChatStore<TMessage extends AIUIMessage = AIUIMessage>() {
   return create<AgentChatStoreWithSync<TMessage>>()((set) => ({
     id: "",
     messages: [] as TMessage[],
-    error: undefined,
-    status: undefined,
     queryStatus: "LoadingFirstPage",
     initialSyncDone: false,
-    loadMore: () => {},
     sendMessage: async () => undefined,
-    regenerate: async () => {},
     _syncState: (partial, options = {}) => {
       const { source } = options;
       set((previous) => {
@@ -72,7 +68,6 @@ function createAgentChatStore<TMessage extends AIUIMessage = AIUIMessage>() {
           return { ...previous, ...otherFields };
         }
 
-        // Delegate to the appropriate merge function
         const merged =
           source === "live"
             ? mergeLiveMessages(previous.messages, incoming)
@@ -82,12 +77,9 @@ function createAgentChatStore<TMessage extends AIUIMessage = AIUIMessage>() {
                 !previous.initialSyncDone,
               );
 
-        // No changes from merge: keep current messages
         if (!merged) {
           return { ...previous, ...otherFields };
         }
-
-        // Update messages
         return {
           ...previous,
           ...otherFields,

@@ -256,6 +256,7 @@ function CarouselContent({
   }, [itemsLength]);
 
   useEffect(() => {
+    if (!itemsLength) return;
     setItemsCount(itemsLength);
   }, [itemsLength, setItemsCount]);
 

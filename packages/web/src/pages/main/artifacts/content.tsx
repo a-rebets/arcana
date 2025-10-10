@@ -5,6 +5,7 @@ import type { FunctionReturnType } from "convex/server";
 import { useMemo, useRef } from "react";
 import { useVegaEmbed } from "react-vega";
 import type { EmbedOptions } from "vega-embed";
+import PlaceholderIcon from "@/assets/charts-placeholder.svg?react";
 import {
   CarouselContent,
   CarouselItem,
@@ -32,7 +33,7 @@ export function ArtifactsContent() {
   );
   const { syncVersionStates, setActiveChart, reset } =
     useArtifactsVersionActions();
-  const carousel = useCarousel();
+  const { index: carouselIndex, setItemsCount } = useCarousel();
 
   useDeepCompareEffect(() => {
     if (!artifacts) return;
@@ -43,17 +44,24 @@ export function ArtifactsContent() {
   }, [artifacts]);
 
   useDeepCompareEffect(() => {
-    const activeArtifact = artifacts?.[carousel.index];
+    const activeArtifact = artifacts?.[carouselIndex];
     if (activeArtifact) {
       setActiveChart(activeArtifact.rootId);
     }
-  }, [artifacts, carousel.index]);
+  }, [artifacts, carouselIndex]);
 
-  useUpdateEffect(reset, [threadId]);
+  useUpdateEffect(() => {
+    setItemsCount(0);
+    reset();
+  }, [threadId, setItemsCount]);
+
+  if (!artifacts) {
+    return <Placeholder />;
+  }
 
   return (
     <CarouselContent>
-      {artifacts?.map((chain) => (
+      {artifacts.map((chain) => (
         <CarouselItem className="p-4 aspect-video" key={chain.rootId}>
           <Artifact data={chain} />
         </CarouselItem>
@@ -76,5 +84,19 @@ function Artifact({ data }: { data: ArtifactData }) {
 
   return (
     <div className="flex size-full items-center justify-center" ref={ref} />
+  );
+}
+
+function Placeholder() {
+  return (
+    <div className="flex w-full items-center flex-col gap-2 text-muted-foreground/50 dark:text-muted-foreground pb-24 select-none">
+      <PlaceholderIcon className="size-64" />
+      <p className="font-display text-3xl font-medium mb-1">
+        No artifacts found
+      </p>
+      <p className="text-base font-light">
+        Ask the agent to generate a chart, it will appear here
+      </p>
+    </div>
   );
 }

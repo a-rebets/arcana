@@ -50,7 +50,7 @@ function Page({ params }: Route.ComponentProps) {
             <ConversationScrollButton />
           </Conversation>
           <div className="px-6 max-w-4xl w-full mx-auto">
-            <ChatInput />
+            <ChatInput className="rounded-2xl" />
           </div>
         </div>
         <Artifacts className="flex-1" />

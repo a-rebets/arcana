@@ -35,7 +35,7 @@ export function MessageText({
       </Message>
       {showActions && (
         <Actions className="mt-2">
-          <Action onClick={() => regenerate()} label="Retry">
+          <Action onClick={() => regenerate?.()} label="Retry">
             <ArrowsClockwiseIcon className="size-4" />
           </Action>
           <Action

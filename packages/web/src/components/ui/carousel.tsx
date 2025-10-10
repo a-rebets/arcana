@@ -159,7 +159,7 @@ function CarouselNavigation({
           "rounded-full pointer-events-auto has-[>svg]:pl-4 select-none",
           classNameButton,
         )}
-        disabled={index + 1 === itemsCount}
+        disabled={index + 1 === itemsCount || itemsCount === 0}
         onClick={() => {
           if (index < itemsCount - 1) {
             setIndex(index + 1);
@@ -256,10 +256,6 @@ function CarouselContent({
   }, [itemsLength]);
 
   useEffect(() => {
-    if (!itemsLength) {
-      return;
-    }
-
     setItemsCount(itemsLength);
   }, [itemsLength, setItemsCount]);
 

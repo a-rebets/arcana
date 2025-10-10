@@ -7,8 +7,19 @@ import {
   CarouselNavigation,
 } from "@/components/ui/carousel";
 import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  useActiveChart,
   useArtifactsPanelActions,
   useArtifactsPanelState,
+  useArtifactsVersionActions,
+  useVersionState,
 } from "@/hooks/use-artifacts-store";
 import { cn } from "@/lib/utils";
 import { ArtifactsContent } from "./content";
@@ -41,18 +52,62 @@ export function Artifacts({ className }: { className?: string }) {
 
 function ArtifactHeader() {
   const { close } = useArtifactsPanelActions();
+
   return (
-    <header className="px-4 py-2 border-b flex items-center gap-4">
-      <Button
-        variant="outline"
-        size="icon"
-        className="rounded-xl shadow-none"
-        onClick={close}
-        type="button"
-      >
-        <XIcon weight="bold" />
-      </Button>
-      <h2 className="text-lg font-medium">Artifacts</h2>
+    <header className="px-4 py-2 border-b flex items-center justify-between">
+      <div className="flex items-center gap-4">
+        <Button
+          variant="outline"
+          size="icon"
+          className="rounded-xl shadow-none"
+          onClick={close}
+          type="button"
+        >
+          <XIcon weight="bold" />
+        </Button>
+        <h2 className="text-lg font-medium">Artifacts</h2>
+      </div>
+      <ArtifactVersionPicker />
     </header>
+  );
+}
+
+function ArtifactVersionPicker() {
+  const activeChart = useActiveChart();
+  const versionState = useVersionState(activeChart ?? "");
+  const { setSelectedIndex } = useArtifactsVersionActions();
+
+  const [selectedIndex, totalCount] = versionState || [0, 0];
+
+  const options = Array.from({ length: totalCount }, (_, i) => ({
+    value: String(i),
+    label: `Version ${i + 1}`,
+  }));
+
+  return (
+    <Select
+      value={totalCount > 1 ? String(selectedIndex) : ""}
+      onValueChange={
+        activeChart
+          ? (value) => {
+              setSelectedIndex(activeChart, Number(value));
+            }
+          : undefined
+      }
+      disabled={totalCount <= 1}
+    >
+      <SelectTrigger className="w-48">
+        <SelectValue placeholder="Version" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          {options.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   );
 }

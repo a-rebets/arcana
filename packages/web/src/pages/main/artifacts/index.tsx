@@ -96,13 +96,17 @@ function ArtifactVersionPicker() {
       }
       disabled={totalCount <= 1}
     >
-      <SelectTrigger className="w-48">
+      <SelectTrigger className="w-48 rounded-xl">
         <SelectValue placeholder="Version" />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="rounded-xl">
         <SelectGroup>
           {options.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
+            <SelectItem
+              key={option.value}
+              value={option.value}
+              className="rounded-lg"
+            >
               {option.label}
             </SelectItem>
           ))}

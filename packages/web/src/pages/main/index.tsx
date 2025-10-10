@@ -1,4 +1,5 @@
 import { api } from "@convex/api";
+import { PlusIcon } from "@phosphor-icons/react";
 import { useQuery } from "convex/react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
@@ -7,13 +8,18 @@ import {
   ConversationContent,
   ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
+import { Button } from "@/components/animate-ui/components/buttons/button";
+import {
+  MainNavigationSection,
+  NavigationHeader,
+} from "@/components/navigation";
 import { useLiveChat } from "@/hooks/use-live-chat";
 import { useSyncChat } from "@/hooks/use-sync-chat";
 import type { Route } from "./+types/";
 import { ArtifactsDesktopLayout } from "./artifacts";
 import { ChatInput } from "./chat/input";
 import { ChatMessages } from "./chat/messages";
-import NavigationHeader from "./navigation";
+import { ThreadsBox } from "./threads-list";
 
 function Page({ params }: Route.ComponentProps) {
   const navigate = useNavigate();
@@ -39,8 +45,10 @@ function Page({ params }: Route.ComponentProps) {
   });
 
   return (
-    <main className="h-dvh grid grid-rows-[auto_1fr] grid-cols-1">
-      <NavigationHeader className="sticky top-0 left-0 right-0 z-30" />
+    <>
+      <NavigationHeader className="z-30">
+        <Threads />
+      </NavigationHeader>
       <div className="size-full flex min-h-0">
         <div className="pb-6 relative flex flex-col h-full flex-1">
           <Conversation className="flex-1 min-h-0">
@@ -55,7 +63,27 @@ function Page({ params }: Route.ComponentProps) {
         </div>
         <ArtifactsDesktopLayout className="flex-1" />
       </div>
-    </main>
+    </>
+  );
+}
+
+function Threads() {
+  const navigate = useNavigate();
+
+  return (
+    <MainNavigationSection className="md:pt-3.5 overflow-visible">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 grid-rows-1">
+        <ThreadsBox />
+        <Button
+          className="h-[2.4rem] w-20 rounded-xl border dark:border-0 shrink-0"
+          variant="accent"
+          hoverScale={1}
+          onClick={() => navigate("/")}
+        >
+          <PlusIcon weight="bold" />
+        </Button>
+      </div>
+    </MainNavigationSection>
   );
 }
 

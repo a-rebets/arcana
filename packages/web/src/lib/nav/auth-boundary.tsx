@@ -17,28 +17,28 @@ export default function AuthBoundary({
   redirectTo,
   fallback = null,
 }: AuthBoundaryProps) {
-  const auth = useConvexAuth();
+  const { isAuthenticated, isLoading } = useConvexAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (auth.isLoading) return;
+    if (isLoading) return;
 
-    if (require === "authenticated" && !auth.isAuthenticated) {
+    if (require === "authenticated" && !isAuthenticated) {
       navigate(redirectTo || "/welcome", {
         replace: true,
       });
     }
 
-    if (require === "unauthenticated" && auth.isAuthenticated) {
+    if (require === "unauthenticated" && isAuthenticated) {
       navigate(redirectTo || "/", { replace: true });
     }
-  }, [auth.isLoading, auth.isAuthenticated, require, redirectTo, navigate]);
+  }, [isLoading, isAuthenticated, require, redirectTo, navigate]);
 
-  if (auth.isLoading) return fallback;
+  if (isLoading) return fallback;
 
   if (
-    (require === "authenticated" && !auth.isAuthenticated) ||
-    (require === "unauthenticated" && auth.isAuthenticated)
+    (require === "authenticated" && !isAuthenticated) ||
+    (require === "unauthenticated" && isAuthenticated)
   ) {
     return null;
   }

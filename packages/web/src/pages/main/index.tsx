@@ -10,7 +10,7 @@ import {
 import { useLiveChat } from "@/hooks/use-live-chat";
 import { useSyncChat } from "@/hooks/use-sync-chat";
 import type { Route } from "./+types/";
-import { Artifacts } from "./artifacts";
+import { ArtifactsDesktopLayout } from "./artifacts";
 import { ChatInput } from "./chat/input";
 import { ChatMessages } from "./chat/messages";
 import NavigationHeader from "./navigation";
@@ -53,7 +53,7 @@ function Page({ params }: Route.ComponentProps) {
             <ChatInput className="rounded-2xl" />
           </div>
         </div>
-        <Artifacts className="flex-1" />
+        <ArtifactsDesktopLayout className="flex-1" />
       </div>
     </main>
   );

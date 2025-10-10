@@ -9,6 +9,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { cn } from "@/lib/utils";
 import { Button } from "../animate-ui/components/buttons/button";
 
@@ -122,6 +123,7 @@ function CarouselNavigation({
   className,
   classNameButton,
 }: CarouselNavigationProps) {
+  const isMobile = useIsMobile();
   const { index, setIndex, itemsCount } = useCarousel();
 
   return (
@@ -134,10 +136,10 @@ function CarouselNavigation({
       <Button
         type="button"
         aria-label="Previous slide"
-        size="sm"
+        size={isMobile ? "lg" : "sm"}
         variant="outline"
         className={cn(
-          "rounded-full pointer-events-auto has-[>svg]:pr-4 select-none",
+          "rounded-full pointer-events-auto md:has-[>svg]:pr-4 select-none",
           classNameButton,
         )}
         disabled={index === 0}
@@ -148,15 +150,15 @@ function CarouselNavigation({
         }}
       >
         <CaretLeftIcon weight="bold" />
-        Previous
+        {!isMobile && "Previous"}
       </Button>
       <Button
         type="button"
         aria-label="Next slide"
-        size="sm"
+        size={isMobile ? "lg" : "sm"}
         variant="outline"
         className={cn(
-          "rounded-full pointer-events-auto has-[>svg]:pl-4 select-none",
+          "rounded-full pointer-events-auto md:has-[>svg]:pl-4 select-none",
           classNameButton,
         )}
         disabled={index + 1 === itemsCount || itemsCount === 0}
@@ -166,7 +168,7 @@ function CarouselNavigation({
           }
         }}
       >
-        Next
+        {!isMobile && "Next"}
         <CaretRightIcon weight="bold" />
       </Button>
     </div>

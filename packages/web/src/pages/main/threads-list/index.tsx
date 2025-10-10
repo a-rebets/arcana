@@ -7,7 +7,7 @@ import {
   MagnifyingGlassIcon,
   QuestionIcon,
 } from "@phosphor-icons/react";
-import { useClickOutside, useMediaQuery, useToggle } from "@react-hookz/web";
+import { useClickOutside, useToggle } from "@react-hookz/web";
 import { useQuery } from "@tanstack/react-query";
 import { type UsePaginatedQueryResult, usePaginatedQuery } from "convex/react";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -22,6 +22,7 @@ import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
 import { TextScramble } from "@/components/ui/text-scramble";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useScroll } from "@/hooks/use-scroll";
 import { useChatId } from "@/lib/convex-agent";
 import { cn } from "@/lib/utils";
@@ -39,7 +40,7 @@ ThreadTitle.displayName = "ThreadTitle";
 
 export function ThreadsBox({ className }: { className?: string }) {
   const threadId = useChatId();
-  const isMobile = useMediaQuery("only screen and (max-width : 768px)");
+  const isMobile = useIsMobile();
   const boxRef = useRef<HTMLDivElement>(null);
 
   const [open, toggleOpen] = useToggle(false);

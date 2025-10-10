@@ -122,10 +122,10 @@ function Placeholder({ loading }: { loading: boolean }) {
         />
       ) : (
         <>
-          <PlaceholderIcon className="size-64" />
-          <p className="font-display text-3xl font-medium mb-1">
+          <PlaceholderIcon className="md:size-64 size-36" />
+          <h2 className="font-display md:text-3xl text-2xl md:font-medium mb-1">
             No artifacts found
-          </p>
+          </h2>
           <p className="text-base font-light">
             Ask the agent to generate a chart, it will appear here
           </p>

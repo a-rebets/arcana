@@ -71,10 +71,12 @@ function buildChains(artifacts: Array<Doc<"artifacts">>): ArtifactChain[] {
     }
   }
 
+  // Sort by root artifact creation time (stable ordering)
+  // Charts stay in the order they were created, even when new versions are added
   chains.sort((a, b) => {
-    const aLatest = a.versions[a.versions.length - 1]._creationTime;
-    const bLatest = b.versions[b.versions.length - 1]._creationTime;
-    return bLatest - aLatest;
+    const aRoot = a.versions[0]._creationTime;
+    const bRoot = b.versions[0]._creationTime;
+    return bRoot - aRoot;
   });
 
   return chains;

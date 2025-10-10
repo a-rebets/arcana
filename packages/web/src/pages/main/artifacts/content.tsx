@@ -1,6 +1,7 @@
 import { api } from "@convex/api";
+import { convexQuery } from "@convex-dev/react-query";
 import { useDeepCompareEffect, useUpdateEffect } from "@react-hookz/web";
-import { useQuery } from "convex/react";
+import { useQuery } from "@tanstack/react-query";
 import type { FunctionReturnType } from "convex/server";
 import { useMemo, useRef } from "react";
 import { useVegaEmbed } from "react-vega";
@@ -11,7 +12,9 @@ import {
   CarouselItem,
   useCarousel,
 } from "@/components/ui/carousel";
+import { Spinner } from "@/components/ui/spinner";
 import {
+  useActiveChart,
   useArtifactsVersionActions,
   useVersionState,
 } from "@/hooks/use-artifacts-store";
@@ -27,45 +30,66 @@ type ArtifactData = FunctionReturnType<
 
 export function ArtifactsContent() {
   const threadId = useChatId();
-  const artifacts = useQuery(
-    api.artifacts.public.listArtifactChainsForThread,
-    threadId ? { threadId } : "skip",
-  );
+
+  const { index: carouselIndex, setIndex: setCarouselIndex } = useCarousel();
   const { syncVersionStates, setActiveChart, reset } =
     useArtifactsVersionActions();
-  const { index: carouselIndex, setItemsCount } = useCarousel();
+  const activeChart = useActiveChart();
+
+  const { data: artifacts, isFetching } = useQuery(
+    convexQuery(
+      api.artifacts.public.listArtifactChainsForThread,
+      threadId ? { threadId } : "skip",
+    ),
+  );
+
+  const noArtifacts = !artifacts || artifacts.length === 0;
+
+  useUpdateEffect(() => {
+    reset();
+    setCarouselIndex(0);
+  }, [threadId]);
 
   useDeepCompareEffect(() => {
-    if (!artifacts) return;
+    if (noArtifacts) return;
+
     const versionMap = Object.fromEntries(
       artifacts.map((a) => [a.rootId, a.versions.length]),
     );
     syncVersionStates(versionMap);
+
+    // Try to maintain position on the same chart
+    if (activeChart) {
+      const newIndex = artifacts.findIndex((a) => a.rootId === activeChart);
+      if (newIndex !== -1 && newIndex !== carouselIndex) {
+        setCarouselIndex(newIndex);
+        return;
+      }
+      if (newIndex !== -1) return;
+    }
+
+    // Fallback: No active chart OR active chart was deleted
+    setCarouselIndex(0);
+    setActiveChart(artifacts[0].rootId);
   }, [artifacts]);
 
-  useDeepCompareEffect(() => {
-    const activeArtifact = artifacts?.[carouselIndex];
-    if (activeArtifact) {
-      setActiveChart(activeArtifact.rootId);
-    }
-  }, [artifacts, carouselIndex]);
-
+  // Update active chart when user navigates (clicks prev/next, swipes)
   useUpdateEffect(() => {
-    setItemsCount(0);
-    reset();
-  }, [threadId, setItemsCount]);
-
-  if (!artifacts) {
-    return <Placeholder />;
-  }
+    if (noArtifacts) return;
+    setActiveChart(artifacts[carouselIndex].rootId);
+  }, [carouselIndex]);
 
   return (
     <CarouselContent>
-      {artifacts.map((chain) => (
-        <CarouselItem className="p-4 aspect-video" key={chain.rootId}>
-          <Artifact data={chain} />
-        </CarouselItem>
-      ))}
+      {noArtifacts ? (
+        <Placeholder loading={isFetching} />
+      ) : (
+        artifacts.map((chain) => (
+          <CarouselItem className="p-4 aspect-video" key={chain.rootId}>
+            <Artifact data={chain} />
+          </CarouselItem>
+        ))
+      )}
     </CarouselContent>
   );
 }
@@ -87,16 +111,26 @@ function Artifact({ data }: { data: ArtifactData }) {
   );
 }
 
-function Placeholder() {
+function Placeholder({ loading }: { loading: boolean }) {
   return (
-    <div className="flex w-full items-center flex-col gap-2 text-muted-foreground/50 dark:text-muted-foreground pb-24 select-none">
-      <PlaceholderIcon className="size-64" />
-      <p className="font-display text-3xl font-medium mb-1">
-        No artifacts found
-      </p>
-      <p className="text-base font-light">
-        Ask the agent to generate a chart, it will appear here
-      </p>
+    <div className="flex w-full items-center flex-col gap-2 text-muted-foreground/60 dark:text-muted-foreground/80 pb-24 select-none">
+      {loading ? (
+        <Spinner
+          variant="infinite"
+          className="size-20 text-muted-foreground/50 dark:text-muted-foreground/30"
+          strokeWidth={6}
+        />
+      ) : (
+        <>
+          <PlaceholderIcon className="size-64" />
+          <p className="font-display text-3xl font-medium mb-1">
+            No artifacts found
+          </p>
+          <p className="text-base font-light">
+            Ask the agent to generate a chart, it will appear here
+          </p>
+        </>
+      )}
     </div>
   );
 }

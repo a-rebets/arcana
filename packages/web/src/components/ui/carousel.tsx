@@ -192,21 +192,22 @@ function CarouselIndicator({
       )}
     >
       <div className="flex space-x-2">
-        {Array.from({ length: itemsCount }, (_, i) => (
-          <button
-            key={i.toString()}
-            type="button"
-            aria-label={`Go to slide ${i + 1}`}
-            onClick={() => setIndex(i)}
-            className={cn(
-              "h-2 w-2 rounded-full transition-opacity duration-300",
-              index === i
-                ? "bg-zinc-950 dark:bg-zinc-50"
-                : "bg-zinc-900/50 dark:bg-zinc-100/50",
-              classNameButton,
-            )}
-          />
-        ))}
+        {itemsCount > 1 &&
+          Array.from({ length: itemsCount }, (_, i) => (
+            <button
+              key={i.toString()}
+              type="button"
+              aria-label={`Go to slide ${i + 1}`}
+              onClick={() => setIndex(i)}
+              className={cn(
+                "h-2 w-2 rounded-full transition-opacity duration-300",
+                index === i
+                  ? "bg-zinc-950 dark:bg-zinc-50"
+                  : "bg-zinc-900/50 dark:bg-zinc-100/50",
+                classNameButton,
+              )}
+            />
+          ))}
       </div>
     </div>
   );
@@ -224,10 +225,17 @@ function CarouselContent({
   transition,
 }: CarouselContentProps) {
   const { index, setIndex, setItemsCount, disableDrag } = useCarousel();
-  const [visibleItemsCount, setVisibleItemsCount] = useState(1);
   const dragX = useMotionValue(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const itemsLength = Children.count(children);
+
+  // Initialize visibleItemsCount to itemsLength to avoid division by zero
+  // IntersectionObserver will update it to the actual visible count
+  const [visibleItemsCount, setVisibleItemsCount] = useState(itemsLength || 1);
+
+  useEffect(() => {
+    setVisibleItemsCount(itemsLength || 1);
+  }, [itemsLength]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: ui
   useEffect(() => {
@@ -244,7 +252,9 @@ function CarouselContent({
       const visibleCount = entries.filter(
         (entry) => entry.isIntersecting,
       ).length;
-      setVisibleItemsCount(visibleCount);
+      if (visibleCount > 0) {
+        setVisibleItemsCount(visibleCount);
+      }
     }, options);
 
     const childNodes = containerRef.current.children;
@@ -256,8 +266,7 @@ function CarouselContent({
   }, [itemsLength]);
 
   useEffect(() => {
-    if (!itemsLength) return;
-    setItemsCount(itemsLength);
+    setItemsCount(itemsLength || 0);
   }, [itemsLength, setItemsCount]);
 
   const onDragEnd = () => {

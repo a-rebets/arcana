@@ -3,8 +3,8 @@ import type { ArcanaToolUIPart } from "@/lib/convex-agent/types";
 
 const artifactsToolLabels = {
   datasets_listDatasetsTool: {
-    "input-streaming": "Listing available datasets...",
-    "output-available": "Datasets loaded",
+    "input-streaming": "Checking existing datasets...",
+    "output-available": "Checked your datasets",
   },
   datasets_createDatasetTool: {
     "input-streaming": "Creating a dataset...",

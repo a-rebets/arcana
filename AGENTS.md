@@ -5,6 +5,62 @@ Arcana is an AI-powered application that integrates with productivity platforms,
 This document explains how to navigate the project and provides development guidelines for agents working on the Arcana app.
 
 
+## Development Scripts
+
+The workspace provides several scripts for development and maintenance:
+
+### Available Scripts
+
+- **`bun run lint`** - Run Biome linter and package-specific linters
+  - Checks code quality and type safety across the workspace
+  - Also regenerates React Router types when routes change
+
+- **`bun run format`** - Format code with Biome
+  - Auto-formats all TypeScript/JavaScript files according to project style
+
+- **`bun run clean`** - Reset workspace state
+  - Removes all `dist/` and `node_modules/` directories
+  - Useful when dependency issues occur or before fresh install
+
+All commands should be run from the root of the workspace unless you need commands specific to a package.
+
+### Shared Dependencies (Catalog)
+
+When a dependency is needed by multiple packages, instead of manually running `bun add` in each package directory, use the **catalog** pattern:
+
+1. Check the latest version: `bun info <package>`
+2. Add it to the root `package.json` catalog (see below)
+3. Reference it in each package that needs it
+4. Run `bun i` from the workspace root
+
+Managed common dependencies via the **catalog** pattern:
+
+1. **Add to root `package.json` catalog:**
+```json
+{
+  "catalog": {
+    "@biomejs/biome": "2.2.6",
+    "typescript": "5.9.2",
+    "zod": "4.1.12"
+  }
+}
+```
+
+2. **Reference in package `dependencies` or `devDependencies`:**
+```json
+{
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  }
+}
+```
+
+This ensures version consistency across all packages that use the same dependency.
+
+
 ## Package Architecture & Dependencies
 
 The Arcana project uses a modular architecture with three interconnected packages that work together to provide AI-powered Asana integration:

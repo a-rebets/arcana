@@ -68,11 +68,13 @@ bun install
 
 2. **Set up Convex Auth:**
 ```bash
+cd packages/web
+
 # For development
-npx @convex-dev/auth
+bunx @convex-dev/auth
 
 # For production deployment
-npx @convex-dev/auth --prod
+bunx @convex-dev/auth --prod
 ```
 
 3. **Configure environment variables** (see Environment Variables section above)
@@ -87,18 +89,12 @@ npx @convex-dev/auth --prod
 bun dev
 ```
 
-1. **Build for production:**
-```bash
-bun build
-```
-
 ## 🔗 Integrations
 
 - ✅ **Asana** - Full OAuth integration for projects and tasks
 - 🚧 **Google Calendar** - Coming soon
 - 🚧 **Notion** - Coming soon
 - 🚧 **More tools** - Planned
-- 
 
 ## Licensing
 

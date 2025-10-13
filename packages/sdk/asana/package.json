@@ -3,12 +3,12 @@
     "version": "0.1.0",
     "private": true,
     "type": "module",
-    "main": "./dist/index.js",
+    "main": "./index.ts",
     "types": "./dist/index.d.ts",
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
-            "default": "./dist/index.js"
+            "default": "./index.ts"
         }
     },
     "scripts": {

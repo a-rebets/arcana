@@ -3,18 +3,16 @@
     "version": "0.1.0",
     "private": true,
     "type": "module",
-    "main": "./index.ts",
-    "types": "./index.ts",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
     "exports": {
         ".": {
-            "types": "./index.ts",
-            "default": "./index.ts"
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
         }
     },
     "scripts": {
-        "generate": "openapi-typescript https://raw.githubusercontent.com/Asana/openapi/master/defs/asana_oas.yaml -o ./src/lib/api.d.ts",
-        "lint": "tsc --noEmit && biome check src/ index.ts",
-        "format": "biome format --write src/ index.ts"
+        "generate": "openapi-typescript https://raw.githubusercontent.com/Asana/openapi/master/defs/asana_oas.yaml -o ./src/lib/api.d.ts"
     },
     "dependencies": {
         "openapi-fetch": "^0.14.0"

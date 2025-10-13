@@ -72,6 +72,7 @@
         "ai": "^5.0.47",
         "ajv": "8.17.1",
         "ajv-formats": "^3.0.1",
+        "asana-tools": "workspace:*",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "convex": "1.27.3",

@@ -9,8 +9,12 @@
         "dev": "bun --filter '*' dev",
         "build": "bun --filter '*' build",
         "lint": "bun --filter '*' lint",
+        "types": "bun --filter '*' types",
         "preview": "bun --filter '*' preview",
-        "format": "bun --filter '*' format"
+        "format": "biome format --write",
+        "clean": "bun run clean:packages && bun run clean:npm",
+        "clean:packages": "find . -name 'dist' -type d -prune -exec rm -rf '{}' +",
+        "clean:npm": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +"
     },
     "workspaces": [
         "packages/web",

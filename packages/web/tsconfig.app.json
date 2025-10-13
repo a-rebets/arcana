@@ -28,5 +28,5 @@
         },
         "rootDirs": [".", "./.react-router/types"]
     },
-    "include": ["./src", ".react-router/types/**/*"]
+    "include": ["src", ".react-router/types/**/*"],
 }

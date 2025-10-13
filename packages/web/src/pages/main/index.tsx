@@ -2,7 +2,7 @@ import { api } from "@convex/api";
 import { PlusIcon } from "@phosphor-icons/react";
 import { useQuery } from "convex/react";
 import { useEffect } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import {
   Conversation,
   ConversationContent,
@@ -68,8 +68,6 @@ function Page({ params }: Route.ComponentProps) {
 }
 
 function Threads() {
-  const navigate = useNavigate();
-
   return (
     <MainNavigationSection className="md:pt-3.5 overflow-visible">
       <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 grid-rows-1">
@@ -78,9 +76,11 @@ function Threads() {
           className="h-[2.4rem] w-20 rounded-xl border dark:border-0 shrink-0"
           variant="accent"
           hoverScale={1}
-          onClick={() => navigate("/")}
+          asChild
         >
-          <PlusIcon weight="bold" />
+          <Link to="/">
+            <PlusIcon weight="bold" />
+          </Link>
         </Button>
       </div>
     </MainNavigationSection>

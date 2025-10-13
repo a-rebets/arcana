@@ -14,7 +14,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import UserMenu from "../pages/main/user-menu";
+import UserMenu from "./user-menu";
 
 const navigationLinks = [
   {

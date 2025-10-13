@@ -21,5 +21,12 @@
         "packages/tools/*",
         "packages/sdk/*",
         "packages/doc-gen"
-    ]
+    ],
+    "catalog": {
+        "@biomejs/biome": "2.2.6",
+        "@convex-dev/agent": "0.2.10",
+        "ai": "5.0.68",
+        "typescript": "5.9.2",
+        "zod": "4.1.12"
+    }
 }

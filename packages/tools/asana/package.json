@@ -9,8 +9,12 @@
         "types": "tsc -b ."
     },
     "dependencies": {
-        "@convex-dev/agent": "0.2.10",
-        "zod": "^4.1.8",
-        "asana-sdk": "workspace:*"
+        "@convex-dev/agent": "catalog:",
+        "ai": "catalog:",
+        "asana-sdk": "workspace:*",
+        "zod": "catalog:"
+    },
+    "devDependencies": {
+        "typescript": "catalog:"
     }
 }

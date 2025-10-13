@@ -20,8 +20,5 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Build type declarations
-        run: bun run types || true
-
       - name: Lint
         run: bun run lint

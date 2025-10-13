@@ -8,7 +8,7 @@
     "scripts": {
         "dev": "bun --filter '*' dev",
         "build": "bun --filter '*' build",
-        "lint": "bun --filter '*' lint",
+        "lint": "bun run types; biome check && bun --filter '*' lint",
         "types": "bun --filter '*' types",
         "preview": "bun --filter '*' preview",
         "format": "biome format --write",

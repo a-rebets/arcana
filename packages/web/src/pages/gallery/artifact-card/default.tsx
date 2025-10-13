@@ -47,7 +47,7 @@ export function ArtifactCard({ className }: { className?: string }) {
 }
 
 function ArtifactInfoRow() {
-  const { title, _creationTime, isRoot, rootId } = useArtifactCard();
+  const { title, creationTime, isRoot, rootId } = useArtifactCard();
 
   const handleDownload = useNoPropagationCallback<HTMLButtonElement>((e) => {
     console.log("download", e);
@@ -69,7 +69,7 @@ function ArtifactInfoRow() {
           />
         </div>
         <MorphingDialogSubtitle className="text-xs text-muted-foreground w-fit">
-          {isRoot ? "Created" : "Updated"} {formatRelativeTime(_creationTime)}
+          {isRoot ? "Created" : "Updated"} {formatRelativeTime(creationTime)}
         </MorphingDialogSubtitle>
       </div>
       <div className="flex items-center gap-1">

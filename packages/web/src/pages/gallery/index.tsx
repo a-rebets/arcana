@@ -89,8 +89,8 @@ function Artifacts({
   const sortedData = useDeepCompareMemo(() => {
     return data?.sort((a, b) => {
       if (sorting === "newest")
-        return b.versions[0]._creationTime - a.versions[0]._creationTime;
-      return a.versions[0]._creationTime - b.versions[0]._creationTime;
+        return b.versions[0].creationTime - a.versions[0].creationTime;
+      return a.versions[0].creationTime - b.versions[0].creationTime;
     });
   }, [data, sorting]);
 
@@ -100,7 +100,7 @@ function Artifacts({
       value={{
         ...artifact.versions[0],
         rootId: artifact.rootId,
-        isRoot: artifact.versions[0]._id === artifact.rootId,
+        isRoot: artifact.versions[0].id === artifact.rootId,
       }}
     >
       <MorphingDialog

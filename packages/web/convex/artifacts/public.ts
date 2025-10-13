@@ -4,11 +4,22 @@ import type { Doc, Id } from "../_generated/dataModel";
 import { type QueryCtx, query } from "../_generated/server";
 import { requireUserId } from "../helpers";
 
+type RawArtifactVersion = Pick<
+  Doc<"artifacts">,
+  "_id" | "_creationTime" | "title" | "vegaSpec"
+>;
+
+type MappedArtifactVersion = Omit<
+  RawArtifactVersion,
+  "_id" | "_creationTime"
+> & {
+  creationTime: RawArtifactVersion["_creationTime"];
+  id: RawArtifactVersion["_id"];
+};
+
 type ArtifactChain = {
   rootId: Id<"artifacts">;
-  versions: Array<
-    Pick<Doc<"artifacts">, "_id" | "_creationTime" | "title" | "vegaSpec">
-  >;
+  versions: Array<MappedArtifactVersion>;
 };
 
 type ArtifactChainWithLatestVersion = ArtifactChain & {
@@ -47,7 +58,7 @@ export const listLatestArtifactsForUser = query({
       return {
         rootId: chain.rootId,
         versions: [latestVersion],
-        updatedAt: latestVersion._creationTime,
+        updatedAt: latestVersion.creationTime,
       };
     });
   },
@@ -68,8 +79,8 @@ export const getArtifactChainById = query({
     return {
       rootId: rootArtifact._id,
       versions: chainArtifacts.map((a) => ({
-        _id: a._id,
-        _creationTime: a._creationTime,
+        id: a._id,
+        creationTime: a._creationTime,
         title: a.title,
         vegaSpec: a.vegaSpec,
       })),
@@ -83,8 +94,8 @@ function buildChains(artifacts: Array<Doc<"artifacts">>): ArtifactChain[] {
 
   for (const rawArtifact of artifacts) {
     const artifact = {
-      _id: rawArtifact._id,
-      _creationTime: rawArtifact._creationTime,
+      id: rawArtifact._id,
+      creationTime: rawArtifact._creationTime,
       title: rawArtifact.title,
       vegaSpec: rawArtifact.vegaSpec,
     };
@@ -92,15 +103,15 @@ function buildChains(artifacts: Array<Doc<"artifacts">>): ArtifactChain[] {
     if (rawArtifact.parentArtifactId === undefined) {
       const chainIndex = chains.length;
       chains.push({
-        rootId: artifact._id,
+        rootId: artifact.id,
         versions: [artifact],
       });
-      artifactToChainIndex.set(artifact._id, chainIndex);
+      artifactToChainIndex.set(artifact.id, chainIndex);
     } else {
       const chainIndex = artifactToChainIndex.get(rawArtifact.parentArtifactId);
       if (chainIndex !== undefined) {
         chains[chainIndex].versions.push(artifact);
-        artifactToChainIndex.set(artifact._id, chainIndex);
+        artifactToChainIndex.set(artifact.id, chainIndex);
       }
     }
   }
@@ -108,8 +119,8 @@ function buildChains(artifacts: Array<Doc<"artifacts">>): ArtifactChain[] {
   // Sort by root artifact creation time (stable ordering)
   // Charts stay in the order they were created, even when new versions are added
   chains.sort((a, b) => {
-    const aRoot = a.versions[0]._creationTime;
-    const bRoot = b.versions[0]._creationTime;
+    const aRoot = a.versions[0].creationTime;
+    const bRoot = b.versions[0].creationTime;
     return bRoot - aRoot;
   });
 

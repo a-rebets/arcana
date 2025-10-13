@@ -25,7 +25,7 @@ import { useVegaWithRef } from "@/hooks/use-vega-with-ref";
 import { cn, formatRelativeTime } from "@/lib/utils";
 
 export function ExpandedArtifact() {
-  const { title, rootId, _creationTime, isRoot } = useArtifactCard();
+  const { title, rootId, creationTime, isRoot } = useArtifactCard();
   const { setActiveChart, setSelectedIndex } = useArtifactsVersionActions();
 
   useMountEffect(() => {
@@ -48,7 +48,7 @@ export function ExpandedArtifact() {
           {title}
         </MorphingDialogTitle>
         <MorphingDialogSubtitle className="text-muted-foreground text-sm w-fit">
-          {isRoot ? "Created" : "Updated"} {formatRelativeTime(_creationTime)}
+          {isRoot ? "Created" : "Updated"} {formatRelativeTime(creationTime)}
         </MorphingDialogSubtitle>
       </section>
       <ExpandedArtifactChart />

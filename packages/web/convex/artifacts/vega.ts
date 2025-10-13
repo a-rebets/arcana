@@ -30,6 +30,7 @@ function isVegaLiteSpec(
 
 export const processAndStoreChart = internalAction({
   args: {
+    title: v.string(),
     spec: v.optional(v.string()),
     dataset: v.array(v.any()),
     datasetId: v.id("datasets"),
@@ -73,6 +74,7 @@ export const processAndStoreChart = internalAction({
       {
         threadId: args.threadId,
         userId: args.userId,
+        title: args.title,
         vlSpec: args.spec ?? "",
         vegaSpec: JSON.stringify(vegaSpec),
         datasetId: args.datasetId,

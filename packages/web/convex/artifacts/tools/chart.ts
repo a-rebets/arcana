@@ -6,6 +6,11 @@ import type { Doc, Id } from "../../_generated/dataModel";
 import { chartsAgent } from "../../ai/agent";
 
 const vegaLiteOutputSchema = z.object({
+  title: z
+    .string()
+    .describe(
+      "A concise, descriptive title for the chart (e.g., 'Projects by Status', 'Task Completion Over Time')",
+    ),
   spec: z.string().describe("The complete Vega-Lite v5 specification JSON"),
 });
 
@@ -175,6 +180,7 @@ const createOrUpdateChartTool = createTool({
     const artifactId = await ctx.runAction(
       internal.artifacts.vega.processAndStoreChart,
       {
+        title: result.object.title,
         spec: result.object.spec,
         dataset: dataset.rows,
         datasetId: dataset._id,

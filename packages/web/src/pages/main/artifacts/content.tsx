@@ -2,7 +2,6 @@ import { api } from "@convex/api";
 import { convexQuery } from "@convex-dev/react-query";
 import { useDeepCompareEffect, useUpdateEffect } from "@react-hookz/web";
 import { useQuery } from "@tanstack/react-query";
-import type { FunctionReturnType } from "convex/server";
 import { useMemo, useRef } from "react";
 import { useVegaEmbed } from "react-vega";
 import type { EmbedOptions } from "vega-embed";
@@ -19,14 +18,11 @@ import {
   useVersionState,
 } from "@/hooks/use-artifacts-store";
 import { useChatId } from "@/lib/convex-agent";
+import type { ArtifactData } from "@/lib/types/artifacts";
 
 const options: EmbedOptions = {
   actions: false,
 };
-
-type ArtifactData = FunctionReturnType<
-  typeof api.artifacts.public.listArtifactChainsForThread
->[number];
 
 export function ArtifactsContent() {
   const threadId = useChatId();

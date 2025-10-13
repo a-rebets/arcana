@@ -41,10 +41,15 @@ export const useArtifactsStore = create<ArtifactsStore>((set) => ({
     set((prevState) => {
       const current = prevState.versionState[rootId];
       if (!current) return prevState;
+
+      // Handle negative indices (e.g., -1 for last item)
+      const totalCount = current[1];
+      const normalizedIndex = index < 0 ? totalCount + index : index;
+
       return {
         versionState: {
           ...prevState.versionState,
-          [rootId]: [index, current[1]],
+          [rootId]: [normalizedIndex, totalCount],
         },
       };
     }),

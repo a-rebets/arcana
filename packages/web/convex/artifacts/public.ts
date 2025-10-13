@@ -1,32 +1,18 @@
 import { vThreadDoc } from "@convex-dev/agent";
+import { v } from "convex/values";
 import type { Doc, Id } from "../_generated/dataModel";
-import { query } from "../_generated/server";
-
-export const listArtifactsByThread = query({
-  args: {
-    threadId: vThreadDoc.fields._id,
-  },
-  handler: async (ctx, args) => {
-    const artifacts = await ctx.db
-      .query("artifacts")
-      .withIndex("by_thread", (q) => q.eq("threadId", args.threadId))
-      .order("desc")
-      .collect();
-
-    return artifacts.map((artifact) => ({
-      id: artifact._id,
-      vlSpec: artifact.vlSpec,
-      vegaSpec: artifact.vegaSpec,
-      datasetId: artifact.datasetId,
-      createdAt: artifact._creationTime,
-      modelUsed: artifact.modelUsed,
-    }));
-  },
-});
+import { type QueryCtx, query } from "../_generated/server";
+import { requireUserId } from "../helpers";
 
 type ArtifactChain = {
   rootId: Id<"artifacts">;
-  versions: Array<Pick<Doc<"artifacts">, "_id" | "_creationTime" | "vegaSpec">>;
+  versions: Array<
+    Pick<Doc<"artifacts">, "_id" | "_creationTime" | "title" | "vegaSpec">
+  >;
+};
+
+type ArtifactChainWithLatestVersion = ArtifactChain & {
+  updatedAt: number;
 };
 
 export const listArtifactChainsForThread = query({
@@ -44,6 +30,53 @@ export const listArtifactChainsForThread = query({
   },
 });
 
+export const listLatestArtifactsForUser = query({
+  handler: async (ctx): Promise<ArtifactChainWithLatestVersion[]> => {
+    const userId = await requireUserId(ctx);
+    const artifacts = await ctx.db
+      .query("artifacts")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .order("asc")
+      .collect();
+
+    const chains = buildChains(artifacts);
+
+    return chains.map((chain) => {
+      const latestVersion = chain.versions[chain.versions.length - 1];
+
+      return {
+        rootId: chain.rootId,
+        versions: [latestVersion],
+        updatedAt: latestVersion._creationTime,
+      };
+    });
+  },
+});
+
+export const getArtifactChainById = query({
+  args: {
+    artifactId: v.id("artifacts"),
+  },
+  handler: async (ctx, args): Promise<ArtifactChain | null> => {
+    const rootArtifact = await ctx.db.get(args.artifactId);
+    if (!rootArtifact || rootArtifact.parentArtifactId !== undefined) {
+      return null;
+    }
+
+    const chainArtifacts = await fetchChainVersions(ctx, rootArtifact);
+
+    return {
+      rootId: rootArtifact._id,
+      versions: chainArtifacts.map((a) => ({
+        _id: a._id,
+        _creationTime: a._creationTime,
+        title: a.title,
+        vegaSpec: a.vegaSpec,
+      })),
+    };
+  },
+});
+
 function buildChains(artifacts: Array<Doc<"artifacts">>): ArtifactChain[] {
   const chains: ArtifactChain[] = [];
   const artifactToChainIndex = new Map<Id<"artifacts">, number>();
@@ -52,6 +85,7 @@ function buildChains(artifacts: Array<Doc<"artifacts">>): ArtifactChain[] {
     const artifact = {
       _id: rawArtifact._id,
       _creationTime: rawArtifact._creationTime,
+      title: rawArtifact.title,
       vegaSpec: rawArtifact.vegaSpec,
     };
 
@@ -80,4 +114,26 @@ function buildChains(artifacts: Array<Doc<"artifacts">>): ArtifactChain[] {
   });
 
   return chains;
+}
+
+async function fetchChainVersions(
+  ctx: QueryCtx,
+  rootArtifact: Doc<"artifacts">,
+): Promise<Array<Doc<"artifacts">>> {
+  const versions = [rootArtifact];
+  let currentId = rootArtifact._id;
+
+  while (currentId) {
+    const child = await ctx.db
+      .query("artifacts")
+      .withIndex("by_parent", (q) => q.eq("parentArtifactId", currentId))
+      .first();
+
+    if (!child) break;
+
+    versions.push(child);
+    currentId = child._id;
+  }
+
+  return versions;
 }

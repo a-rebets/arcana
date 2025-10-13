@@ -18,6 +18,7 @@ export const artifacts = defineTable({
   threadId: vThreadDoc.fields._id, // Link to the conversation thread.
   userId: v.id("users"), // User who owns this artifact.
   type: v.literal("vega-lite"), // Explicitly 'vega-lite' for extensibility.
+  title: v.string(), // Human-readable title for the chart.
   vlSpec: v.string(), // The raw Vega-Lite v5 specification as JSON string.
   vegaSpec: v.string(), // The compiled Vega specification as JSON string.
   datasetId: v.id("datasets"), // ID of dataset referenced by this artifact.

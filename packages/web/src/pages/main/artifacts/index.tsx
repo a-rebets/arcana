@@ -12,6 +12,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/animate-ui/components/radix/sheet";
+import { ArtifactVersionPicker } from "@/components/artifacts/version-picker";
 import {
   Carousel,
   CarouselIndicator,
@@ -24,7 +25,6 @@ import {
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { cn } from "@/lib/utils";
 import { ArtifactsContent } from "./content";
-import { ArtifactVersionPicker } from "./version-picker";
 
 export function ArtifactsToggleButton({ className }: { className?: string }) {
   const isMobile = useIsMobile();

@@ -70,7 +70,7 @@ function Page() {
           </div>
         </header>
         <section className="overflow-y-auto rounded-t-3xl -mt-10 z-10 bg-background border-t-[0.5px] border-accent-foreground/20">
-          <div className="flex flex-wrap items-start gap-x-6 p-6 min-h-full">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(min(30rem,100%),35rem))] md:grid-cols-[repeat(auto-fill,clamp(25rem,32%,35rem))] auto-rows-min gap-6 p-6 min-h-full">
             <Artifacts data={data} sorting={sorting} />
           </div>
         </section>
@@ -110,7 +110,7 @@ function Artifacts({
           duration: 0.5,
         }}
       >
-        <ArtifactCard className="flex-[1_1_30rem] max-w-full lg:max-w-[50%] xl:max-w-[33.3%]" />
+        <ArtifactCard />
         <MorphingDialogContainer>
           <ExpandedArtifact />
         </MorphingDialogContainer>

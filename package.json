@@ -2,8 +2,8 @@
     "name": "arcana",
     "version": "1.0.0",
     "devDependencies": {
-        "@types/node": "24.5.2",
-        "typescript": "5.9.2"
+        "@biomejs/biome": "catalog:",
+        "typescript": "catalog:"
     },
     "scripts": {
         "dev": "bun --filter '*' dev",
@@ -25,6 +25,7 @@
     "catalog": {
         "@biomejs/biome": "2.2.6",
         "@convex-dev/agent": "0.2.10",
+        "@types/node": "24.7.2",
         "ai": "5.0.68",
         "typescript": "5.9.2",
         "zod": "4.1.12"

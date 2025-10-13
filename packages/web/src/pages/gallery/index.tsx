@@ -28,7 +28,7 @@ function Page() {
             {user?.name}'s visualizations
           </p>
           {data && (
-            <Badge className="rounded-full px-5 py-1.5 text-base ml-4 mt-0.5 font-light bg-transparent border border-primary/40 text-primary/60 dark:border-primary/60 dark:text-primary/80">
+            <Badge className="rounded-full px-5 py-1.5 text-base ml-4 mt-0.5 font-light bg-transparent border border-primary/40 text-primary/60 dark:border-primary/60 dark:text-primary/80 inset-shadow-sm">
               <SlidingNumber value={data.length} animateOnMount />
             </Badge>
           )}

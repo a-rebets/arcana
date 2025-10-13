@@ -7,6 +7,7 @@ import {
   useMountEffect,
 } from "@react-hookz/web";
 import { useQuery } from "@tanstack/react-query";
+import { motion } from "motion/react";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import { ArtifactVersionPicker } from "@/components/artifacts/version-picker";
 import {
@@ -88,20 +89,31 @@ function ExpandedArtifactChart() {
   });
 
   return (
-    <div className="w-full aspect-video rounded-xl overflow-clip" ref={ref} />
+    <div
+      className="w-full aspect-video border dark:border-none rounded-xl overflow-clip [&>form]:absolute [&>form]:bottom-2 [&>form]:right-2 relative [&>form]:rounded-xl [&>form:empty]:bg-transparent [&>form:not(:empty)]:bg-accent/50 [&>form]:py-2 [&>form]:px-3"
+      ref={ref}
+    />
   );
 }
 
 function ExpandedArtifactInfoRow({ className }: { className?: string }) {
+  const { rootId } = useArtifactCard();
+
   return (
     <div className={cn("flex w-full justify-between items-center", className)}>
       <ArtifactVersionPicker />
       <div className="flex gap-2">
         <Button variant="outline" className="rounded-xl">
-          <DownloadSimpleIcon /> Download PNG
+          <motion.div layoutId={`download-icon-${rootId}`}>
+            <DownloadSimpleIcon />
+          </motion.div>{" "}
+          Download PNG
         </Button>
         <Button className="rounded-xl bg-linear-to-b from-primary to-ring">
-          <ChatCircleTextIcon weight="bold" /> Open in chat
+          <motion.div layoutId={`chat-icon-${rootId}`}>
+            <ChatCircleTextIcon weight="bold" />
+          </motion.div>{" "}
+          Open in chat
         </Button>
       </div>
     </div>

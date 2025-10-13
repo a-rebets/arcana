@@ -54,7 +54,7 @@ export function ArtifactVersionPicker({
             <SelectItem
               key={option.value}
               value={option.value}
-              className="rounded-lg not-first:mt-2"
+              className="rounded-lg not-first:mt-2 md:not-first:mt-1.5"
             >
               {option.label}
             </SelectItem>

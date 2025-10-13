@@ -3,6 +3,7 @@ import {
   ChatCircleTextIcon,
   DownloadSimpleIcon,
 } from "@phosphor-icons/react";
+import { motion } from "motion/react";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import {
   MorphingDialogSubtitle,
@@ -36,7 +37,7 @@ export function ArtifactCard({ className }: { className?: string }) {
       )}
     >
       <div className="flex flex-col">
-        <div className="w-full aspect-video" ref={ref} />
+        <div className="w-full aspect-video [&>form]:hidden" ref={ref} />
         <Separator />
         <ArtifactInfoRow />
       </div>
@@ -45,7 +46,7 @@ export function ArtifactCard({ className }: { className?: string }) {
 }
 
 function ArtifactInfoRow() {
-  const { title, _creationTime, isRoot } = useArtifactCard();
+  const { title, _creationTime, isRoot, rootId } = useArtifactCard();
 
   const handleDownload = useNoPropagationCallback<HTMLButtonElement>((e) => {
     console.log("download", e);
@@ -55,10 +56,12 @@ function ArtifactInfoRow() {
   });
 
   return (
-    <section className="flex w-full justify-between pt-3 px-4 pb-3.5 group/info-row">
-      <div className="flex flex-col gap-0.5">
+    <section className="grid grid-cols-[1fr_auto] gap-6 w-full pt-3 px-4 pb-3.5 group/info-row">
+      <div className="flex flex-col gap-0.5 overflow-hidden">
         <div className="flex items-center gap-2">
-          <MorphingDialogTitle className="w-fit">{title}</MorphingDialogTitle>
+          <MorphingDialogTitle className="w-fit truncate">
+            {title}
+          </MorphingDialogTitle>
           <CaretDownIcon
             weight="bold"
             className="size-4 text-muted-foreground group-hover/info-row:text-primary/80 dark:group-hover/info-row:text-primary transition-colors"
@@ -68,13 +71,16 @@ function ArtifactInfoRow() {
           {isRoot ? "Created" : "Updated"} {formatRelativeTime(_creationTime)}
         </MorphingDialogSubtitle>
       </div>
-
       <div className="flex items-center gap-1">
         <Button variant="outline" size="icon" onClick={handleDownload}>
-          <DownloadSimpleIcon className="size-5" />
+          <motion.div layoutId={`download-icon-${rootId}`}>
+            <DownloadSimpleIcon className="size-5" />
+          </motion.div>
         </Button>
         <Button variant="outline" size="icon" onClick={handleOpenChat}>
-          <ChatCircleTextIcon className="size-5" />
+          <motion.div layoutId={`chat-icon-${rootId}`}>
+            <ChatCircleTextIcon className="size-5" />
+          </motion.div>
         </Button>
       </div>
     </section>

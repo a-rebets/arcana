@@ -6,7 +6,7 @@ import { requireUserId } from "../helpers";
 
 type RawArtifactVersion = Pick<
   Doc<"artifacts">,
-  "_id" | "_creationTime" | "title" | "vegaSpec"
+  "_id" | "_creationTime" | "title" | "vegaSpec" | "threadId"
 >;
 
 type MappedArtifactVersion = Omit<
@@ -83,6 +83,7 @@ export const getArtifactChainById = query({
         creationTime: a._creationTime,
         title: a.title,
         vegaSpec: a.vegaSpec,
+        threadId: a.threadId,
       })),
     };
   },
@@ -98,6 +99,7 @@ function buildChains(artifacts: Array<Doc<"artifacts">>): ArtifactChain[] {
       creationTime: rawArtifact._creationTime,
       title: rawArtifact.title,
       vegaSpec: rawArtifact.vegaSpec,
+      threadId: rawArtifact.threadId,
     };
 
     if (rawArtifact.parentArtifactId === undefined) {

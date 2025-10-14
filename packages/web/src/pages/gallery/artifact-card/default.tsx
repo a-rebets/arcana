@@ -12,10 +12,11 @@ import {
   useMorphingDialog,
 } from "@/components/ui/morphing-dialog";
 import { Separator } from "@/components/ui/separator";
+import { useArtifactActions } from "@/hooks/use-artifact-actions";
 import { useArtifactCard } from "@/hooks/use-artifact-card";
-import { useNoPropagationCallback } from "@/hooks/use-no-propagation-callback";
 import { useVegaWithRef } from "@/hooks/use-vega-with-ref";
 import { cn, formatRelativeTime } from "@/lib/utils";
+import { ButtonWithChatPreview } from "./chat-preview";
 
 export function ArtifactCard({ className }: { className?: string }) {
   const { isOpen } = useMorphingDialog();
@@ -47,14 +48,11 @@ export function ArtifactCard({ className }: { className?: string }) {
 }
 
 function ArtifactInfoRow() {
-  const { title, creationTime, isRoot, rootId } = useArtifactCard();
-
-  const handleDownload = useNoPropagationCallback<HTMLButtonElement>((e) => {
-    console.log("download", e);
-  });
-  const handleOpenChat = useNoPropagationCallback<HTMLButtonElement>((e) => {
-    console.log("chat", e);
-  });
+  const { title, creationTime, isRoot, rootId, threadId } = useArtifactCard();
+  const { handleDownload, handleOpenChat } = useArtifactActions(
+    threadId,
+    rootId,
+  );
 
   return (
     <section className="grid grid-cols-[1fr_auto] gap-6 w-full pt-3 px-4 pb-3.5 group/info-row">
@@ -73,16 +71,28 @@ function ArtifactInfoRow() {
         </MorphingDialogSubtitle>
       </div>
       <div className="flex items-center gap-1">
-        <Button variant="outline" size="icon" onClick={handleDownload}>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={handleDownload}
+          className="rounded-lg"
+        >
           <motion.div layoutId={`download-icon-${rootId}`}>
             <DownloadSimpleIcon className="size-5" />
           </motion.div>
         </Button>
-        <Button variant="outline" size="icon" onClick={handleOpenChat}>
-          <motion.div layoutId={`chat-icon-${rootId}`}>
-            <ChatCircleTextIcon className="size-5" />
-          </motion.div>
-        </Button>
+        <ButtonWithChatPreview side="bottom" align="end" threadId={threadId}>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleOpenChat}
+            className="rounded-lg"
+          >
+            <motion.div layoutId={`chat-icon-${rootId}`}>
+              <ChatCircleTextIcon className="size-5" />
+            </motion.div>
+          </Button>
+        </ButtonWithChatPreview>
       </div>
     </section>
   );

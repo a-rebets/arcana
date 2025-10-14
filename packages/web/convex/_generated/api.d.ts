@@ -11,7 +11,8 @@
 import type * as ai_agent from "../ai/agent.js";
 import type * as ai_chat from "../ai/chat.js";
 import type * as ai_messages from "../ai/messages.js";
-import type * as ai_threads from "../ai/threads.js";
+import type * as ai_threads_protected from "../ai/threads/protected.js";
+import type * as ai_threads_public from "../ai/threads/public.js";
 import type * as artifacts_hashing from "../artifacts/hashing.js";
 import type * as artifacts_index from "../artifacts/index.js";
 import type * as artifacts_protected from "../artifacts/protected.js";
@@ -54,7 +55,8 @@ declare const fullApi: ApiFromModules<{
   "ai/agent": typeof ai_agent;
   "ai/chat": typeof ai_chat;
   "ai/messages": typeof ai_messages;
-  "ai/threads": typeof ai_threads;
+  "ai/threads/protected": typeof ai_threads_protected;
+  "ai/threads/public": typeof ai_threads_public;
   "artifacts/hashing": typeof artifacts_hashing;
   "artifacts/index": typeof artifacts_index;
   "artifacts/protected": typeof artifacts_protected;

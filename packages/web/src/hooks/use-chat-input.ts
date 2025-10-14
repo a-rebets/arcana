@@ -11,7 +11,7 @@ export const useChatInput = (threadId?: string) => {
   const navigate = useNavigate();
 
   const { sendMessage } = useChatActions<ArcanaUIMessage>();
-  const sendFromNewThread = useAction(api.ai.threads.startNewThread);
+  const sendFromNewThread = useAction(api.ai.threads.public.startNewThread);
 
   const [input, setInput] = useState("");
   const [webSearch, toggleWebSearch] = useToggle(false);

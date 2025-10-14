@@ -32,7 +32,7 @@ function Page() {
     <>
       <NavigationHeader className="z-30" />
       <div className="size-full grid grid-cols-1 grid-rows-[auto_1fr] min-h-0">
-        <header className="bg-accent pb-16 px-6 pt-10 flex flex-col gap-y-6">
+        <header className="bg-accent pb-16 px-6 pt-8 flex flex-col gap-y-6">
           <div className="flex items-center">
             <p className="font-display text-3xl font-light">
               {user?.name}'s visualizations

@@ -51,7 +51,7 @@ export function ThreadsBox({ className }: { className?: string }) {
     loadMore,
     status,
   } = usePaginatedQuery(
-    api.ai.threads.listByUser,
+    api.ai.threads.public.listByUser,
     {},
     {
       initialNumItems: 15,
@@ -60,7 +60,7 @@ export function ThreadsBox({ className }: { className?: string }) {
 
   const { data: searchResults, isFetching: searching } = useQuery(
     convexQuery(
-      api.ai.threads.searchByTitle,
+      api.ai.threads.public.searchByTitle,
       searchTerm ? { searchTerm, limit: 20 } : "skip",
     ),
   );

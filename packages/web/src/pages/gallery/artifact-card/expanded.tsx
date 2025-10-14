@@ -16,6 +16,7 @@ import {
   MorphingDialogSubtitle,
   MorphingDialogTitle,
 } from "@/components/ui/morphing-dialog";
+import { useArtifactActions } from "@/hooks/use-artifact-actions";
 import { useArtifactCard } from "@/hooks/use-artifact-card";
 import {
   useArtifactsVersionActions,
@@ -23,6 +24,7 @@ import {
 } from "@/hooks/use-artifacts-store";
 import { useVegaWithRef } from "@/hooks/use-vega-with-ref";
 import { cn, formatRelativeTime } from "@/lib/utils";
+import { ButtonWithChatPreview } from "./chat-preview";
 
 export function ExpandedArtifact() {
   const { title, rootId, creationTime, isRoot } = useArtifactCard();
@@ -97,24 +99,43 @@ function ExpandedArtifactChart() {
 }
 
 function ExpandedArtifactInfoRow({ className }: { className?: string }) {
-  const { rootId } = useArtifactCard();
+  const { rootId, threadId } = useArtifactCard();
+  const { handleDownload, handleOpenChat } = useArtifactActions(
+    threadId,
+    rootId,
+  );
 
   return (
     <div className={cn("flex w-full justify-between items-center", className)}>
       <ArtifactVersionPicker />
       <div className="flex gap-2">
-        <Button variant="outline" className="rounded-xl">
+        <Button
+          variant="outline"
+          className="rounded-xl"
+          onClick={handleDownload}
+        >
           <motion.div layoutId={`download-icon-${rootId}`}>
             <DownloadSimpleIcon />
           </motion.div>{" "}
           Download PNG
         </Button>
-        <Button className="rounded-xl bg-linear-to-b from-primary to-ring">
-          <motion.div layoutId={`chat-icon-${rootId}`}>
-            <ChatCircleTextIcon weight="bold" />
-          </motion.div>{" "}
-          Open in chat
-        </Button>
+        <ButtonWithChatPreview
+          side="bottom"
+          align="end"
+          sideOffset={10}
+          threadId={threadId}
+          className="rounded-xl"
+        >
+          <Button
+            className="rounded-xl bg-linear-to-b from-primary to-ring"
+            onClick={handleOpenChat}
+          >
+            <motion.div layoutId={`chat-icon-${rootId}`}>
+              <ChatCircleTextIcon weight="bold" />
+            </motion.div>{" "}
+            Open in chat
+          </Button>
+        </ButtonWithChatPreview>
       </div>
     </div>
   );

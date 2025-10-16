@@ -50,7 +50,7 @@
       "dependencies": {
         "@ai-sdk/react": "^2.0.41",
         "@convex-dev/agent": "catalog:",
-        "@convex-dev/auth": "^0.0.88",
+        "@convex-dev/auth": "0.0.90",
         "@convex-dev/react-query": "^0.0.0-alpha.11",
         "@hookform/resolvers": "^5.2.1",
         "@openrouter/ai-sdk-provider": "1.2.0",
@@ -81,7 +81,7 @@
         "asana-tools": "workspace:*",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
-        "convex": "1.27.3",
+        "convex": "1.28.0",
         "date-fns": "4.1.0",
         "input-otp": "^1.4.2",
         "isbot": "^5",
@@ -233,7 +233,7 @@
 
     "@convex-dev/agent": ["@convex-dev/agent@0.2.10", "", { "optionalDependencies": { "@ungap/structured-clone": "^1.3.0" }, "peerDependencies": { "@ai-sdk/provider-utils": "^3.0.7", "ai": "^5.0.29", "convex": "^1.23.0", "convex-helpers": "^0.1.103", "react": "^18.3.1 || ^19.0.0" }, "optionalPeers": ["react"] }, "sha512-6xVB9pUGMk7tYmcrYVR4K5eRSyJifQzMRfrsgGTE0/w0CinARJ6Kz1A3D4zjZJcQn6FZT15GgCtv8X750fXhZg=="],
 
-    "@convex-dev/auth": ["@convex-dev/auth@0.0.88", "", { "dependencies": { "@oslojs/crypto": "^1.0.1", "@oslojs/encoding": "^1.1.0", "cookie": "^1.0.1", "is-network-error": "^1.1.0", "jose": "^5.2.2", "jwt-decode": "^4.0.0", "lucia": "^3.2.0", "oauth4webapi": "^3.1.2", "path-to-regexp": "^6.3.0", "server-only": "^0.0.1" }, "peerDependencies": { "@auth/core": "^0.37.0", "convex": "^1.17.0", "react": "^18.2.0 || ^19.0.0-0" }, "optionalPeers": ["react"], "bin": { "auth": "dist/bin.cjs" } }, "sha512-D1uMuBEQH+1h6T42yxtppivUYXEAqID5/j4aqzgXrVDnqpQJMoeSU9qM3qJaSV3psA1VClwTRj6JMrDPHLFXqQ=="],
+    "@convex-dev/auth": ["@convex-dev/auth@0.0.90", "", { "dependencies": { "@oslojs/crypto": "^1.0.1", "@oslojs/encoding": "^1.1.0", "cookie": "^1.0.1", "is-network-error": "^1.1.0", "jose": "^5.2.2", "jwt-decode": "^4.0.0", "lucia": "^3.2.0", "oauth4webapi": "^3.1.2", "path-to-regexp": "^6.3.0", "server-only": "^0.0.1" }, "peerDependencies": { "@auth/core": "^0.37.0", "convex": "^1.17.0", "react": "^18.2.0 || ^19.0.0-0" }, "optionalPeers": ["react"], "bin": { "auth": "dist/bin.cjs" } }, "sha512-aqw88EB042HvnaF4wcf/f/wTocmT2Bus2VDQRuV79cM0+8kORM0ICK/ByZ6XsHgQ9qr6TmidNbXm6QAgndrdpQ=="],
 
     "@convex-dev/react-query": ["@convex-dev/react-query@0.0.0-alpha.11", "", { "dependencies": { "@auth/core": "^0.37.0", "@convex-dev/auth": "^0.0.83", "convex-helpers": "^0.1.85" }, "peerDependencies": { "@tanstack/react-query": "^5.0.0", "convex": "^1.24.8" } }, "sha512-Fy/p3JOvUUNrbBBQD0AEXcSU40PBu567gm3XRgExHkiKlv07kBOjnuXA0TvodKkryyuHLbuIxYP8XIv03i6DEw=="],
 
@@ -917,7 +917,7 @@
 
     "convert-source-map": ["convert-source-map@2.0.0", "", {}, "sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg=="],
 
-    "convex": ["convex@1.27.3", "", { "dependencies": { "esbuild": "0.25.4", "jwt-decode": "^4.0.0", "prettier": "^3.0.0" }, "peerDependencies": { "@auth0/auth0-react": "^2.0.1", "@clerk/clerk-react": "^4.12.8 || ^5.0.0", "react": "^18.0.0 || ^19.0.0-0 || ^19.0.0" }, "optionalPeers": ["@auth0/auth0-react", "@clerk/clerk-react", "react"], "bin": { "convex": "bin/main.js" } }, "sha512-Ebr9lPgXkL7JO5IFr3bG+gYvHskyJjc96Fx0BBNkJUDXrR/bd9/uI4q8QszbglK75XfDu068vR0d/HK2T7tB9Q=="],
+    "convex": ["convex@1.28.0", "", { "dependencies": { "esbuild": "0.25.4", "prettier": "^3.0.0" }, "peerDependencies": { "@auth0/auth0-react": "^2.0.1", "@clerk/clerk-react": "^4.12.8 || ^5.0.0", "react": "^18.0.0 || ^19.0.0-0 || ^19.0.0" }, "optionalPeers": ["@auth0/auth0-react", "@clerk/clerk-react", "react"], "bin": { "convex": "bin/main.js" } }, "sha512-40FgeJ/LxP9TxnkDDztU/A5gcGTdq1klcTT5mM0Ak+kSlQiDktMpjNX1TfkWLxXaE3lI4qvawKH95v2RiYgFxA=="],
 
     "convex-helpers": ["convex-helpers@0.1.104", "", { "peerDependencies": { "@standard-schema/spec": "^1.0.0", "convex": "^1.24.0", "hono": "^4.0.5", "react": "^17.0.2 || ^18.0.0 || ^19.0.0", "typescript": "^5.5", "zod": "^3.22.4 || ^4.0.15" }, "optionalPeers": ["@standard-schema/spec", "hono", "react", "typescript", "zod"], "bin": { "convex-helpers": "bin.cjs" } }, "sha512-7CYvx7T3K6n+McDTK4ZQaQNNGBzq5aWezpjzsKbOxPXx7oNcTP9wrpef3JxeXWFzkByJv5hRCjseh9B7eNJ7Ig=="],
 

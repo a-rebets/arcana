@@ -1,15 +1,25 @@
-import { type MouseEvent, useCallback } from "react";
+import { type MouseEvent, useCallback, useLayoutEffect, useRef } from "react";
 
 export function useNoPropagationCallback<E extends HTMLElement>(
-  callback: (e: MouseEvent<E>) => void,
-  deps = [],
+  callback: (e: MouseEvent<E>) => void | Promise<void>,
+  preventDefault = true,
 ) {
+  const callbackRef = useRef(callback);
+  useLayoutEffect(() => {
+    callbackRef.current = callback;
+  });
+
   return useCallback(
     (e: MouseEvent<E>) => {
-      e.preventDefault();
+      if (preventDefault) {
+        e.preventDefault();
+      }
       e.stopPropagation();
-      callback(e);
+      callbackRef.current(e);
     },
-    [...deps, callback],
+    [preventDefault],
   );
 }
+
+export type NoPropagationCallback<E extends HTMLElement = HTMLButtonElement> =
+  ReturnType<typeof useNoPropagationCallback<E>>;

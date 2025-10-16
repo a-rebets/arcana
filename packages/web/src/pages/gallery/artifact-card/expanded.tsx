@@ -8,6 +8,7 @@ import {
 } from "@react-hookz/web";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "motion/react";
+import { useNavigate } from "react-router";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import { ArtifactVersionPicker } from "@/components/artifacts/version-picker";
 import {
@@ -16,12 +17,15 @@ import {
   MorphingDialogSubtitle,
   MorphingDialogTitle,
 } from "@/components/ui/morphing-dialog";
-import { useArtifactActions } from "@/hooks/use-artifact-actions";
 import { useArtifactCard } from "@/hooks/use-artifact-card";
 import {
   useArtifactsVersionActions,
   useVersionState,
 } from "@/hooks/use-artifacts-store";
+import {
+  type NoPropagationCallback,
+  useNoPropagationCallback,
+} from "@/hooks/use-no-propagation-callback";
 import { useVegaWithRef } from "@/hooks/use-vega-with-ref";
 import { cn, formatRelativeTime } from "@/lib/utils";
 import { ButtonWithChatPreview } from "./chat-preview";
@@ -54,7 +58,6 @@ export function ExpandedArtifact() {
         </MorphingDialogSubtitle>
       </section>
       <ExpandedArtifactChart />
-      <ExpandedArtifactInfoRow className="pb-2" />
       <MorphingDialogClose className="right-4 top-4 bg-input/40 hover:bg-input/70 dark:bg-muted dark:hover:bg-muted/80 text-muted-foreground rounded-full" />
     </MorphingDialogContent>
   );
@@ -85,24 +88,39 @@ function ExpandedArtifactChart() {
     return version.vegaSpec;
   }, [artifacts, versionState]);
 
-  const ref = useVegaWithRef(versionSpec ?? initialSpec, {
+  const { ref, downloadPNG } = useVegaWithRef(versionSpec ?? initialSpec, {
     interactive: true,
   });
 
   return (
-    <div
-      className="w-full aspect-video border dark:border-none rounded-xl overflow-clip [&>form]:absolute [&>form]:bottom-2 [&>form]:right-2 relative [&>form]:rounded-xl [&>form:empty]:bg-transparent [&>form:not(:empty)]:bg-accent/50 [&>form]:py-2 [&>form]:px-3"
-      ref={ref}
-    />
+    <>
+      <div
+        className="w-full aspect-video border dark:border-none rounded-xl overflow-clip [&>form]:absolute [&>form]:bottom-2 [&>form]:right-2 relative [&>form]:rounded-xl [&>form:empty]:bg-transparent [&>form:not(:empty)]:bg-accent/50 [&>form]:py-2 [&>form]:px-3"
+        ref={ref}
+      />
+      <ExpandedArtifactActionsRow
+        className="pb-2"
+        handleDownload={downloadPNG}
+      />
+    </>
   );
 }
 
-function ExpandedArtifactInfoRow({ className }: { className?: string }) {
+type ActionsRowProps = {
+  className?: string;
+  handleDownload: NoPropagationCallback;
+};
+
+function ExpandedArtifactActionsRow({
+  className,
+  handleDownload,
+}: ActionsRowProps) {
+  const navigate = useNavigate();
   const { rootId, threadId } = useArtifactCard();
-  const { handleDownload, handleOpenChat } = useArtifactActions(
-    threadId,
-    rootId,
-  );
+
+  const handleOpenChat = useNoPropagationCallback<HTMLButtonElement>(() => {
+    navigate(`/chat/${threadId}?artifact=${rootId}`);
+  });
 
   return (
     <div className={cn("flex w-full justify-between items-center", className)}>

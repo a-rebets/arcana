@@ -1,6 +1,7 @@
 import { useMemo, useRef } from "react";
 import { useVegaEmbed } from "react-vega";
 import type { VisualizationSpec } from "vega-embed";
+import { useNoPropagationCallback } from "./use-no-propagation-callback";
 
 type VegaWithRefOptions = {
   interactive?: boolean;
@@ -25,11 +26,30 @@ export function useVegaWithRef(spec: string, options: VegaWithRefOptions = {}) {
     [options.interactive],
   );
 
-  useVegaEmbed({
+  const result = useVegaEmbed({
     ref,
     spec: currentSpec,
     options: embedOptions,
   });
 
-  return ref;
+  const downloadPNG = useNoPropagationCallback<HTMLButtonElement>(async () => {
+    if (!result) {
+      console.error("Vega view not ready");
+      return;
+    }
+
+    try {
+      const imageUrl = await result.view.toImageURL("png", 2);
+      const link = document.createElement("a");
+      link.href = imageUrl;
+      link.download = "chart.png";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Failed to download chart:", error);
+    }
+  }, true);
+
+  return { ref, downloadPNG };
 }

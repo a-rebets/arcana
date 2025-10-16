@@ -1,5 +1,6 @@
 import { CardsIcon, HouseIcon } from "@phosphor-icons/react";
-import { Link, useResolvedPath } from "react-router";
+import { useMemo } from "react";
+import { Link, useLocation, useResolvedPath } from "react-router";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import ThemeToggle from "@/components/theme-toggle";
 import {
@@ -28,6 +29,17 @@ const navigationLinks = [
     icon: CardsIcon,
   },
 ];
+
+function isChatPath(path: string) {
+  return path.startsWith("/chat") || path === "/";
+}
+
+function isActive(path: string, href: string) {
+  if (href === "/") {
+    return isChatPath(path);
+  }
+  return path.startsWith(href);
+}
 
 export function NavigationHeader({
   className,
@@ -101,21 +113,42 @@ export function MainNavigationSection({
 }
 
 function DesktopNavigation({ className }: { className?: string }) {
-  const path = useResolvedPath(".");
+  const { pathname: globalPath } = useResolvedPath(".");
+  const { state }: { state?: { from: string } } = useLocation();
+
+  const chatHref = useMemo(() => {
+    const from = state?.from;
+    if (isChatPath(globalPath)) {
+      return globalPath;
+    }
+    if (from && isChatPath(from)) {
+      return from;
+    }
+    return "/";
+  }, [globalPath, state]);
+
   return (
     <NavigationMenu className={cn("h-full *:h-full", className)}>
       <NavigationMenuList className="h-full gap-2">
-        {navigationLinks.map((link) => (
-          <NavigationMenuItem key={link.label} className="h-full">
-            <NavigationMenuLink
-              asChild
-              active={path.pathname === link.href}
-              className="text-muted-foreground hover:text-primary border-b-primary hover:border-b-primary data-[active]:border-b-primary h-full justify-center rounded-none border-y-2 border-transparent py-1.5 font-medium hover:bg-transparent data-[active]:bg-transparent!"
-            >
-              <Link to={link.href}>{link.label}</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        ))}
+        {navigationLinks.map((link) => {
+          return (
+            <NavigationMenuItem key={link.label} className="h-full">
+              <NavigationMenuLink
+                asChild
+                active={isActive(globalPath, link.href)}
+                className="text-muted-foreground hover:text-primary border-b-primary hover:border-b-primary data-[active]:border-b-primary h-full justify-center rounded-none border-y-2 border-transparent py-1.5 font-medium hover:bg-transparent data-[active]:bg-transparent!"
+              >
+                <Link
+                  to={link.href === "/" ? chatHref : link.href}
+                  prefetch="intent"
+                  state={{ from: globalPath }}
+                >
+                  {link.label}
+                </Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          );
+        })}
       </NavigationMenuList>
     </NavigationMenu>
   );

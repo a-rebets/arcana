@@ -73,7 +73,6 @@ function ExpandedArtifactChart() {
   );
   useDeepCompareEffect(() => {
     if (!artifacts) return;
-    console.log("syncing version states", artifacts.versions.length);
     syncVersionStates({
       [rootId]: artifacts.versions.length,
     });

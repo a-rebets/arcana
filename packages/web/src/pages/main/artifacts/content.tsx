@@ -3,6 +3,7 @@ import { convexQuery } from "@convex-dev/react-query";
 import { useDeepCompareEffect, useUpdateEffect } from "@react-hookz/web";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useRef } from "react";
+import { useSearchParams } from "react-router";
 import { useVegaEmbed } from "react-vega";
 import type { EmbedOptions } from "vega-embed";
 import PlaceholderIcon from "@/assets/charts-placeholder.svg?react";
@@ -26,6 +27,7 @@ const options: EmbedOptions = {
 
 export function ArtifactsContent() {
   const threadId = useChatId();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const { index: carouselIndex, setIndex: setCarouselIndex } = useCarousel();
   const { syncVersionStates, setActiveChart, reset } =
@@ -39,24 +41,24 @@ export function ArtifactsContent() {
     ),
   );
 
-  const noArtifacts = !artifacts || artifacts.length === 0;
-
   useUpdateEffect(() => {
     reset();
     setCarouselIndex(0);
   }, [threadId]);
 
   useDeepCompareEffect(() => {
-    if (noArtifacts) return;
+    if (!artifacts?.length) return;
 
+    const currentChart = activeChart ?? searchParams.get("artifact");
     const versionMap = Object.fromEntries(
       artifacts.map((a) => [a.rootId, a.versions.length]),
     );
     syncVersionStates(versionMap);
 
     // Try to maintain position on the same chart
-    if (activeChart) {
-      const newIndex = artifacts.findIndex((a) => a.rootId === activeChart);
+    if (currentChart) {
+      setSearchParams({});
+      const newIndex = artifacts.findIndex((a) => a.rootId === currentChart);
       if (newIndex !== -1 && newIndex !== carouselIndex) {
         setCarouselIndex(newIndex);
         return;
@@ -64,20 +66,19 @@ export function ArtifactsContent() {
       if (newIndex !== -1) return;
     }
 
-    // Fallback: No active chart OR active chart was deleted
     setCarouselIndex(0);
     setActiveChart(artifacts[0].rootId);
   }, [artifacts]);
 
   // Update active chart when user navigates (clicks prev/next, swipes)
   useUpdateEffect(() => {
-    if (noArtifacts) return;
+    if (!artifacts?.length) return;
     setActiveChart(artifacts[carouselIndex].rootId);
   }, [carouselIndex]);
 
   return (
     <CarouselContent>
-      {noArtifacts ? (
+      {!artifacts?.length ? (
         <Placeholder loading={isFetching} />
       ) : (
         artifacts.map((chain) => (

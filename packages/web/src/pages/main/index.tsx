@@ -2,7 +2,7 @@ import { api } from "@convex/api";
 import { PlusIcon } from "@phosphor-icons/react";
 import { useQuery } from "convex/react";
 import { useEffect } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import {
   Conversation,
   ConversationContent,
@@ -13,6 +13,7 @@ import {
   MainNavigationSection,
   NavigationHeader,
 } from "@/components/navigation";
+import { useArtifactsPanelActions } from "@/hooks/use-artifacts-store";
 import { useLiveChat } from "@/hooks/use-live-chat";
 import { useSyncChat } from "@/hooks/use-sync-chat";
 import type { Route } from "./+types/";
@@ -23,16 +24,23 @@ import { ThreadsBox } from "./threads-list";
 
 function Page({ params }: Route.ComponentProps) {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const exists = useQuery(
     api.ai.threads.public.checkIfThreadExists,
     params.threadId ? { threadId: params.threadId } : "skip",
   );
 
+  const { open: openArtifactsPanel } = useArtifactsPanelActions();
+
   useEffect(() => {
     if (params.threadId && exists === false) {
       navigate("/", { replace: true });
+      return;
     }
-  }, [params.threadId, exists, navigate]);
+    if (searchParams.get("artifact")) {
+      openArtifactsPanel();
+    }
+  }, [params.threadId, exists, navigate, searchParams, openArtifactsPanel]);
 
   useSyncChat({
     threadId: params.threadId,

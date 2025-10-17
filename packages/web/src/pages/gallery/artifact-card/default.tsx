@@ -25,8 +25,13 @@ import { ButtonWithChatPreview } from "./chat-preview";
 
 export function ArtifactCard({ className }: { className?: string }) {
   const { isOpen } = useMorphingDialog();
-  const { vegaSpec, title, creationTime, isRoot } = useArtifactCard();
-  const { ref, downloadPNG } = useVegaWithRef(vegaSpec);
+  const { vegaSpec, title, creationTime, isRoot, rootId } = useArtifactCard();
+  const { ref, handleDownload } = useVegaWithRef(vegaSpec, {
+    metadata: {
+      rootId,
+      title,
+    },
+  });
 
   return (
     <MorphingDialogTrigger
@@ -62,7 +67,7 @@ export function ArtifactCard({ className }: { className?: string }) {
               {formatRelativeTime(creationTime)}
             </MorphingDialogSubtitle>
           </div>
-          <ArtifactActionsRow className="" handleDownload={downloadPNG} />
+          <ArtifactActionsRow className="" handleDownload={handleDownload} />
         </section>
       </div>
     </MorphingDialogTrigger>

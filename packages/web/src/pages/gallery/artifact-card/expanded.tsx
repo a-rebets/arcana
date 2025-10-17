@@ -64,7 +64,7 @@ export function ExpandedArtifact() {
 }
 
 function ExpandedArtifactChart() {
-  const { rootId, vegaSpec: initialSpec } = useArtifactCard();
+  const { rootId, title, vegaSpec: initialSpec } = useArtifactCard();
 
   const versionState = useVersionState(rootId);
   const { syncVersionStates } = useArtifactsVersionActions();
@@ -88,8 +88,12 @@ function ExpandedArtifactChart() {
     return version.vegaSpec;
   }, [artifacts, versionState]);
 
-  const { ref, downloadPNG } = useVegaWithRef(versionSpec ?? initialSpec, {
+  const { ref, handleDownload } = useVegaWithRef(versionSpec ?? initialSpec, {
     interactive: true,
+    metadata: {
+      rootId,
+      title,
+    },
   });
 
   return (
@@ -100,7 +104,7 @@ function ExpandedArtifactChart() {
       />
       <ExpandedArtifactActionsRow
         className="pb-2"
-        handleDownload={downloadPNG}
+        handleDownload={handleDownload}
       />
     </>
   );

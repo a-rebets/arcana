@@ -19,6 +19,14 @@ export const useActiveChart = () =>
 export const useVersionState = (rootId: string) =>
   useArtifactsStore((state) => state.versionState[rootId]);
 
+export const useArtifactDownload = () =>
+  useArtifactsStore(
+    useShallow((state) => ({
+      triggered: state.downloadTriggered,
+      toggle: state.toggleDownload,
+    })),
+  );
+
 export const useArtifactsVersionActions = () =>
   useArtifactsStore(
     useShallow((state) => ({

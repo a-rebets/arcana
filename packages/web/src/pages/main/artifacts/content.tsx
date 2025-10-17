@@ -2,10 +2,8 @@ import { api } from "@convex/api";
 import { convexQuery } from "@convex-dev/react-query";
 import { useDeepCompareEffect, useUpdateEffect } from "@react-hookz/web";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { useSearchParams } from "react-router";
-import { useVegaEmbed } from "react-vega";
-import type { EmbedOptions } from "vega-embed";
 import PlaceholderIcon from "@/assets/charts-placeholder.svg?react";
 import {
   CarouselContent,
@@ -18,14 +16,16 @@ import {
   useArtifactsVersionActions,
   useVersionState,
 } from "@/hooks/use-artifacts-store";
+import { useVegaWithRef } from "@/hooks/use-vega-with-ref";
 import { useChatId } from "@/lib/convex-agent";
 import type { ArtifactData } from "@/lib/types/artifacts";
+import { cn } from "@/lib/utils";
 
-const options: EmbedOptions = {
-  actions: false,
-};
-
-export function ArtifactsContent() {
+export function ArtifactsContent({
+  itemClassName,
+}: {
+  itemClassName?: string;
+}) {
   const threadId = useChatId();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -82,7 +82,10 @@ export function ArtifactsContent() {
         <Placeholder loading={isFetching} />
       ) : (
         artifacts.map((chain) => (
-          <CarouselItem className="p-4 aspect-video" key={chain.rootId}>
+          <CarouselItem
+            className={cn("p-4 aspect-video", itemClassName)}
+            key={chain.rootId}
+          >
             <Artifact data={chain} />
           </CarouselItem>
         ))
@@ -92,16 +95,17 @@ export function ArtifactsContent() {
 }
 
 function Artifact({ data }: { data: ArtifactData }) {
-  const ref = useRef<HTMLDivElement>(null);
   const versionState = useVersionState(data.rootId);
 
-  const spec = useMemo(() => {
+  const { vegaSpec, title } = useMemo(() => {
     const [selectedIndex] = versionState || [data.versions.length - 1, 0];
-    const version = data.versions[selectedIndex];
-    return JSON.parse(version.vegaSpec);
+    return data.versions[selectedIndex];
   }, [data.versions, versionState]);
 
-  useVegaEmbed({ ref, spec, options });
+  const { ref } = useVegaWithRef(vegaSpec, {
+    interactive: true,
+    metadata: { rootId: data.rootId, title },
+  });
 
   return (
     <div

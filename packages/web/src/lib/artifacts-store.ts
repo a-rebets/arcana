@@ -9,10 +9,12 @@ interface ArtifactsStore {
   // [selectedIndex, totalCount]
   versionState: Record<string, [number, number]>;
   activeChart: string | null;
+  downloadTriggered: boolean;
 
   syncVersionStates: (counts: Record<string, number>) => void;
   setSelectedIndex: (rootId: string, index: number) => void;
   setActiveChart: (rootId: string | null) => void;
+  toggleDownload: () => void;
   reset: () => void;
 }
 
@@ -24,6 +26,7 @@ export const useArtifactsStore = create<ArtifactsStore>((set) => ({
 
   versionState: {},
   activeChart: null,
+  downloadTriggered: false,
 
   syncVersionStates: (counts) =>
     set((prevState) => {
@@ -54,5 +57,8 @@ export const useArtifactsStore = create<ArtifactsStore>((set) => ({
       };
     }),
   setActiveChart: (rootId) => set({ activeChart: rootId }),
-  reset: () => set({ versionState: {}, activeChart: null }),
+  toggleDownload: () =>
+    set((state) => ({ downloadTriggered: !state.downloadTriggered })),
+  reset: () =>
+    set({ versionState: {}, activeChart: null, downloadTriggered: false }),
 }));

@@ -1,4 +1,8 @@
-import { PresentationChartIcon, XIcon } from "@phosphor-icons/react";
+import {
+  DownloadSimpleIcon,
+  PresentationChartIcon,
+  XIcon,
+} from "@phosphor-icons/react";
 import { motion } from "motion/react";
 import { PromptInputButton } from "@/components/ai-elements/prompt-input";
 import { Button } from "@/components/animate-ui/components/buttons/button";
@@ -19,6 +23,8 @@ import {
   CarouselNavigation,
 } from "@/components/ui/carousel";
 import {
+  useActiveChart,
+  useArtifactDownload,
   useArtifactsPanelActions,
   useArtifactsPanelState,
 } from "@/hooks/use-artifacts-store";
@@ -49,7 +55,6 @@ export function ArtifactsToggleButton({ className }: { className?: string }) {
 }
 
 export function ArtifactsDesktopLayout({ className }: { className?: string }) {
-  const { close } = useArtifactsPanelActions();
   const isOpen = useArtifactsPanelState();
   const isMobile = useIsMobile();
 
@@ -66,21 +71,7 @@ export function ArtifactsDesktopLayout({ className }: { className?: string }) {
         className,
       )}
     >
-      <header className="px-4 py-2 border-b flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            size="icon"
-            className="rounded-xl shadow-none"
-            onClick={close}
-            type="button"
-          >
-            <XIcon weight="bold" />
-          </Button>
-          <h2 className="text-lg font-medium">Artifacts</h2>
-        </div>
-        <ArtifactVersionPicker />
-      </header>
+      <ArtfactsDesktopHeader />
       <div className="flex flex-col justify-center min-w-[50vw] relative">
         <Carousel>
           <ArtifactsContent />
@@ -89,6 +80,51 @@ export function ArtifactsDesktopLayout({ className }: { className?: string }) {
         </Carousel>
       </div>
     </motion.aside>
+  );
+}
+
+function ArtfactsDesktopHeader() {
+  const { close } = useArtifactsPanelActions();
+  const { toggle: toggleDownload } = useArtifactDownload();
+  const activeChart = useActiveChart();
+
+  return (
+    <header className="px-4 py-2 border-b flex items-center justify-between">
+      <div className="flex items-center gap-4">
+        <Button
+          variant="outline"
+          size="icon"
+          className="rounded-xl shadow-none"
+          onClick={close}
+          type="button"
+        >
+          <XIcon weight="bold" />
+        </Button>
+        <h2 className="text-lg font-medium">Artifacts</h2>
+      </div>
+      <div className="flex">
+        <ArtifactVersionPicker />
+        <motion.div
+          animate={{
+            opacity: activeChart ? 1 : 0,
+            width: activeChart ? "fit-content" : 0,
+            marginLeft: activeChart ? "0.5rem" : 0,
+          }}
+          exit={{ opacity: 0, width: 0 }}
+          className={cn(!activeChart && "overflow-hidden")}
+        >
+          <Button
+            variant="outline"
+            className="rounded-xl"
+            disabled={!activeChart}
+            onClick={toggleDownload}
+          >
+            <DownloadSimpleIcon />
+            Download PNG
+          </Button>
+        </motion.div>
+      </div>
+    </header>
   );
 }
 
@@ -112,7 +148,7 @@ function ArtifactsMobileLayout({ children }: { children: React.ReactNode }) {
         </SheetHeader>
         <div className="relative flex flex-col justify-center h-full">
           <Carousel>
-            <ArtifactsContent />
+            <ArtifactsContent itemClassName="p-0 mb-32 aspect-[3/2]" />
             <CarouselNavigation
               className="absolute bottom-3 left-auto top-auto justify-end w-full gap-2"
               classNameButton="min-w-16 rounded-xl"

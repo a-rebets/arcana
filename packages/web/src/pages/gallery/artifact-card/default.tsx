@@ -57,7 +57,7 @@ export function ArtifactCard({ className }: { className?: string }) {
                 className="size-4 text-muted-foreground group-hover/info-row:text-primary/80 dark:group-hover/info-row:text-primary transition-colors"
               />
             </div>
-            <MorphingDialogSubtitle className="text-xs text-muted-foreground w-fit">
+            <MorphingDialogSubtitle className="text-[0.8rem] text-muted-foreground w-fit">
               {isRoot ? "Created" : "Updated"}{" "}
               {formatRelativeTime(creationTime)}
             </MorphingDialogSubtitle>

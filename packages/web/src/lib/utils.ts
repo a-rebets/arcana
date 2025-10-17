@@ -1,5 +1,12 @@
 import { type ClassValue, clsx } from "clsx";
-import { differenceInHours, differenceInMinutes, format } from "date-fns";
+import {
+  differenceInCalendarDays,
+  differenceInHours,
+  differenceInMinutes,
+  format,
+  isThisWeek,
+  isYesterday,
+} from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -8,14 +15,17 @@ export function cn(...inputs: ClassValue[]) {
 
 export function logWithTimestamp(message: string) {
   const now = new Date();
-  const timestamp = `${now.toTimeString().split(" ")[0]}.${now.getMilliseconds().toString().padStart(3, "0")}`;
+  const timestamp = `${now.toTimeString().split(" ")[0]}.${now
+    .getMilliseconds()
+    .toString()
+    .padStart(3, "0")}`;
   console.log(`${timestamp} ${message}`);
 }
 
 /**
  * Format a timestamp to a human-readable relative time string
  * @param timestamp - Unix timestamp in milliseconds
- * @returns Formatted string like "moments ago", "5 minutes ago", "3 hours ago", or "Jun 15, 9:34"
+ * @returns Formatted string like "moments ago", "5 minutes ago", "3 hours ago", "yesterday", "this week", or "Jun 15, 9:34"
  */
 export function formatRelativeTime(timestamp: number): string {
   const now = Date.now();
@@ -36,6 +46,23 @@ export function formatRelativeTime(timestamp: number): string {
     return `${hoursAgo} ${hoursAgo === 1 ? "hour" : "hours"} ago`;
   }
 
-  // For older dates: "Jun 15, 9:34"
+  if (isYesterday(date)) {
+    return "yesterday";
+  }
+
+  const daysAgo = differenceInCalendarDays(new Date(), date);
+  if (
+    daysAgo < 7 &&
+    isThisWeek(date, { weekStartsOn: 1 }) &&
+    !isYesterday(date)
+  ) {
+    return "this week";
+  }
+
   return format(date, "MMM d, H:mm");
+}
+
+export function formatRelativeTimeCapitalized(timestamp: number): string {
+  const relativeTime = formatRelativeTime(timestamp);
+  return relativeTime.charAt(0).toUpperCase() + relativeTime.slice(1);
 }

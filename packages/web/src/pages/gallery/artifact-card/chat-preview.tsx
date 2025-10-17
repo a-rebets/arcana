@@ -7,7 +7,7 @@ import {
   HoverCardTrigger,
 } from "@/components/animate-ui/components/radix/hover-card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn, formatRelativeTime } from "@/lib/utils";
+import { cn, formatRelativeTimeCapitalized } from "@/lib/utils";
 
 interface ButtonWithChatPreviewProps {
   side?: "top" | "bottom" | "left" | "right";
@@ -55,7 +55,7 @@ export function ButtonWithChatPreview({
                 {threadMetadata.title || "Untitled chat"}
               </p>
               <p className="text-xs text-muted-foreground">
-                {formatRelativeTime(threadMetadata.creationTime)}
+                {formatRelativeTimeCapitalized(threadMetadata.creationTime)}
               </p>
             </>
           ) : (

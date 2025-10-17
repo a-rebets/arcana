@@ -104,7 +104,10 @@ function Artifact({ data }: { data: ArtifactData }) {
   useVegaEmbed({ ref, spec, options });
 
   return (
-    <div className="flex size-full items-center justify-center" ref={ref} />
+    <div
+      className="size-full [&>form]:absolute [&>form]:bottom-2 [&>form]:right-2 relative [&>form]:rounded-xl [&>form:empty]:bg-transparent [&>form:not(:empty)]:bg-accent/50 [&>form]:py-2 [&>form]:px-3"
+      ref={ref}
+    />
   );
 }
 

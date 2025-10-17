@@ -57,7 +57,7 @@ export function ArtifactsDesktopLayout({ className }: { className?: string }) {
 
   return (
     <motion.aside
-      initial={{ opacity: 0, maxWidth: 0 }}
+      initial={{ opacity: isOpen ? 1 : 0, maxWidth: isOpen ? "50%" : 0 }}
       animate={{ opacity: isOpen ? 1 : 0, maxWidth: isOpen ? "50%" : 0 }}
       exit={{ opacity: 0, maxWidth: 0 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}

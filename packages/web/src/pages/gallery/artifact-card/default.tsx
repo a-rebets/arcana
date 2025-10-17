@@ -13,6 +13,7 @@ import {
   useMorphingDialog,
 } from "@/components/ui/morphing-dialog";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useArtifactCard } from "@/hooks/use-artifact-card";
 import {
   type NoPropagationCallback,
@@ -46,7 +47,7 @@ export function ArtifactCard({ className }: { className?: string }) {
         <div className="w-full aspect-video [&>form]:hidden" ref={ref} />
         <Separator />
         <section className="grid grid-cols-[1fr_auto] gap-6 w-full group/info-row pt-3 px-4 pb-3.5">
-          <div className="flex flex-col gap-0.5 overflow-hidden">
+          <div className="flex flex-col gap-0.5 min-w-0">
             <div className="flex items-center gap-2">
               <MorphingDialogTitle className="w-fit truncate">
                 {title}
@@ -105,6 +106,26 @@ function ArtifactActionsRow({ className, handleDownload }: ActionsRowProps) {
           </motion.div>
         </Button>
       </ButtonWithChatPreview>
+    </div>
+  );
+}
+
+export function ArtifactCardSkeleton() {
+  return (
+    <div className="overflow-hidden border rounded-2xl w-full h-fit">
+      <div className="flex flex-col">
+        <Skeleton className="w-full aspect-video rounded-none" />
+        <section className="grid grid-cols-[1fr_auto] gap-6 w-full group/info-row pt-3 px-4 pb-3.5">
+          <div className="flex flex-col gap-2 overflow-hidden">
+            <Skeleton className="h-3 w-56" />
+            <Skeleton className="h-3 w-36" />
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Skeleton className="size-9 rounded-lg" />
+            <Skeleton className="size-9 rounded-lg" />
+          </div>
+        </section>
+      </div>
     </div>
   );
 }

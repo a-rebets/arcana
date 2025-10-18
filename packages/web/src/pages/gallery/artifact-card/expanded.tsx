@@ -51,7 +51,7 @@ export function ExpandedArtifactCard() {
         <MorphingDialogTitle className="w-fit text-2xl">
           {title}
         </MorphingDialogTitle>
-        <MorphingDialogSubtitle className="text-muted-foreground text-sm w-fit">
+        <MorphingDialogSubtitle className="text-muted-foreground text-base w-fit">
           {isRoot ? "Created" : "Updated"} {formatRelativeTime(creationTime)}
         </MorphingDialogSubtitle>
       </section>

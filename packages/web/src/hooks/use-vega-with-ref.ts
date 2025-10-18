@@ -9,6 +9,7 @@ import { useNoPropagationCallback } from "./use-no-propagation-callback";
 type VegaWithRefOptions = {
   interactive?: boolean;
   withInternalTitle?: boolean;
+  downloadDisabled?: boolean;
   metadata: RootArtifactData;
 };
 
@@ -64,10 +65,11 @@ export function useVegaWithRef(spec: string, options: VegaWithRefOptions) {
   );
 
   useUpdateEffect(() => {
-    if (downloadTriggered && activeChart?.rootId === metadata.current.rootId) {
+    const displayed = activeChart?.rootId === metadata.current.rootId;
+    if (downloadTriggered && displayed && !options.downloadDisabled) {
       downloadPNG().finally(toggleDownload);
     }
-  }, [downloadTriggered, activeChart]);
+  }, [downloadTriggered, activeChart, options.downloadDisabled]);
 
   return { ref, handleDownload };
 }

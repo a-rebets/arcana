@@ -75,7 +75,11 @@ export function ArtifactsDesktopLayout({ className }: { className?: string }) {
       <div className="flex flex-col justify-center min-w-[50vw] relative">
         <Carousel>
           <ArtifactsContent />
-          <CarouselNavigation className="absolute bottom-6 left-auto top-auto justify-start w-full gap-2" />
+          <CarouselNavigation className="absolute bottom-6 left-auto top-auto justify-start w-fit gap-2" />
+          <ArtifactVersionPicker
+            className="absolute bottom-6 right-4"
+            side="top"
+          />
           <CarouselIndicator className="bottom-24" />
         </Carousel>
       </div>
@@ -89,8 +93,8 @@ function ArtfactsDesktopHeader() {
   const activeChart = useActiveChart();
 
   return (
-    <header className="px-4 py-2 border-b flex items-center justify-between">
-      <div className="flex items-center gap-4">
+    <header className="px-4 py-2 border-b flex items-center w-full min-w-0">
+      <div className="flex items-center gap-4 flex-1 min-w-0">
         <Button
           variant="outline"
           size="icon"
@@ -100,32 +104,29 @@ function ArtfactsDesktopHeader() {
         >
           <XIcon weight="bold" />
         </Button>
-        <h2 className="text-lg font-medium">
+        <h2 className="text-lg font-medium truncate">
           {activeChart?.title ?? "Artifacts"}
         </h2>
       </div>
-      <div className="flex">
-        <ArtifactVersionPicker className="w-36" />
-        <motion.div
-          animate={{
-            opacity: activeChart ? 1 : 0,
-            width: activeChart ? "fit-content" : 0,
-            marginLeft: activeChart ? "0.5rem" : 0,
-          }}
-          exit={{ opacity: 0, width: 0 }}
-          className={cn(!activeChart && "overflow-hidden")}
+      <motion.div
+        animate={{
+          opacity: activeChart ? 1 : 0,
+          width: activeChart ? "fit-content" : 0,
+          marginLeft: activeChart ? "1rem" : 0,
+        }}
+        exit={{ opacity: 0, width: 0 }}
+        className={cn(!activeChart && "overflow-hidden")}
+      >
+        <Button
+          variant="outline"
+          className="rounded-xl"
+          disabled={!activeChart}
+          onClick={toggleDownload}
         >
-          <Button
-            variant="outline"
-            className="rounded-xl"
-            disabled={!activeChart}
-            onClick={toggleDownload}
-          >
-            <DownloadSimpleIcon />
-            Download PNG
-          </Button>
-        </motion.div>
-      </div>
+          <DownloadSimpleIcon />
+          Download PNG
+        </Button>
+      </motion.div>
     </header>
   );
 }

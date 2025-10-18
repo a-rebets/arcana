@@ -27,6 +27,7 @@ export function ArtifactCard({ className }: { className?: string }) {
   const { isOpen } = useMorphingDialog();
   const { vegaSpec, title, creationTime, isRoot, rootId } = useArtifactCard();
   const { ref, handleDownload } = useVegaWithRef(vegaSpec, {
+    downloadDisabled: isOpen,
     metadata: {
       rootId,
       title,

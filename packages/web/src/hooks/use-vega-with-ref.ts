@@ -2,19 +2,18 @@ import { useUpdateEffect } from "@react-hookz/web";
 import { useCallback, useMemo, useRef } from "react";
 import { useVegaEmbed } from "react-vega";
 import type { VisualizationSpec } from "vega-embed";
+import type { RootArtifactData } from "@/lib/types/artifacts";
 import { useActiveChart, useArtifactDownload } from "./use-artifacts-store";
 import { useNoPropagationCallback } from "./use-no-propagation-callback";
 
 type VegaWithRefOptions = {
   interactive?: boolean;
-  metadata: {
-    rootId: string;
-    title: string;
-  };
+  withInternalTitle?: boolean;
+  metadata: RootArtifactData;
 };
 
 export function useVegaWithRef(spec: string, options: VegaWithRefOptions) {
-  const chartId = useActiveChart();
+  const activeChart = useActiveChart();
   const { triggered: downloadTriggered, toggle: toggleDownload } =
     useArtifactDownload();
 
@@ -23,24 +22,21 @@ export function useVegaWithRef(spec: string, options: VegaWithRefOptions) {
 
   const currentSpec = useMemo(() => {
     const rawSpec = JSON.parse(spec) as VisualizationSpec;
-    rawSpec.title = undefined;
+    if (!options.withInternalTitle) {
+      rawSpec.title = undefined;
+    }
     return rawSpec;
-  }, [spec]);
-
-  const embedOptions = useMemo(
-    () => ({
-      actions: false,
-      mode: "vega" as const,
-      hover: options.interactive ?? false,
-      tooltip: options.interactive ?? false,
-    }),
-    [options.interactive],
-  );
+  }, [spec, options.withInternalTitle]);
 
   const result = useVegaEmbed({
     ref,
     spec: currentSpec,
-    options: embedOptions,
+    options: {
+      actions: false,
+      mode: "vega" as const,
+      hover: options.interactive ?? false,
+      tooltip: options.interactive ?? false,
+    },
   });
 
   const downloadPNG = useCallback(async () => {
@@ -68,10 +64,10 @@ export function useVegaWithRef(spec: string, options: VegaWithRefOptions) {
   );
 
   useUpdateEffect(() => {
-    if (downloadTriggered && chartId === metadata.current.rootId) {
+    if (downloadTriggered && activeChart?.rootId === metadata.current.rootId) {
       downloadPNG().finally(toggleDownload);
     }
-  }, [downloadTriggered, chartId]);
+  }, [downloadTriggered, activeChart]);
 
   return { ref, handleDownload };
 }

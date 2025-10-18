@@ -6,7 +6,7 @@ import { requireUserId } from "../helpers";
 
 type RawArtifactVersion = Pick<
   Doc<"artifacts">,
-  "_id" | "_creationTime" | "title" | "vegaSpec" | "threadId"
+  "_id" | "_creationTime" | "vegaSpec" | "threadId"
 >;
 
 type MappedArtifactVersion = Omit<
@@ -20,6 +20,7 @@ type MappedArtifactVersion = Omit<
 type ArtifactChain = {
   rootId: Id<"artifacts">;
   versions: Array<MappedArtifactVersion>;
+  title: string;
 };
 
 type ArtifactChainWithLatestVersion = ArtifactChain & {
@@ -57,6 +58,7 @@ export const listLatestArtifactsForUser = query({
 
       return {
         rootId: chain.rootId,
+        title: chain.title,
         versions: [latestVersion],
         updatedAt: latestVersion.creationTime,
       };
@@ -78,10 +80,10 @@ export const getArtifactChainById = query({
 
     return {
       rootId: rootArtifact._id,
+      title: rootArtifact.title,
       versions: chainArtifacts.map((a) => ({
         id: a._id,
         creationTime: a._creationTime,
-        title: a.title,
         vegaSpec: a.vegaSpec,
         threadId: a.threadId,
       })),
@@ -94,10 +96,9 @@ function buildChains(artifacts: Array<Doc<"artifacts">>): ArtifactChain[] {
   const artifactToChainIndex = new Map<Id<"artifacts">, number>();
 
   for (const rawArtifact of artifacts) {
-    const artifact = {
+    const artifact: MappedArtifactVersion = {
       id: rawArtifact._id,
       creationTime: rawArtifact._creationTime,
-      title: rawArtifact.title,
       vegaSpec: rawArtifact.vegaSpec,
       threadId: rawArtifact.threadId,
     };
@@ -107,6 +108,7 @@ function buildChains(artifacts: Array<Doc<"artifacts">>): ArtifactChain[] {
       chains.push({
         rootId: artifact.id,
         versions: [artifact],
+        title: rawArtifact.title,
       });
       artifactToChainIndex.set(artifact.id, chainIndex);
     } else {

@@ -1,8 +1,8 @@
 import { createContext, useContext } from "react";
-import type { ArtifactData, ArtifactVersion } from "@/lib/types/artifacts";
+import type { ArtifactVersion, RootArtifactData } from "@/lib/types/artifacts";
 
-type ArtifactCardContextValue = ArtifactVersion &
-  Pick<ArtifactData, "rootId"> & { isRoot: boolean };
+type ArtifactCardContextValue = Omit<ArtifactVersion, "id"> &
+  RootArtifactData & { isRoot: boolean };
 
 export const ArtifactCardContext =
   createContext<ArtifactCardContextValue | null>(null);

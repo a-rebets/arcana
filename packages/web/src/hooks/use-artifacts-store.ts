@@ -31,7 +31,7 @@ export const useArtifactsVersionActions = () =>
   useArtifactsStore(
     useShallow((state) => ({
       syncVersionStates: state.syncVersionStates,
-      setSelectedIndex: state.setSelectedIndex,
+      setSelectedVersion: state.setSelectedVersion,
       setActiveChart: state.setActiveChart,
       reset: state.reset,
     })),

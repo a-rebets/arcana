@@ -1,5 +1,5 @@
 import { CardsIcon, HouseIcon } from "@phosphor-icons/react";
-import { useMemo } from "react";
+import { type HTMLAttributes, useMemo } from "react";
 import { Link, useLocation, useResolvedPath } from "react-router";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import ThemeToggle from "@/components/theme-toggle";
@@ -44,12 +44,11 @@ function isActive(path: string, href: string) {
 export function NavigationHeader({
   className,
   children,
-}: {
-  className?: string;
-  children?: React.ReactNode;
-}) {
+}: HTMLAttributes<HTMLDivElement>) {
   return (
-    <header className={cn("border-b px-4 md:px-6 pt-4 md:pt-0", className)}>
+    <header
+      className={cn("border-b px-4 md:px-6 pt-4 md:pt-0 z-30", className)}
+    >
       <section
         className={cn(
           "relative grid gap-4 md:min-h-16",

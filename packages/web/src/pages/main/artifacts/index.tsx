@@ -67,7 +67,7 @@ export function ArtifactsDesktopLayout({ className }: { className?: string }) {
       exit={{ opacity: 0, maxWidth: 0 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
       className={cn(
-        "bg-sidebar grid-rows-[auto_1fr] hidden md:grid overflow-hidden border-l",
+        "bg-sidebar grid-rows-[auto_1fr] grid overflow-hidden border-l",
         className,
       )}
     >
@@ -100,10 +100,12 @@ function ArtfactsDesktopHeader() {
         >
           <XIcon weight="bold" />
         </Button>
-        <h2 className="text-lg font-medium">Artifacts</h2>
+        <h2 className="text-lg font-medium">
+          {activeChart?.title ?? "Artifacts"}
+        </h2>
       </div>
       <div className="flex">
-        <ArtifactVersionPicker />
+        <ArtifactVersionPicker className="w-36" />
         <motion.div
           animate={{
             opacity: activeChart ? 1 : 0,
@@ -140,15 +142,13 @@ function ArtifactsMobileLayout({ children }: { children: React.ReactNode }) {
         className="h-[70svh] rounded-t-2xl pb-4 px-2"
         showCloseButton={false}
       >
-        <SheetHeader>
-          <SheetTitle className="text-lg">Artifacts</SheetTitle>
-          <SheetDescription className="sr-only">
-            View and manage your artifacts.
-          </SheetDescription>
-        </SheetHeader>
+        <ArtfactsMobileHeader />
         <div className="relative flex flex-col justify-center h-full">
           <Carousel>
-            <ArtifactsContent itemClassName="p-0 mb-32 aspect-[3/2]" />
+            <ArtifactsContent
+              itemClassName="py-0 px-2 mb-32 aspect-[3/2]"
+              mobile
+            />
             <CarouselNavigation
               className="absolute bottom-3 left-auto top-auto justify-end w-full gap-2"
               classNameButton="min-w-16 rounded-xl"
@@ -175,5 +175,24 @@ function ArtifactsMobileLayout({ children }: { children: React.ReactNode }) {
         </SheetFooter>
       </SheetContent>
     </Sheet>
+  );
+}
+
+function ArtfactsMobileHeader() {
+  const { toggle: toggleDownload } = useArtifactDownload();
+
+  return (
+    <SheetHeader className="flex-row items-center justify-between">
+      <SheetTitle className="text-lg">Artifacts</SheetTitle>
+      <SheetDescription className="sr-only">Viewing artifacts</SheetDescription>
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={toggleDownload}
+        className="rounded-lg"
+      >
+        <DownloadSimpleIcon className="size-5" />
+      </Button>
+    </SheetHeader>
   );
 }

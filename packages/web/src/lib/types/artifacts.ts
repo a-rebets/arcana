@@ -10,3 +10,5 @@ export type ArtifactGalleryData = FunctionReturnType<
 >[number];
 
 export type ArtifactVersion = ArtifactData["versions"][number];
+
+export type RootArtifactData = Pick<ArtifactData, "rootId" | "title">;

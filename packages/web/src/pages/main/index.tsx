@@ -25,6 +25,7 @@ import { ThreadsBox } from "./threads-list";
 function Page({ params }: Route.ComponentProps) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
   const exists = useQuery(
     api.ai.threads.public.checkIfThreadExists,
     params.threadId ? { threadId: params.threadId } : "skip",

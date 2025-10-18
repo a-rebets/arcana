@@ -67,7 +67,7 @@ export function ArtifactCard({ className }: { className?: string }) {
               {formatRelativeTime(creationTime)}
             </MorphingDialogSubtitle>
           </div>
-          <ArtifactActionsRow className="" handleDownload={handleDownload} />
+          <ActionsRow className="" handleDownload={handleDownload} />
         </section>
       </div>
     </MorphingDialogTrigger>
@@ -79,7 +79,7 @@ type ActionsRowProps = {
   handleDownload: NoPropagationCallback;
 };
 
-function ArtifactActionsRow({ className, handleDownload }: ActionsRowProps) {
+function ActionsRow({ className, handleDownload }: ActionsRowProps) {
   const navigate = useNavigate();
   const { rootId, threadId } = useArtifactCard();
 
@@ -103,8 +103,8 @@ function ArtifactActionsRow({ className, handleDownload }: ActionsRowProps) {
         <Button
           variant="outline"
           size="icon"
-          onClick={handleOpenChat}
           className="rounded-lg"
+          onClick={handleOpenChat}
         >
           <motion.div layoutId={`chat-icon-${rootId}`}>
             <ChatCircleTextIcon className="size-5" />

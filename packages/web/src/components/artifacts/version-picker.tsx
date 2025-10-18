@@ -23,8 +23,8 @@ export function ArtifactVersionPicker({
   sideOffset?: number;
 }) {
   const activeChart = useActiveChart();
-  const versionState = useVersionState(activeChart ?? "");
-  const { setSelectedIndex } = useArtifactsVersionActions();
+  const versionState = useVersionState(activeChart?.rootId ?? "");
+  const { setSelectedVersion } = useArtifactsVersionActions();
 
   const [selectedIndex, totalCount] = versionState || [0, 0];
 
@@ -39,7 +39,7 @@ export function ArtifactVersionPicker({
       onValueChange={
         activeChart
           ? (value) => {
-              setSelectedIndex(activeChart, Number(value));
+              setSelectedVersion(activeChart.rootId, Number(value));
             }
           : undefined
       }

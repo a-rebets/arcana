@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import type { RootArtifactData } from "./types/artifacts";
 
 interface ArtifactsStore {
   isOpen: boolean;
@@ -8,12 +9,12 @@ interface ArtifactsStore {
 
   // [selectedIndex, totalCount]
   versionState: Record<string, [number, number]>;
-  activeChart: string | null;
+  activeChart: RootArtifactData | null;
   downloadTriggered: boolean;
 
   syncVersionStates: (counts: Record<string, number>) => void;
-  setSelectedIndex: (rootId: string, index: number) => void;
-  setActiveChart: (rootId: string | null) => void;
+  setSelectedVersion: (rootId: string, version: number) => void;
+  setActiveChart: (data: RootArtifactData | null) => void;
   toggleDownload: () => void;
   reset: () => void;
 }
@@ -40,14 +41,14 @@ export const useArtifactsStore = create<ArtifactsStore>((set) => ({
       }
       return { versionState: newVersionState };
     }),
-  setSelectedIndex: (rootId, index) =>
+  setSelectedVersion: (rootId, version) =>
     set((prevState) => {
       const current = prevState.versionState[rootId];
       if (!current) return prevState;
 
       // Handle negative indices (e.g., -1 for last item)
       const totalCount = current[1];
-      const normalizedIndex = index < 0 ? totalCount + index : index;
+      const normalizedIndex = version < 0 ? totalCount + version : version;
 
       return {
         versionState: {
@@ -56,7 +57,7 @@ export const useArtifactsStore = create<ArtifactsStore>((set) => ({
         },
       };
     }),
-  setActiveChart: (rootId) => set({ activeChart: rootId }),
+  setActiveChart: (data: RootArtifactData | null) => set({ activeChart: data }),
   toggleDownload: () =>
     set((state) => ({ downloadTriggered: !state.downloadTriggered })),
   reset: () =>

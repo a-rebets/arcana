@@ -5,10 +5,11 @@ import {
   useDeepCompareEffect,
   useDeepCompareMemo,
   useMountEffect,
+  useUnmountEffect,
 } from "@react-hookz/web";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "motion/react";
-import { useNavigate } from "react-router";
+import { Link } from "react-router";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import { ArtifactVersionPicker } from "@/components/artifacts/version-picker";
 import {
@@ -19,25 +20,22 @@ import {
 } from "@/components/ui/morphing-dialog";
 import { useArtifactCard } from "@/hooks/use-artifact-card";
 import {
+  useArtifactDownload,
   useArtifactsVersionActions,
   useVersionState,
 } from "@/hooks/use-artifacts-store";
-import {
-  type NoPropagationCallback,
-  useNoPropagationCallback,
-} from "@/hooks/use-no-propagation-callback";
 import { useVegaWithRef } from "@/hooks/use-vega-with-ref";
 import { cn, formatRelativeTime } from "@/lib/utils";
 import { ButtonWithChatPreview } from "./chat-preview";
 
-export function ExpandedArtifact() {
+export function ExpandedArtifactCard() {
   const { title, rootId, creationTime, isRoot } = useArtifactCard();
-  const { setActiveChart, setSelectedIndex } = useArtifactsVersionActions();
+  const { setActiveChart, reset } = useArtifactsVersionActions();
 
   useMountEffect(() => {
-    setActiveChart(rootId);
-    setSelectedIndex(rootId, -1);
+    setActiveChart({ rootId, title });
   });
+  useUnmountEffect(reset);
 
   return (
     <MorphingDialogContent
@@ -57,38 +55,42 @@ export function ExpandedArtifact() {
           {isRoot ? "Created" : "Updated"} {formatRelativeTime(creationTime)}
         </MorphingDialogSubtitle>
       </section>
-      <ExpandedArtifactChart />
+      <Chart />
+      <ActionsRow className="pb-2" />
       <MorphingDialogClose className="right-4 top-4 bg-input/40 hover:bg-input/70 dark:bg-muted dark:hover:bg-muted/80 text-muted-foreground rounded-full" />
     </MorphingDialogContent>
   );
 }
 
-function ExpandedArtifactChart() {
+function Chart() {
   const { rootId, title, vegaSpec: initialSpec } = useArtifactCard();
 
   const versionState = useVersionState(rootId);
   const { syncVersionStates } = useArtifactsVersionActions();
 
-  const { data: artifacts } = useQuery(
+  const { data: artifactChain } = useQuery(
     convexQuery(api.artifacts.public.getArtifactChainById, {
       artifactId: rootId,
     }),
   );
   useDeepCompareEffect(() => {
-    if (!artifacts) return;
+    if (!artifactChain) return;
     syncVersionStates({
-      [rootId]: artifacts.versions.length,
+      [rootId]: artifactChain.versions.length,
     });
-  }, [artifacts]);
+  }, [artifactChain]);
 
   const versionSpec = useDeepCompareMemo(() => {
-    if (!artifacts) return null;
-    const [selectedIndex] = versionState || [artifacts.versions.length - 1, 0];
-    const version = artifacts.versions[selectedIndex];
+    if (!artifactChain) return null;
+    const [selectedIndex] = versionState || [
+      artifactChain.versions.length - 1,
+      0,
+    ];
+    const version = artifactChain.versions[selectedIndex];
     return version.vegaSpec;
-  }, [artifacts, versionState]);
+  }, [artifactChain, versionState]);
 
-  const { ref, handleDownload } = useVegaWithRef(versionSpec ?? initialSpec, {
+  const { ref } = useVegaWithRef(versionSpec ?? initialSpec, {
     interactive: true,
     metadata: {
       rootId,
@@ -97,34 +99,20 @@ function ExpandedArtifactChart() {
   });
 
   return (
-    <>
-      <div
-        className="w-full aspect-video border dark:border-none rounded-xl overflow-clip [&>form]:absolute [&>form]:bottom-2 [&>form]:right-2 relative [&>form]:rounded-xl [&>form:empty]:bg-transparent [&>form:not(:empty)]:bg-accent/50 [&>form]:py-2 [&>form]:px-3"
-        ref={ref}
-      />
-      <ExpandedArtifactActionsRow
-        className="pb-2"
-        handleDownload={handleDownload}
-      />
-    </>
+    <div
+      className="w-full aspect-video border dark:border-none rounded-xl overflow-clip [&>form]:absolute [&>form]:bottom-2 [&>form]:right-2 relative [&>form]:rounded-xl [&>form:empty]:bg-transparent [&>form:not(:empty)]:bg-accent/50 [&>form]:py-2 [&>form]:px-3"
+      ref={ref}
+    />
   );
 }
 
 type ActionsRowProps = {
   className?: string;
-  handleDownload: NoPropagationCallback;
 };
 
-function ExpandedArtifactActionsRow({
-  className,
-  handleDownload,
-}: ActionsRowProps) {
-  const navigate = useNavigate();
+function ActionsRow({ className }: ActionsRowProps) {
   const { rootId, threadId } = useArtifactCard();
-
-  const handleOpenChat = useNoPropagationCallback<HTMLButtonElement>(() => {
-    navigate(`/chat/${threadId}?artifact=${rootId}`);
-  });
+  const { toggle: toggleDownload } = useArtifactDownload();
 
   return (
     <div className={cn("flex w-full justify-between items-center", className)}>
@@ -133,7 +121,7 @@ function ExpandedArtifactActionsRow({
         <Button
           variant="outline"
           className="rounded-xl"
-          onClick={handleDownload}
+          onClick={toggleDownload}
         >
           <motion.div layoutId={`download-icon-${rootId}`}>
             <DownloadSimpleIcon />
@@ -149,12 +137,14 @@ function ExpandedArtifactActionsRow({
         >
           <Button
             className="rounded-xl bg-linear-to-b from-primary to-ring"
-            onClick={handleOpenChat}
+            asChild
           >
-            <motion.div layoutId={`chat-icon-${rootId}`}>
-              <ChatCircleTextIcon weight="bold" />
-            </motion.div>{" "}
-            Open in chat
+            <Link to={`/chat/${threadId}?artifact=${rootId}`}>
+              <motion.div layoutId={`chat-icon-${rootId}`}>
+                <ChatCircleTextIcon weight="bold" />
+              </motion.div>{" "}
+              Open in chat
+            </Link>
           </Button>
         </ButtonWithChatPreview>
       </div>

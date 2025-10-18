@@ -180,7 +180,7 @@ const createOrUpdateChartTool = createTool({
     const artifactId = await ctx.runAction(
       internal.artifacts.vega.processAndStoreChart,
       {
-        title: result.object.title,
+        title: existingArtifact ? "" : result.object.title,
         spec: result.object.spec,
         dataset: dataset.rows,
         datasetId: dataset._id,

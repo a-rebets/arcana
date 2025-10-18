@@ -11,7 +11,7 @@ export const useChatInput = (threadId?: string) => {
   const navigate = useNavigate();
 
   const { sendMessage } = useChatActions<ArcanaUIMessage>();
-  const sendFromNewThread = useAction(api.ai.threads.startNewThread);
+  const sendFromNewThread = useAction(api.ai.threads.public.startNewThread);
 
   const [input, setInput] = useState("");
   const [webSearch, toggleWebSearch] = useToggle(false);
@@ -22,6 +22,7 @@ export const useChatInput = (threadId?: string) => {
         return;
       }
       setInput("");
+      toggleWebSearch(false);
       if (threadId) {
         sendMessage({
           text: message.text,
@@ -36,7 +37,14 @@ export const useChatInput = (threadId?: string) => {
         navigate(`/chat/${newThreadId}`);
       }
     },
-    [sendFromNewThread, sendMessage, navigate, threadId, webSearch],
+    [
+      sendFromNewThread,
+      sendMessage,
+      navigate,
+      threadId,
+      webSearch,
+      toggleWebSearch,
+    ],
   );
 
   const handleInputChange = useCallback(

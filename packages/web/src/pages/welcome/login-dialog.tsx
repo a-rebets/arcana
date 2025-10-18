@@ -56,7 +56,7 @@ const dialogFormSchema = z.object({
 export const LoginDialog = ({ children }: { children: React.ReactNode }) => {
   const { signIn } = useAuthActions();
 
-  const form = useForm<z.infer<typeof dialogFormSchema>>({
+  const { subscribe, ...form } = useForm<z.infer<typeof dialogFormSchema>>({
     resolver: zodResolver(dialogFormSchema),
     defaultValues: {
       email: "",
@@ -78,7 +78,7 @@ export const LoginDialog = ({ children }: { children: React.ReactNode }) => {
   );
 
   useEffect(() => {
-    const unsubscribe = form.subscribe({
+    const unsubscribe = subscribe({
       name: "code",
       formState: {
         errors: true,
@@ -90,13 +90,13 @@ export const LoginDialog = ({ children }: { children: React.ReactNode }) => {
       },
     });
     return () => unsubscribe();
-  }, [form.subscribe, onSubmit]);
+  }, [subscribe, onSubmit]);
 
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px] min-h-52 p-4">
-        <Form {...form}>
+        <Form subscribe={subscribe} {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <Tabs defaultValue="email">
               <TabsContents>

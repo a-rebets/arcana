@@ -2,9 +2,13 @@ import { ArrowLeftIcon } from "@phosphor-icons/react";
 import { Link, useNavigate } from "react-router";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 
+export const handle = {
+  bodyClasses: "h-svh",
+};
+
 function Page() {
   return (
-    <main className="relative flex flex-col w-full justify-center min-h-svh bg-background p-6 md:p-10">
+    <main className="flex flex-col w-full justify-center p-6 md:p-10 h-full">
       <div className="relative max-w-5xl mx-auto w-full pb-40">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -39,7 +43,7 @@ export function NotFound({
   };
 
   return (
-    <div className="relative text-center z-[1] pt-52">
+    <div className="relative text-center z-10 pt-52">
       <h1 className="mt-4 text-balance text-5xl font-semibold tracking-tight text-primary sm:text-7xl font-display">
         {title}
       </h1>

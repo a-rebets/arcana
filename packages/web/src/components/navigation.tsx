@@ -1,5 +1,6 @@
-import { CardsIcon, HouseIcon, PlusIcon } from "@phosphor-icons/react";
-import { Link, useNavigate } from "react-router";
+import { CardsIcon, HouseIcon } from "@phosphor-icons/react";
+import { type HTMLAttributes, useMemo } from "react";
+import { Link, useLocation, useResolvedPath } from "react-router";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import ThemeToggle from "@/components/theme-toggle";
 import {
@@ -14,34 +15,43 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { ThreadsBox } from "./threads-list";
 import UserMenu from "./user-menu";
 
 const navigationLinks = [
   {
     href: "/",
     label: "Chat",
-    active: true,
     icon: HouseIcon,
   },
   {
     href: "/gallery",
     label: "Gallery",
-    active: false,
     icon: CardsIcon,
   },
 ];
 
-export default function NavigationHeader({
+function isChatPath(path: string) {
+  return path.startsWith("/chat") || path === "/";
+}
+
+function isActive(path: string, href: string) {
+  if (href === "/") {
+    return isChatPath(path);
+  }
+  return path.startsWith(href);
+}
+
+export function NavigationHeader({
   className,
-}: {
-  className?: string;
-}) {
+  children,
+}: HTMLAttributes<HTMLDivElement>) {
   return (
-    <header className={cn("border-b px-4 md:px-6 pt-4 md:pt-0", className)}>
+    <header
+      className={cn("border-b px-4 md:px-6 pt-4 md:pt-0 z-30", className)}
+    >
       <section
         className={cn(
-          "relative grid gap-4",
+          "relative grid gap-4 md:min-h-16",
           "grid-cols-2 grid-rows-[auto_auto] items-center",
           "md:grid-cols-[auto_1fr_auto] md:grid-rows-1",
         )}
@@ -74,59 +84,77 @@ export default function NavigationHeader({
           <ThemeToggle />
           <UserMenu />
         </div>
-        <div
-          className={cn(
-            "col-span-2 row-start-2 justify-self-center",
-            "md:col-start-2 md:row-start-1 md:col-span-1",
-            "relative h-14 w-full md:h-16 md:min-w-96 md:max-w-[35rem] md:pt-3.5",
-            "overflow-visible",
-          )}
-        >
-          <ThreadsSection />
-        </div>
+        {children}
       </section>
     </header>
   );
 }
 
-function ThreadsSection() {
-  const navigate = useNavigate();
+export function MainNavigationSection({
+  className,
+  children,
+}: {
+  className?: string;
+  children?: React.ReactNode;
+}) {
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 grid-rows-1">
-      <ThreadsBox />
-      <Button
-        className="h-[2.4rem] w-20 rounded-xl border dark:border-0 shrink-0"
-        variant="accent"
-        hoverScale={1}
-        onClick={() => navigate("/")}
-      >
-        <PlusIcon weight="bold" />
-      </Button>
+    <div
+      className={cn(
+        "col-span-2 row-start-2 justify-self-center",
+        "md:col-start-2 md:row-start-1 md:col-span-1",
+        "relative h-14 w-full md:h-16 md:min-w-96 md:max-w-[35rem]",
+        className,
+      )}
+    >
+      {children}
     </div>
   );
 }
 
 function DesktopNavigation({ className }: { className?: string }) {
+  const { pathname: globalPath } = useResolvedPath(".");
+  const { state }: { state?: { from: string } } = useLocation();
+
+  const chatHref = useMemo(() => {
+    const from = state?.from;
+    if (isChatPath(globalPath)) {
+      return globalPath;
+    }
+    if (from && isChatPath(from)) {
+      return from;
+    }
+    return "/";
+  }, [globalPath, state]);
+
   return (
     <NavigationMenu className={cn("h-full *:h-full", className)}>
       <NavigationMenuList className="h-full gap-2">
-        {navigationLinks.map((link) => (
-          <NavigationMenuItem key={link.label} className="h-full">
-            <NavigationMenuLink
-              active={link.active}
-              href={link.href}
-              className="text-muted-foreground hover:text-primary border-b-primary hover:border-b-primary data-[active]:border-b-primary h-full justify-center rounded-none border-y-2 border-transparent py-1.5 font-medium hover:bg-transparent data-[active]:bg-transparent!"
-            >
-              {link.label}
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        ))}
+        {navigationLinks.map((link) => {
+          return (
+            <NavigationMenuItem key={link.label} className="h-full">
+              <NavigationMenuLink
+                asChild
+                active={isActive(globalPath, link.href)}
+                className="text-muted-foreground hover:text-primary border-b-primary hover:border-b-primary data-[active]:border-b-primary h-full justify-center rounded-none border-y-2 border-transparent py-1.5 font-medium hover:bg-transparent data-[active]:bg-transparent!"
+              >
+                <Link
+                  to={link.href === "/" ? chatHref : link.href}
+                  prefetch="intent"
+                  state={{ from: globalPath }}
+                >
+                  {link.label}
+                </Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          );
+        })}
       </NavigationMenuList>
     </NavigationMenu>
   );
 }
 
 function MobileNavigation({ className }: { className?: string }) {
+  const path = useResolvedPath(".");
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -146,16 +174,18 @@ function MobileNavigation({ className }: { className?: string }) {
               return (
                 <NavigationMenuItem key={link.label} className="w-full">
                   <NavigationMenuLink
-                    href={link.href}
+                    asChild
                     className="flex-row items-center gap-2 py-1.5"
-                    active={link.active}
+                    active={path.pathname === link.href}
                   >
-                    <Icon
-                      size={16}
-                      className="text-muted-foreground"
-                      aria-hidden="true"
-                    />
-                    <span>{link.label}</span>
+                    <Link to={link.href}>
+                      <Icon
+                        size={16}
+                        className="text-muted-foreground"
+                        aria-hidden="true"
+                      />
+                      <span>{link.label}</span>
+                    </Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
               );

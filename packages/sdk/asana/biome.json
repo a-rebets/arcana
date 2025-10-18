@@ -1,6 +1,6 @@
 {
     "extends": "//",
     "files": {
-        "includes": ["**", "!src/lib/api.d.ts"]
+        "includes": ["**", "!src/lib/api.d.ts", "!dist"]
     }
 }

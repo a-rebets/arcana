@@ -1,7 +1,6 @@
 "use node";
 
 import { createHash, randomBytes } from "node:crypto";
-import { v } from "convex/values";
 import { internalAction } from "../../_generated/server";
 
 function generateCodeVerifier(): string {
@@ -18,11 +17,6 @@ function generateState(): string {
 
 export const generatePkceAndState = internalAction({
   args: {},
-  returns: v.object({
-    codeVerifier: v.string(),
-    codeChallenge: v.string(),
-    state: v.string(),
-  }),
   handler: async () => {
     const codeVerifier = generateCodeVerifier();
     const codeChallenge = generateCodeChallenge(codeVerifier);

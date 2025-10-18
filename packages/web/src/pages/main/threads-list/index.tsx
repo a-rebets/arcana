@@ -7,11 +7,10 @@ import {
   MagnifyingGlassIcon,
   QuestionIcon,
 } from "@phosphor-icons/react";
-import { useClickOutside, useMediaQuery, useToggle } from "@react-hookz/web";
+import { useClickOutside, useToggle } from "@react-hookz/web";
 import { useQuery } from "@tanstack/react-query";
 import { type UsePaginatedQueryResult, usePaginatedQuery } from "convex/react";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import {
   Disclosure,
@@ -23,7 +22,9 @@ import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
 import { TextScramble } from "@/components/ui/text-scramble";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useScroll } from "@/hooks/use-scroll";
+import { useChatId } from "@/lib/convex-agent";
 import { cn } from "@/lib/utils";
 import { ThreadsList } from "./list";
 
@@ -38,8 +39,8 @@ const ThreadTitle = memo(({ title }: { title: string | undefined }) => {
 ThreadTitle.displayName = "ThreadTitle";
 
 export function ThreadsBox({ className }: { className?: string }) {
-  const { threadId } = useParams();
-  const isMobile = useMediaQuery("only screen and (max-width : 768px)");
+  const threadId = useChatId();
+  const isMobile = useIsMobile();
   const boxRef = useRef<HTMLDivElement>(null);
 
   const [open, toggleOpen] = useToggle(false);
@@ -50,7 +51,7 @@ export function ThreadsBox({ className }: { className?: string }) {
     loadMore,
     status,
   } = usePaginatedQuery(
-    api.ai.threads.listByUser,
+    api.ai.threads.public.listByUser,
     {},
     {
       initialNumItems: 15,
@@ -59,7 +60,7 @@ export function ThreadsBox({ className }: { className?: string }) {
 
   const { data: searchResults, isFetching: searching } = useQuery(
     convexQuery(
-      api.ai.threads.searchByTitle,
+      api.ai.threads.public.searchByTitle,
       searchTerm ? { searchTerm, limit: 20 } : "skip",
     ),
   );

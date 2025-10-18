@@ -1,7 +1,8 @@
 import { authTables } from "@convex-dev/auth/server";
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
-import { asanaConnectionFields, oauthStateFields } from "./asana/oauth/schemas";
+import { artifacts, datasets } from "./artifacts/schemas";
+import { asanaConnections, oauthStates } from "./asana/oauth/schemas";
 
 export default defineSchema({
   ...authTables,
@@ -16,8 +17,8 @@ export default defineSchema({
     profileColors: v.optional(v.array(v.string())),
     onboardingCompletedTime: v.optional(v.number()),
   }).index("email", ["email"]),
-  asanaConnections: defineTable(asanaConnectionFields).index("by_user", [
-    "userId",
-  ]),
-  oauthStates: defineTable(oauthStateFields).index("by_state", ["state"]),
+  asanaConnections,
+  oauthStates,
+  datasets,
+  artifacts,
 });

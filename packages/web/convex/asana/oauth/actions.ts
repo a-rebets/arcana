@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { internal } from "../../_generated/api";
 import { action } from "../../_generated/server";
+import { requireUserId } from "../../helpers";
 import { env } from "../../lib/env";
 import { allowedScopes } from "./scopes";
 
@@ -8,10 +9,7 @@ export const startAsanaAuth = action({
   args: {},
   returns: v.string(),
   handler: async (ctx): Promise<string> => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Unauthorized");
-    }
+    await requireUserId(ctx);
 
     const { codeVerifier, codeChallenge, state } = await ctx.runAction(
       internal.asana.oauth.pkce.generatePkceAndState,
@@ -42,9 +40,10 @@ export const startAsanaAuth = action({
 export const refreshTokens = action({
   args: {},
   handler: async (ctx): Promise<string> => {
+    const userId = await requireUserId(ctx);
     const connection = await ctx.runQuery(
       internal.asana.oauth.protected.getConnection,
-      {},
+      { userId },
     );
     if (!connection) throw new Error("No connection found");
 
@@ -63,7 +62,7 @@ export const refreshTokens = action({
     await ctx.runMutation(
       internal.asana.oauth.protected.updateConnectionTokensById,
       {
-        connectionId: connection._id,
+        _id: connection._id,
         accessToken: tokens.access_token,
         refreshToken: nextRefreshToken,
         expiresAt: Date.now() + tokens.expires_in * 1000,
@@ -78,9 +77,10 @@ export const disconnect = action({
   args: {},
   returns: v.null(),
   handler: async (ctx): Promise<null> => {
+    const userId = await requireUserId(ctx);
     const connection = await ctx.runQuery(
       internal.asana.oauth.protected.getConnection,
-      {},
+      { userId },
     );
     if (!connection) return null;
 

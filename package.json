@@ -9,7 +9,7 @@
         "dev": "bun --filter '*' dev",
         "build": "bun --filter '*' build",
         "lint": "bun run types; biome check && bun --filter '*' lint",
-        "types": "bun --filter '*' types",
+        "types": "[ -d packages/sdk/asana/dist ] || bun --filter '*' types",
         "preview": "bun --filter '*' preview",
         "format": "biome format --write",
         "clean": "bun run clean:packages && bun run clean:npm",

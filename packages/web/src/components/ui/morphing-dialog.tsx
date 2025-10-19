@@ -408,7 +408,7 @@ function MorphingDialogClose({
       exit="exit"
       variants={variants}
     >
-      {children || <XIcon className="size-4" />}
+      {children || <XIcon className="size-4" weight="bold" />}
     </motion.button>
   );
 }

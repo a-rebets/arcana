@@ -31,7 +31,7 @@ export function Artifacts({ data, sorting }: ArtifactsProps) {
 
   return (
     <AnimatedGroup
-      className="grid grid-cols-[repeat(auto-fill,minmax(min(30rem,100%),35rem))] md:grid-cols-[repeat(auto-fill,clamp(25rem,32%,35rem))] auto-rows-min gap-6 p-6 min-h-full"
+      className="grid grid-cols-[repeat(auto-fill,minmax(min(30rem,100%),35rem))] md:grid-cols-[repeat(auto-fill,clamp(25rem,32%,35rem))] auto-rows-min gap-4 md:gap-6 px-3 py-4 md:p-6 min-h-full"
       variants={{
         container: {
           hidden: { opacity: 0 },
@@ -90,7 +90,7 @@ export function Artifacts({ data, sorting }: ArtifactsProps) {
 
 export function ArtifactsLoadingPlaceholder() {
   return (
-    <div className="grid grid-cols-[repeat(auto-fit,minmax(25rem,1fr))] gap-6 p-6 min-h-full">
+    <div className="grid grid-cols-[repeat(auto-fit,minmax(25rem,1fr))] gap-4 md:gap-6 px-3 py-4 md:p-6 min-h-full">
       {Array.from({ length: 3 }).map((_, index) => (
         <ArtifactCardSkeleton key={index.toString()} />
       ))}

@@ -50,7 +50,12 @@ export function ArtifactCard({ className }: { className?: string }) {
       layoutScroll
     >
       <div className="flex flex-col">
-        <div className="w-full aspect-video [&>form]:hidden" ref={ref} />
+        <motion.div
+          layout
+          layoutId={`chart-${rootId}`}
+          className="w-full aspect-video overflow-clip [&>form]:hidden rounded-t-2xl"
+          ref={ref}
+        />
         <Separator />
         <section className="grid grid-cols-[1fr_auto] gap-6 w-full group/info-row pt-3 px-4 pb-3.5">
           <div className="flex flex-col gap-0.5 min-w-0">
@@ -94,7 +99,7 @@ function ActionsRow({ className, handleDownload }: ActionsRowProps) {
         variant="outline"
         size="icon"
         onClick={handleDownload}
-        className="rounded-lg"
+        className="rounded-lg md:inline-flex hidden"
       >
         <motion.div layoutId={`download-icon-${rootId}`}>
           <DownloadSimpleIcon className="size-5" />
@@ -126,10 +131,7 @@ export function ArtifactCardSkeleton() {
             <Skeleton className="h-3 w-56" />
             <Skeleton className="h-3 w-36" />
           </div>
-          <div className="flex items-center gap-1.5">
-            <Skeleton className="size-9 rounded-lg" />
-            <Skeleton className="size-9 rounded-lg" />
-          </div>
+          <Skeleton className="size-9 rounded-lg" />
         </section>
       </div>
     </div>

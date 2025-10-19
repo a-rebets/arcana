@@ -24,11 +24,11 @@ function Page() {
     <>
       <NavigationHeader className="z-30" />
       <div className="size-full grid grid-cols-1 grid-rows-[auto_1fr] min-h-0">
-        <header className="bg-accent pb-16 px-6 pt-8 flex flex-col gap-y-6">
-          <div className="flex items-center">
+        <header className="bg-accent md:pb-16 px-4 md:px-6 md:pt-8 pt-6 pb-14 flex flex-col gap-y-6">
+          <div className="flex items-center md:gap-x-2 gap-y-1.5 w-full md:w-auto flex-wrap md:flex-nowrap">
             <HeaderTitle />
             {data && (
-              <Badge className="rounded-full px-5 py-1.5 text-base ml-4 mt-0.5 font-light bg-transparent border border-primary/40 text-primary/60 dark:border-primary/60 dark:text-primary/80 inset-shadow-sm">
+              <Badge className="rounded-full px-5 py-1.5 text-base ml-6 md:ml-2 mt-0.5 font-light bg-transparent border border-primary/40 text-primary/60 dark:border-primary/60 dark:text-primary/80 inset-shadow-sm">
                 <SlidingNumber value={data.length} animateOnMount />
               </Badge>
             )}
@@ -76,9 +76,17 @@ function Page() {
 function HeaderTitle() {
   const { data: user } = useQuery(convexQuery(api.core.accounts.getUser, {}));
   return (
-    <p className="font-display text-3xl font-light">
-      {user?.name}'s visualizations
-    </p>
+    <>
+      <p className="w-full md:w-fit flex font-display text-3xl font-light tracking-wide">
+        <span className="truncate block max-w-2/3 md:max-w-none">
+          {user?.name}
+        </span>
+        <span>&apos;s</span>
+      </p>
+      <p className="font-display text-3xl font-light tracking-wide">
+        visualizations
+      </p>
+    </>
   );
 }
 

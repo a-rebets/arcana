@@ -100,12 +100,12 @@ export function ArtifactsLoadingPlaceholder() {
 
 export function ArtifactsEmptyPlaceholder() {
   return (
-    <div className="flex items-center justify-center h-full flex-col gap-4 dark:text-muted-foreground/40 text-muted-foreground/60 pb-36">
-      <EyePlaceholderIcon className="size-56" />
-      <h2 className="font-display md:text-3xl text-2xl md:font-medium font-medium">
+    <div className="flex items-center justify-center h-full flex-col gap-3 md:gap-4 dark:text-muted-foreground/50 text-muted-foreground/60 pb-36">
+      <EyePlaceholderIcon className="md:size-56 size-36" />
+      <h2 className="font-display md:text-3xl text-2xl font-medium">
         Nothing to see here
       </h2>
-      <p className="text-base font-light mb-6">
+      <p className="text-base font-light md:mb-6 mb-5 text-pretty text-center max-w-3/5 md:max-w-none">
         Start extracting insights from your productivity tools now
       </p>
       <Button

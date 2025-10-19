@@ -1,5 +1,6 @@
 import { api } from "@convex/api";
 import { convexQuery } from "@convex-dev/react-query";
+import { useDebouncedState, useUpdateEffect } from "@react-hookz/web";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { NavigationHeader } from "@/components/navigation";
@@ -19,6 +20,13 @@ function Page() {
     convexQuery(api.artifacts.public.listLatestArtifactsForUser, {}),
   );
   const [sorting, setSorting] = useState<Sorting>("newest");
+  const [ready, setReady] = useDebouncedState(false, 500, 1000);
+
+  useUpdateEffect(() => {
+    if (!isPending) setReady(true);
+  }, [isPending]);
+
+  const hasArtifacts = data !== undefined && data.length > 0;
 
   return (
     <>
@@ -27,9 +35,9 @@ function Page() {
         <header className="bg-accent md:pb-16 px-4 md:px-6 md:pt-8 pt-6 pb-14 flex flex-col gap-y-6">
           <div className="flex items-center md:gap-x-2 gap-y-1.5 w-full md:w-auto flex-wrap md:flex-nowrap">
             <HeaderTitle />
-            {data && (
+            {ready && hasArtifacts && (
               <Badge className="rounded-full px-5 py-1.5 text-base ml-6 md:ml-2 mt-0.5 font-light bg-transparent border border-primary/40 text-primary/60 dark:border-primary/60 dark:text-primary/80 inset-shadow-sm">
-                <SlidingNumber value={data.length} animateOnMount />
+                <SlidingNumber value={data?.length ?? 0} animateOnMount />
               </Badge>
             )}
           </div>
@@ -60,12 +68,12 @@ function Page() {
           </div>
         </header>
         <section className="overflow-y-auto rounded-t-3xl -mt-10 z-10 bg-background border-t-[0.5px] border-accent-foreground/20">
-          {isPending ? (
+          {!ready ? (
             <ArtifactsLoadingPlaceholder />
-          ) : !data?.length ? (
-            <ArtifactsEmptyPlaceholder />
-          ) : (
+          ) : hasArtifacts ? (
             <Artifacts data={data} sorting={sorting} />
+          ) : (
+            <ArtifactsEmptyPlaceholder />
           )}
         </section>
       </div>

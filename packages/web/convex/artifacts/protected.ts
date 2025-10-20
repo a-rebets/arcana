@@ -52,16 +52,8 @@ export const listDatasetsByUser = internalQuery({
 });
 
 export const createArtifact = internalMutation({
-  handler: async (
-    ctx,
-    args: Omit<WithoutSystemFields<Doc<"artifacts">>, "type">,
-  ) => {
-    const artifactId = await ctx.db.insert("artifacts", {
-      ...args,
-      type: "vega-lite",
-    });
-
-    return artifactId;
+  handler: async (ctx, args: WithoutSystemFields<Doc<"artifacts">>) => {
+    return await ctx.db.insert("artifacts", args);
   },
 });
 

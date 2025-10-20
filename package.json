@@ -24,10 +24,13 @@
     ],
     "catalog": {
         "@biomejs/biome": "2.2.6",
-        "@convex-dev/agent": "0.2.10",
+        "@convex-dev/agent": "0.2.11",
         "@types/node": "24.7.2",
-        "ai": "5.0.68",
+        "ai": "5.0.76",
         "typescript": "5.9.2",
         "zod": "4.1.12"
+    },
+    "patchedDependencies": {
+        "@convex-dev/agent@0.2.11": "patches/@convex-dev%2Fagent@0.2.11.patch"
     }
 }

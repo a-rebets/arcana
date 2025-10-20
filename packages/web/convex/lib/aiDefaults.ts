@@ -99,8 +99,8 @@ export const CHART_PROMPT = `
     Use transforms for aggregations, calculations, filters as needed.
   </data_handling>
   <sizing>
-    DO NOT specify \`width\` or \`height\` in your specs - responsive sizing is handled automatically by the system.
-    If you must specify size for some reason, use \`"width": "container"\` and \`"height": "container"\`.
+    NEVER include \`width\` or \`height\` fields anywhere in your specs (including in composite views like vconcat/hconcat/layer).
+    Responsive sizing is handled automatically post-generation. Any width/height values will cause layout issues.
   </sizing>
   <compliance>
     100% Vega-Lite v5 compliant: include "$schema" URL. Default visible titles/axes/legends. Tooltips: primitive values only—no "[object Object]". Dynamic titles: "title: { text: { expr: '...' } }", not "title: { expr: '...' }".

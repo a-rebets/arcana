@@ -1,0 +1,29 @@
+diff --git a/dist/mapping.js b/dist/mapping.js
+index 0bf1fe9426e451fafb1083655b03d5b22f6038a6..af5c95415ffb38377bd24d04cda16e7dc5ffc747 100644
+--- a/dist/mapping.js
++++ b/dist/mapping.js
+@@ -105,7 +105,7 @@ export async function serializeNewMessagesInStep(ctx, component, step, model) {
+         sources: step.toolResults.length === 0 ? step.sources : undefined,
+     };
+     const toolFields = { sources: step.sources };
+-    const messages = await Promise.all((step.toolResults.length > 0
++    const messages = await Promise.all((step.finishReason === "tool-calls"
+         ? step.response.messages.slice(-2)
+         : step.content.length
+             ? step.response.messages.slice(-1)
+diff --git a/src/mapping.ts b/src/mapping.ts
+index 99a7b8dbbc3715074aaf3255f9e07af2b09addb5..4870042f1a0a1cfa460c4d563760200d58e33f90 100644
+--- a/src/mapping.ts
++++ b/src/mapping.ts
+@@ -204,7 +204,7 @@ export async function serializeNewMessagesInStep<TOOLS extends ToolSet>(
+   } satisfies Omit<MessageWithMetadata, "message" | "text" | "fileIds">;
+   const toolFields = { sources: step.sources };
+   const messages: MessageWithMetadata[] = await Promise.all(
+-    (step.toolResults.length > 0
++    (step.finishReason === "tool-calls"
+       ? step.response.messages.slice(-2)
+       : step.content.length
+         ? step.response.messages.slice(-1)
+diff --git a/src/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/results.json b/Users/apopelyshev/.bun/install/cache/@convex-dev/agent@0.2.11@@@1/src/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/results.json
+deleted file mode 100644
+index 8a6143fe55d945f96ec3aa39f03b55bf1f7d16fc..0000000000000000000000000000000000000000

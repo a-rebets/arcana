@@ -22,9 +22,10 @@ export const artifacts = defineTable({
   vlSpec: v.string(), // The raw Vega-Lite v5 specification as JSON string.
   vegaSpec: v.string(), // The compiled Vega specification as JSON string.
   datasetId: v.id("datasets"), // ID of dataset referenced by this artifact.
-  parentArtifactId: v.optional(v.id("artifacts")), // For tracking versions and diffs.
+  rootArtifactId: v.optional(v.id("artifacts")), // Points to v1 (undefined if this IS v1).
+  version: v.number(), // Version number: 1 for root, 2 for first update, etc.
   modelUsed: v.optional(v.string()), // Records the model that generated this artifact.
 })
   .index("by_thread", ["threadId"]) // Essential for loading all charts within a specific chat.
   .index("by_user", ["userId"]) // For gallery/listing user's charts.
-  .index("by_parent", ["parentArtifactId"]); // For querying all versions of a specific artifact.
+  .index("by_root_and_version", ["rootArtifactId", "version"]); // For querying all versions of a specific artifact.

@@ -14,8 +14,8 @@ export const arcanaAgent = new Agent<{ asanaToken?: string }>(
   components.agent,
   {
     name: "Asana Copilot",
-    languageModel: openrouter("x-ai/grok-code-fast-1", {
-      reasoning: { enabled: true, effort: "low" },
+    languageModel: openrouter("openai/gpt-5-mini", {
+      reasoning: { effort: "low" },
     }),
     instructions: SYSTEM_PROMPT,
     stopWhen: stepCountIs(20),

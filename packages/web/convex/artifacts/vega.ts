@@ -1,14 +1,13 @@
 "use node";
 
-import { vThreadDoc } from "@convex-dev/agent";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
-import { v } from "convex/values";
+import type { WithoutSystemFields } from "convex/server";
 import { compile, type TopLevelSpec } from "vega-lite";
 import type { LayoutSizeMixins } from "vega-lite/build/src/spec";
 import vlSchema from "vega-lite/build/vega-lite-schema.json";
 import { internal } from "../_generated/api";
-import type { Id } from "../_generated/dataModel";
+import type { Doc, Id } from "../_generated/dataModel";
 import { internalAction } from "../_generated/server";
 
 const ajv = new Ajv({
@@ -28,19 +27,20 @@ function isVegaLiteSpec(
   return validateVegaLite(spec);
 }
 
+type ProcessAndStoreChartArgs = Omit<
+  WithoutSystemFields<Doc<"artifacts">>,
+  "type" | "vegaSpec"
+> & {
+  dataset: Doc<"datasets">["rows"];
+};
+
 export const processAndStoreChart = internalAction({
-  args: {
-    title: v.string(),
-    spec: v.optional(v.string()),
-    dataset: v.array(v.any()),
-    datasetId: v.id("datasets"),
-    threadId: vThreadDoc.fields._id,
-    userId: v.id("users"),
-    parentArtifactId: v.optional(v.id("artifacts")),
-    modelUsed: v.string(),
-  },
-  handler: async (ctx, args): Promise<Id<"artifacts">> => {
-    const vlSpec = args.spec ? JSON.parse(args.spec) : null;
+  handler: async (
+    ctx,
+    args: ProcessAndStoreChartArgs,
+  ): Promise<Id<"artifacts">> => {
+    const { dataset, ...artifactData } = args;
+    const vlSpec = artifactData.vlSpec ? JSON.parse(artifactData.vlSpec) : null;
 
     if (!vlSpec || !isVegaLiteSpec(vlSpec)) {
       throw new Error(
@@ -60,7 +60,7 @@ export const processAndStoreChart = internalAction({
       contains: "padding",
     };
     vlSpec.datasets = {
-      current: args.dataset,
+      current: dataset,
     };
 
     const vegaSpec = compile(vlSpec).spec;
@@ -72,14 +72,9 @@ export const processAndStoreChart = internalAction({
     const artifactId = await ctx.runMutation(
       internal.artifacts.protected.createArtifact,
       {
-        threadId: args.threadId,
-        userId: args.userId,
-        title: args.title,
-        vlSpec: args.spec ?? "",
+        ...artifactData,
         vegaSpec: JSON.stringify(vegaSpec),
-        datasetId: args.datasetId,
-        parentArtifactId: args.parentArtifactId,
-        modelUsed: args.modelUsed,
+        type: "vega-lite",
       },
     );
 

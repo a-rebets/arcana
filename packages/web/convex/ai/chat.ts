@@ -1,5 +1,5 @@
 import type { UIMessage } from "@convex-dev/agent";
-import { consumeStream } from "ai";
+import { consumeStream, InvalidToolInputError, NoSuchToolError } from "ai";
 import { asanaTools } from "asana-tools";
 import { internal } from "../_generated/api";
 import { httpAction } from "../_generated/server";
@@ -59,6 +59,15 @@ export const postMessage = httpAction(async (ctx, request) => {
   return result.toUIMessageStreamResponse({
     consumeSseStream: async ({ stream }) => {
       await consumeStream({ stream });
+    },
+    onError: (error) => {
+      if (NoSuchToolError.isInstance(error)) {
+        return "The model tried to call a unknown tool.";
+      } else if (InvalidToolInputError.isInstance(error)) {
+        return "The model called a tool with invalid inputs.";
+      } else {
+        return "An unknown error occurred.";
+      }
     },
     sendSources: true,
     headers: {

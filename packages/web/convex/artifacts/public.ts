@@ -32,77 +32,37 @@ export const listArtifactChainsForThread = query({
     threadId: vThreadDoc.fields._id,
   },
   handler: async (ctx, args): Promise<ArtifactChain[]> => {
-    const roots = await ctx.db
+    const artifacts = await ctx.db
       .query("artifacts")
       .withIndex("by_thread", (q) => q.eq("threadId", args.threadId))
-      .filter((q) => q.eq(q.field("rootArtifactId"), undefined))
+      .order("asc")
       .collect();
 
-    const chains: Array<ArtifactChain> = await Promise.all(
-      roots.map(async (root) => {
-        const versions = await ctx.db
-          .query("artifacts")
-          .withIndex("by_root_and_version", (q) =>
-            q.eq("rootArtifactId", root._id),
-          )
-          .order("asc")
-          .collect();
-
-        return {
-          rootId: root._id,
-          title: root.title,
-          versions: [root, ...versions].map((a) => ({
-            id: a._id,
-            creationTime: a._creationTime,
-            vegaSpec: a.vegaSpec,
-            threadId: a.threadId,
-          })),
-        };
-      }),
-    );
-
-    return chains;
+    return buildChains(artifacts);
   },
 });
 
 export const listLatestArtifactsForUser = query({
   handler: async (ctx): Promise<ArtifactChainWithLatestVersion[]> => {
     const userId = await requireUserId(ctx);
-    const roots = await ctx.db
+    const artifacts = await ctx.db
       .query("artifacts")
       .withIndex("by_user", (q) => q.eq("userId", userId))
-      .filter((q) => q.eq(q.field("rootArtifactId"), undefined))
+      .order("asc")
       .collect();
 
-    const chains: Array<ArtifactChainWithLatestVersion> = await Promise.all(
-      roots.map(async (root) => {
-        const latestVersion = await ctx.db
-          .query("artifacts")
-          .withIndex("by_root_and_version", (q) =>
-            q.eq("rootArtifactId", root._id),
-          )
-          .order("desc")
-          .first();
+    const chains = buildChains(artifacts);
 
-        const version = latestVersion ?? root;
+    return chains.map((chain) => {
+      const latestVersion = chain.versions[chain.versions.length - 1];
 
-        return {
-          rootId: root._id,
-          title: root.title,
-          versions: [
-            {
-              id: version._id,
-              creationTime: version._creationTime,
-              vegaSpec: version.vegaSpec,
-              threadId: version.threadId,
-            },
-          ],
-          updatedAt: version._creationTime,
-        };
-      }),
-    );
-
-    return chains;
+      return {
+        rootId: chain.rootId,
+        title: chain.title,
+        versions: [latestVersion],
+        updatedAt: latestVersion.creationTime,
+      };
+    });
   },
 });
 
@@ -111,26 +71,21 @@ export const getArtifactChainById = query({
     artifactId: v.id("artifacts"),
   },
   handler: async (ctx, args): Promise<ArtifactChain | null> => {
-    const artifact = await ctx.db.get(args.artifactId);
-    if (!artifact) return null;
+    const root = await ctx.db.get(args.artifactId);
+    if (!root || root.rootArtifactId !== undefined) return null;
 
-    const rootId = artifact.rootArtifactId ?? artifact._id;
-    const root = artifact.rootArtifactId
-      ? await ctx.db.get(artifact.rootArtifactId)
-      : artifact;
-
-    if (!root) return null;
-
-    const versions = await ctx.db
+    const childVersions = await ctx.db
       .query("artifacts")
-      .withIndex("by_root_and_version", (q) => q.eq("rootArtifactId", rootId))
+      .withIndex("by_root_and_version", (q) =>
+        q.eq("rootArtifactId", args.artifactId),
+      )
       .order("asc")
       .collect();
 
     return {
-      rootId,
+      rootId: root._id,
       title: root.title,
-      versions: [root, ...versions].map((a) => ({
+      versions: [root, ...childVersions].map((a) => ({
         id: a._id,
         creationTime: a._creationTime,
         vegaSpec: a.vegaSpec,
@@ -139,3 +94,36 @@ export const getArtifactChainById = query({
     };
   },
 });
+
+function buildChains(artifacts: Array<Doc<"artifacts">>): ArtifactChain[] {
+  const chains: Array<ArtifactChain> = [];
+  const rootToChainIndex = new Map<Id<"artifacts">, number>();
+
+  for (const artifact of artifacts) {
+    const rootId = artifact.rootArtifactId ?? artifact._id;
+    const version: MappedArtifactVersion = {
+      id: artifact._id,
+      creationTime: artifact._creationTime,
+      vegaSpec: artifact.vegaSpec,
+      threadId: artifact.threadId,
+    };
+
+    let chainIndex = rootToChainIndex.get(rootId);
+
+    if (chainIndex === undefined) {
+      chainIndex = chains.length;
+      chains.push({
+        rootId,
+        title: artifact.title,
+        versions: [version],
+      });
+      rootToChainIndex.set(rootId, chainIndex);
+    } else {
+      chains[chainIndex].versions.push(version);
+    }
+  }
+
+  chains.reverse();
+
+  return chains;
+}

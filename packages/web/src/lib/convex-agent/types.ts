@@ -25,6 +25,11 @@ export type ArcanaToolUIPart = Extract<
   { type: ToolUIPart["type"] }
 >;
 
+export type ArcanaChartToolResult = Extract<
+  ArcanaToolUIPart,
+  { type: "tool-charts_createOrUpdateChartTool"; state: "output-available" }
+>;
+
 export type ArcanaTextUIPart = Extract<
   ArcanaUIMessagePart,
   { type: TextUIPart["type"] }

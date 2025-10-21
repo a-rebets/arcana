@@ -4,10 +4,21 @@ import { internal } from "../../_generated/api";
 import type { Doc, Id } from "../../_generated/dataModel";
 
 const createDatasetTool = createTool({
-  description: `Save a dataset extracted from different sources for later use in charts.
-You should provide both the data array and TypeScript code with comments.
-IMPORTANT: Before saving a new dataset, always check first if a similar dataset already exists 
-by using the tool for listing datasets (only once per conversation)`,
+  description: `Create and save datasets for use in charts. Use this tool whenever the user asks for a dataset, whether mock/synthetic data or extracted from external sources.
+
+WHEN TO USE:
+- User explicitly asks to "create a dataset", "make a dataset", "generate data", etc.
+- User requests mock/synthetic/sample data for visualization
+- Data is extracted from Asana or other tools and needs to be saved for charting
+- User wants to explore data through visualizations
+
+IMPORTANT: Before creating a new dataset, check if a similar one exists using the list tool (once per conversation).
+
+Examples of requests that require this tool:
+- "Create a mock dataset for restaurant satisfaction scores"
+- "Make a dataset of weekly sales data"
+- "Save this project data as a dataset"
+- "Generate sample data for customer churn"`,
   args: z.object({
     name: z
       .string()

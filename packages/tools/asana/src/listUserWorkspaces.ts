@@ -43,6 +43,7 @@ const listUserWorkspacesTool = createTool({
 const labels = {
   "input-streaming": "Listing workspaces for the user...",
   "output-available": "Listed workspaces",
+  "output-error": "Failed to list workspaces",
 } as const;
 
 export default {

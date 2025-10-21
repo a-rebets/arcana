@@ -102,6 +102,7 @@ const listUserProjectsTool = createTool({
 const labels = {
   "input-streaming": "Listing projects for the user...",
   "output-available": "Listed projects",
+  "output-error": "Failed to list projects",
 } as const;
 
 export default {

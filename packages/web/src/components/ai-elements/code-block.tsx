@@ -100,7 +100,7 @@ export const CodeBlock = ({
     <CodeBlockContext.Provider value={{ code }}>
       <div
         className={cn(
-          "relative w-full overflow-hidden rounded-md border bg-background text-foreground",
+          "relative w-full overflow-x-auto rounded-md border bg-background text-foreground",
           className,
         )}
         {...props}
@@ -113,11 +113,11 @@ export const CodeBlock = ({
           ) : (
             <>
               <div
-                className="overflow-hidden dark:hidden [&_pre]:p-4 [&_pre]:m-0 [&_pre]:bg-background [&_pre]:text-foreground [&_code]:text-sm [&_code]:font-mono"
+                className="overflow-x-auto dark:hidden [&_pre]:p-4 [&_pre]:m-0 [&_pre]:bg-background [&_pre]:text-foreground [&_code]:text-sm [&_code]:font-mono"
                 dangerouslySetInnerHTML={{ __html: htmlLight }}
               />
               <div
-                className="hidden overflow-hidden dark:block [&_pre]:p-4 [&_pre]:m-0 [&_pre]:bg-background [&_pre]:text-foreground [&_code]:text-sm [&_code]:font-mono"
+                className="hidden overflow-x-auto dark:block [&_pre]:p-4 [&_pre]:m-0 [&_pre]:bg-background [&_pre]:text-foreground [&_code]:text-sm [&_code]:font-mono"
                 dangerouslySetInnerHTML={{ __html: htmlDark }}
               />
             </>

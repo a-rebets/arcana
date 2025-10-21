@@ -66,12 +66,14 @@ export function ToolHeader({
     setTimeout(() => setInternalState(state), delay);
   }, [state]);
 
+  const currentLabelIndex = Object.keys(labels).indexOf(internalState);
+
   return (
     <DisclosureTrigger {...props}>
       <Button
         layout
         transition={{ duration: 0.45, ease: "easeInOut" }}
-        className="py-2 -ml-0.5 text-left text-sm overflow-clip"
+        className={cn("py-2 text-left text-sm overflow-clip", className)}
         type="button"
         variant="outline"
         hoverScale={1}
@@ -86,7 +88,7 @@ export function ToolHeader({
           <TextLoop
             items={Object.values(labels)}
             itemsWithShimmer={[0]}
-            index={internalState === "output-available" ? 1 : 0}
+            index={currentLabelIndex < 0 ? 0 : currentLabelIndex}
             className="ml-1 mr-1.5"
           />
           <motion.div layout="position">
@@ -110,11 +112,11 @@ export type ToolInputProps = ComponentProps<"div"> & {
 };
 
 export const ToolInput = ({ className, input, ...props }: ToolInputProps) => (
-  <div className={cn("space-y-2 overflow-hidden p-4", className)} {...props}>
-    <h4 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
+  <div className={cn("space-y-2 pt-4", className)} {...props}>
+    <h4 className="font-medium text-muted-foreground text-xs uppercase tracking-wide ml-0.5">
       Parameters
     </h4>
-    <div className="rounded-md bg-muted/50">
+    <div className="rounded-md bg-muted/50 overflow-x-auto">
       <CodeBlock code={JSON.stringify(input, null, 2)} language="json" />
     </div>
   </div>
@@ -135,6 +137,38 @@ export const ToolOutput = ({
     return null;
   }
 
+  if (errorText) {
+    // Try to extract and format Zod validation errors
+    let formattedError = errorText;
+    const errorMessageMatch = errorText.match(/Error message:\s*(\[.*\])\s*$/s);
+    if (errorMessageMatch) {
+      try {
+        const errors = JSON.parse(errorMessageMatch[1]);
+        const formatted = errors
+          .map(
+            (e: { path: string[]; message: string }) =>
+              `• ${e.path.join(".")}: ${e.message}`,
+          )
+          .join("\n");
+        formattedError = `Invalid tool inputs:\n${formatted}`;
+      } catch {
+        // Keep original if parsing fails
+      }
+    }
+
+    return (
+      <div className={cn("space-y-2 py-4", className)} {...props}>
+        <h4 className="font-medium text-destructive text-xs uppercase tracking-wide ml-0.5">
+          Error
+        </h4>
+        <div className="overflow-x-auto rounded-md dark:bg-destructive/30 bg-destructive/10 text-destructive dark:text-red-300 text-xs [&_table]:w-full">
+          <div className="p-3 whitespace-pre-wrap">{formattedError}</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Otherwise show the normal output
   let Output = <div>{output as ReactNode}</div>;
 
   if (typeof output === "object") {
@@ -146,19 +180,11 @@ export const ToolOutput = ({
   }
 
   return (
-    <div className={cn("space-y-2 p-4", className)} {...props}>
-      <h4 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
-        {errorText ? "Error" : "Result"}
+    <div className={cn("space-y-2 py-4", className)} {...props}>
+      <h4 className="font-medium text-muted-foreground text-xs uppercase tracking-wide ml-0.5">
+        Result
       </h4>
-      <div
-        className={cn(
-          "overflow-x-auto rounded-md text-xs [&_table]:w-full",
-          errorText
-            ? "bg-destructive/10 text-destructive"
-            : "bg-muted/50 text-foreground",
-        )}
-      >
-        {errorText && <div>{errorText}</div>}
+      <div className="overflow-x-auto rounded-md bg-muted/50 text-foreground text-xs [&_table]:w-full">
         {Output}
       </div>
     </div>

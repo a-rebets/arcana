@@ -15,6 +15,13 @@ const vegaLiteOutputSchema = z.object({
   spec: z.string().describe("The complete Vega-Lite v5 specification JSON"),
 });
 
+export type ChartToolResult = {
+  artifactId: Id<"artifacts">;
+  title: string;
+  version: number;
+  message: string;
+};
+
 const chartModel = (chartsAgent.options.languageModel as LanguageModelV2)
   .modelId;
 
@@ -22,11 +29,12 @@ export async function generateAndStoreChart(
   ctx: ToolCtx,
   prompt: string,
   data: ResolvedChartData,
-  isUpdate: boolean,
-): Promise<{ artifactId: Id<"artifacts">; title: string; version: number }> {
+): Promise<ChartToolResult> {
   if (!ctx.userId || !ctx.threadId) {
     throw new Error("User ID and thread ID are required");
   }
+
+  const isUpdate = !!data.rootArtifactId;
 
   const result = await chartsAgent.generateObject(
     ctx,
@@ -45,24 +53,33 @@ export async function generateAndStoreChart(
     },
   );
 
-  const artifactId = await ctx.runAction(
-    internal.artifacts.vega.processAndStoreChart,
-    {
-      title: isUpdate ? "" : result.object.title,
-      vlSpec: result.object.spec,
-      dataset: data.dataset.rows,
-      datasetId: data.dataset._id,
-      threadId: ctx.threadId,
-      userId: ctx.userId as Id<"users">,
-      rootArtifactId: data.rootArtifactId,
-      version: data.version,
-      modelUsed: chartModel,
-    },
-  );
+  let artifactId: Id<"artifacts">;
+  try {
+    artifactId = await ctx.runAction(
+      internal.artifacts.vega.processAndStoreChart,
+      {
+        title: isUpdate ? "" : result.object.title,
+        vlSpec: result.object.spec,
+        dataset: data.dataset.rows,
+        datasetId: data.dataset._id,
+        threadId: ctx.threadId,
+        userId: ctx.userId as Id<"users">,
+        rootArtifactId: data.rootArtifactId,
+        version: data.version,
+        modelUsed: chartModel,
+      },
+    );
+  } catch (error) {
+    // Convex serializes action errors as strings with "Uncaught X:" prefix
+    // Re-throw as Error so AI SDK treats it as a tool execution error
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(errorMessage.replace(/^Uncaught\s+\w+:\s*/, ""));
+  }
 
   return {
     artifactId,
     title: data.existingArtifact?.title ?? result.object.title,
     version: data.version,
+    message: `Chart ${isUpdate ? "updated" : "created"} successfully`,
   };
 }

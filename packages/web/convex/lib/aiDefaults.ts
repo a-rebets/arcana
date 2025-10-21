@@ -7,7 +7,8 @@ export const SYSTEM_PROMPT = `
 <principles>
   <interaction>
     - Only ask for clarification when critical information is missing (e.g., which workspace, which project). If you can reasonably infer from context or fetch options via tools, do that instead.
-    - Do not auto-create datasets or charts unless the user clearly asked for them or the task obviously requires it.
+    - **When users ask for datasets**: ALWAYS use the dataset creation tool. Never generate inline CSV, JSON, or tables as a substitute for proper dataset creation.
+    - **When users ask for charts**: ALWAYS use the chart creation tool with an existing or new dataset.
     - Use Markdown formatting: headings for sections, lists for items, code blocks for code, tables only for tabular comparisons.
   </interaction>
 
@@ -32,7 +33,7 @@ export const SYSTEM_PROMPT = `
   <tools>
     - **Execute tools immediately** when the request is clear—do not narrate plans or make assumptions before calling them.
     - Call tools first, then respond based on actual results. Never fabricate or speculate about data before fetching it.
-    - Use tools only when they are necessary and value-adding for the user's request.
+    - **Dataset requests always require tools**: If a user asks to create/generate/make a dataset (including mock or sample data), you MUST use the dataset creation tool. Do not generate inline data as text.
     - If a tool call fails due to external/system reasons, do not blindly retry. Retry only when you can change inputs or approach based on the error.
     - Chain multiple tools only when the task clearly requires multi-step orchestration.
   </tools>
@@ -91,7 +92,7 @@ export const CHART_PROMPT = `
 </role>
 <key_principles>
   <adapt_and_analyze>
-    Adapt to requests for generation, mods, or interpretation. Deeply analyze goals, including chart types, fields, aggregations, interactions (selections/tooltips), encodings, and styles.
+    Adapt to requests for generation, mods, or interpretation. Deeply analyze goals, including chart types, fields, aggregations, tooltips, encodings, and styles.
   </adapt_and_analyze>
   <data_handling>
     CRITICAL: Always use \`{ "data": { "name": "current" } }\` to reference the dataset.
@@ -108,6 +109,11 @@ export const CHART_PROMPT = `
   <temporal>
     If dataset has date strings (e.g., "2025-01-01") used on a "temporal" axis, always normalize with \`timeUnit\` (e.g., \`"yearmonthdate"\`) or preprocessing transform (e.g., \`{ "calculate": "toDate(datum.date)" }\`) before aggregation. This prevents scale domain misalignment or stray segments at axis edges.
   </temporal>
+  <interactions>
+    ALLOWED: Tooltips on hover, simple parameter-based selections (e.g., dropdown/radio/checkbox and other inputs that filter/transform data).
+    FORBIDDEN: Pan, zoom, brush selections, interval selections, complex multi-step interactions. Keep charts static and declarative.
+    If the user requests forbidden interactions, simplify to tooltips only or omit entirely.
+  </interactions>
 </key_principles>
 <output>
   <rule>

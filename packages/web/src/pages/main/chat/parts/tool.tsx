@@ -116,7 +116,7 @@ function isChartToolResultPart(
     part.state === "output-available" &&
     typeof part.output === "object" &&
     part.output !== null &&
-    "artifactId" in part.output
+    "version" in part.output
   );
 }
 

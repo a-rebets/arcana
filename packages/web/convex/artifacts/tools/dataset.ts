@@ -4,21 +4,14 @@ import { internal } from "../../_generated/api";
 import type { Doc, Id } from "../../_generated/dataModel";
 
 const createDatasetTool = createTool({
-  description: `Create and save datasets for use in charts. Use this tool whenever the user asks for a dataset, whether mock/synthetic data or extracted from external sources.
+  description: `Create datasets for charting.
 
-WHEN TO USE:
-- User explicitly asks to "create a dataset", "make a dataset", "generate data", etc.
-- User requests mock/synthetic/sample data for visualization
-- Data is extracted from Asana or other tools and needs to be saved for charting
-- User wants to explore data through visualizations
+Use when:
+- User asks to create/generate a dataset
+- Data from Asana/tools needs saving for charts
+- User wants mock data for visualization
 
-IMPORTANT: Before creating a new dataset, check if a similar one exists using the list tool (once per conversation).
-
-Examples of requests that require this tool:
-- "Create a mock dataset for restaurant satisfaction scores"
-- "Make a dataset of weekly sales data"
-- "Save this project data as a dataset"
-- "Generate sample data for customer churn"`,
+CRITICAL: Provide meaningful data with actual values. Empty arrays or objects with no properties will fail.`,
   args: z.object({
     name: z
       .string()
@@ -27,6 +20,7 @@ Examples of requests that require this tool:
       ),
     data: z
       .array(z.record(z.any(), z.any()))
+      .min(1, "Dataset must contain at least one row of data")
       .describe("Array of JSON objects containing the actual data"),
     schema: z
       .string()

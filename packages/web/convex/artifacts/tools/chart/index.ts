@@ -5,37 +5,33 @@ import { type ChartToolResult, generateAndStoreChart } from "./generation";
 import { resolveChartData } from "./resolver";
 
 const createOrUpdateChartSchema = z.object({
-  task: z
-    .string()
-    .describe(
-      "Description of the chart to create or how to modify it. Examples: 'create a bar chart showing projects by status', 'convert this to a line chart', 'add a tooltip showing project names'",
-    ),
-  datasetId: z
-    .string()
-    .optional()
-    .describe(
-      "Dataset ID to create a chart from. Use this for NEW charts. Get this from createDatasetTool or listDatasetsTool.",
-    ),
+  task: z.string().describe("Description of the chart to create or modify."),
+  datasetId: z.string().optional().describe("Dataset ID to use for the chart."),
   artifactId: z
     .string()
     .optional()
-    .describe(
-      "Artifact ID of an existing chart to modify. Use this to UPDATE existing charts.",
-    ),
+    .describe("Existing chart ID to update or reference."),
 });
 
 const chartToolDescription = `Create or update Vega-Lite v5 charts.
 
-Usage: 'datasetId' for new | 'artifactId' for updates | both for new chart using old as reference.
+Three scenarios of usage:
+1. NEW chart with existing dataset: Pass datasetId only
+2. UPDATE existing chart (same dataset): Pass artifactId only
+3. UPDATE existing chart with different dataset: Pass datasetId + artifactId (to reference the old spec style)
 
-Write detailed 'task' with:
+DO NOT include datasetId, artifactId, or any internal metadata in the task.
+
+Task instructions:
 - Chart type (bar, line, scatter, pie, etc.)
 - Field encodings: x/y axes, color, size
 - Interactions: tooltips, filters
 - Sorting/aggregations
 - Visual styling if needed
 
-Example: "Bar chart showing project count by status. X-axis: status field, Y-axis: count aggregation. Color by priority field. Add tooltips with status and count. Sort descending by count."`;
+Important: the tool can use only Vega Lite features, not full Vega.
+
+Example: "Bar chart showing project count by status. X-axis: status field, Y-axis: count. Color by priority. Add tooltips with status and count. Sort descending by count."`;
 
 export const createOrUpdateChartTool = createTool({
   description: chartToolDescription,

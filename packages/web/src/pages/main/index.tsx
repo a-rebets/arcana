@@ -59,7 +59,7 @@ function Page({ params }: Route.ComponentProps) {
         <Threads />
       </NavigationHeader>
       <div className="size-full flex min-h-0">
-        <div className="pb-6 relative flex flex-col h-full flex-1">
+        <div className="pb-6 relative flex flex-col h-full flex-1 min-w-0">
           <Conversation className="flex-1 min-h-0">
             <ConversationContent className="max-w-4xl mx-auto px-6 py-4">
               <ChatMessages />

@@ -32,7 +32,7 @@ export const Tool = ({ className, ...props }: ToolProps) => {
   );
 };
 
-const getStatusBadge = (status: ToolUIPart["state"]) => {
+const getHeaderBadge = (state: ToolUIPart["state"]) => {
   const icons = {
     "input-streaming": <CircleIcon className="size-3" />,
     "input-available": <ClockIcon className="size-3 animate-pulse" />,
@@ -40,7 +40,7 @@ const getStatusBadge = (status: ToolUIPart["state"]) => {
     "output-error": <XCircleIcon className="size-3 text-red-600" />,
   } as const;
 
-  return icons[status];
+  return icons[state];
 };
 
 export type ToolHeaderProps = {
@@ -49,6 +49,7 @@ export type ToolHeaderProps = {
   isAsana?: boolean;
   labels: ToolLabels;
   children?: ReactNode;
+  isPreliminary?: boolean;
 };
 
 export function ToolHeader({
@@ -57,6 +58,7 @@ export function ToolHeader({
   isAsana,
   labels,
   children,
+  isPreliminary,
   ...props
 }: ToolHeaderProps) {
   const [internalState, setInternalState] = useState(state);
@@ -87,12 +89,12 @@ export function ToolHeader({
           {children || <GearSixIcon className="size-4 text-muted-foreground" />}
           <TextLoop
             items={Object.values(labels)}
-            itemsWithShimmer={[0]}
+            itemsWithShimmer={isPreliminary ? [0, 1] : [0]}
             index={currentLabelIndex < 0 ? 0 : currentLabelIndex}
             className="ml-1 mr-1.5"
           />
           <motion.div layout="position">
-            {getStatusBadge(internalState)}
+            {getHeaderBadge(isPreliminary ? "input-available" : internalState)}
           </motion.div>
         </motion.div>
         <motion.div layout="position">
@@ -122,6 +124,45 @@ export const ToolInput = ({ className, input, ...props }: ToolInputProps) => (
   </div>
 );
 
+export type ToolErrorProps = ComponentProps<"div"> & {
+  errorText: string;
+};
+
+export const ToolError = ({
+  className,
+  errorText,
+  ...props
+}: ToolErrorProps) => {
+  // Try to extract and format Zod validation errors
+  let formattedError = errorText;
+  const errorMessageMatch = errorText.match(/Error message:\s*(\[.*\])\s*$/s);
+  if (errorMessageMatch) {
+    try {
+      const errors = JSON.parse(errorMessageMatch[1]);
+      const formatted = errors
+        .map(
+          (e: { path: string[]; message: string }) =>
+            `• ${e.path.join(".")}: ${e.message}`,
+        )
+        .join("\n");
+      formattedError = `Invalid tool inputs:\n${formatted}`;
+    } catch {
+      // Keep original if parsing fails
+    }
+  }
+
+  return (
+    <div className={cn("space-y-2 py-4", className)} {...props}>
+      <h4 className="font-medium text-destructive text-xs uppercase tracking-wide ml-0.5">
+        Error
+      </h4>
+      <div className="overflow-x-auto rounded-md dark:bg-destructive/30 bg-destructive/10 text-destructive dark:text-red-300 text-xs [&_table]:w-full">
+        <div className="p-3 whitespace-pre-wrap">{formattedError}</div>
+      </div>
+    </div>
+  );
+};
+
 export type ToolOutputProps = ComponentProps<"div"> & {
   output: ToolUIPart["output"];
   errorText: ToolUIPart["errorText"];
@@ -138,34 +179,7 @@ export const ToolOutput = ({
   }
 
   if (errorText) {
-    // Try to extract and format Zod validation errors
-    let formattedError = errorText;
-    const errorMessageMatch = errorText.match(/Error message:\s*(\[.*\])\s*$/s);
-    if (errorMessageMatch) {
-      try {
-        const errors = JSON.parse(errorMessageMatch[1]);
-        const formatted = errors
-          .map(
-            (e: { path: string[]; message: string }) =>
-              `• ${e.path.join(".")}: ${e.message}`,
-          )
-          .join("\n");
-        formattedError = `Invalid tool inputs:\n${formatted}`;
-      } catch {
-        // Keep original if parsing fails
-      }
-    }
-
-    return (
-      <div className={cn("space-y-2 py-4", className)} {...props}>
-        <h4 className="font-medium text-destructive text-xs uppercase tracking-wide ml-0.5">
-          Error
-        </h4>
-        <div className="overflow-x-auto rounded-md dark:bg-destructive/30 bg-destructive/10 text-destructive dark:text-red-300 text-xs [&_table]:w-full">
-          <div className="p-3 whitespace-pre-wrap">{formattedError}</div>
-        </div>
-      </div>
-    );
+    return <ToolError className={className} errorText={errorText} {...props} />;
   }
 
   // Otherwise show the normal output

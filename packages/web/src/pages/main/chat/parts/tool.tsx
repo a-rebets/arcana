@@ -14,6 +14,7 @@ import type {
   ArcanaUIMessagePart,
 } from "@/lib/convex-agent";
 import {
+  type DynamicToolOutput,
   type RawArcanaUIToolPackage,
   type RawArcanaUIToolType,
   toolLabels,
@@ -27,19 +28,22 @@ const ToolIcons = {
 
 function ToolCall({ part }: { part: ArcanaToolUIPart }) {
   const toolInfo = parseToolType(part.type);
-  const defaultLabels = getDefaultToolLabels(part.type);
-  const labels = toolInfo ? toolLabels[toolInfo.fullName] : defaultLabels;
+  const labels = getToolLabels(part);
 
   if (isChartToolResultPart(part)) {
     return <ArtifactChatButton data={part.output} className="mb-4" />;
   }
 
+  const isPreliminary =
+    part.state === "output-available" && part.preliminary === true;
+
   return (
     <Tool>
       <ToolHeader
-        labels={labels ?? defaultLabels}
+        labels={labels}
         state={part.state}
         className="-ml-0.5"
+        isPreliminary={isPreliminary}
       >
         {toolInfo ? ToolIcons[toolInfo.package] : null}
       </ToolHeader>
@@ -55,6 +59,29 @@ function ToolCall({ part }: { part: ArcanaToolUIPart }) {
       </ToolContent>
     </Tool>
   );
+}
+
+function getToolLabels(part: ArcanaToolUIPart) {
+  const output = part.output;
+  const toolInfo = parseToolType(part.type);
+  const defaultLabels = getDefaultToolLabels(part.type);
+
+  if (!toolInfo) {
+    return defaultLabels;
+  }
+  const { "output-available": outputLabel, ...rest } =
+    toolLabels[toolInfo.fullName];
+
+  if (typeof outputLabel === "string") {
+    return { ...rest, "output-available": outputLabel };
+  }
+
+  return {
+    ...rest,
+    "output-available": output
+      ? (output as DynamicToolOutput)[outputLabel.field]
+      : defaultLabels["output-available"],
+  };
 }
 
 function getDefaultToolLabels(toolType: ArcanaToolUIPart["type"]) {

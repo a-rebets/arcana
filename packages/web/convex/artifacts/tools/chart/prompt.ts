@@ -28,3 +28,31 @@ ${JSON.stringify(vlSpec, null, 2)}
   
 ${datasetInfo}`;
 }
+
+export function buildChartRetryPrompt(
+  task: string,
+  dataset: Doc<"datasets">,
+  failedSpec: string,
+  validationError: string,
+): string {
+  const datasetInfo = `Dataset Title: "${dataset.name}"
+  
+Dataset Schema:
+\`\`\`
+${dataset.schema ?? ""}
+\`\`\``;
+
+  return `${task}
+
+Your previous spec (which has errors):
+\`\`\`json
+${failedSpec}
+\`\`\`
+
+Validation error:
+${validationError}
+
+Fix the spec to address these errors.
+
+${datasetInfo}`;
+}

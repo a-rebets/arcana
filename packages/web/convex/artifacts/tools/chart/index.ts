@@ -2,7 +2,6 @@ import { createTool } from "@convex-dev/agent";
 import z from "zod";
 import type { Id } from "../../../_generated/dataModel";
 import { type ChartToolResult, generateAndStoreChart } from "./generation";
-import { buildChartPrompt } from "./prompt";
 import { resolveChartData } from "./resolver";
 
 const createOrUpdateChartSchema = z.object({
@@ -41,7 +40,7 @@ Example: "Bar chart showing project count by status. X-axis: status field, Y-axi
 export const createOrUpdateChartTool = createTool({
   description: chartToolDescription,
   args: createOrUpdateChartSchema,
-  handler: async (ctx, args): Promise<ChartToolResult> => {
+  async *handler(ctx, args): AsyncGenerator<ChartToolResult> {
     if (!args.datasetId && !args.artifactId) {
       throw new Error(
         "Either datasetId (for new chart) or artifactId (for updating) must be provided",
@@ -52,12 +51,7 @@ export const createOrUpdateChartTool = createTool({
       datasetId: args.datasetId as Id<"datasets">,
       artifactId: args.artifactId as Id<"artifacts">,
     });
-    const prompt = buildChartPrompt(
-      args.task,
-      data.dataset,
-      data.existingArtifact,
-    );
 
-    return await generateAndStoreChart(ctx, prompt, data);
+    yield* generateAndStoreChart(ctx, args.task, data);
   },
 });

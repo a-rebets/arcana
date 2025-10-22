@@ -36,7 +36,9 @@ export async function resolveChartData(
     throw new Error("Dataset not found");
   }
 
-  const isUpdate = existingArtifact && !args.datasetId;
+  const isUpdate =
+    existingArtifact &&
+    (!args.datasetId || args.datasetId === existingArtifact.datasetId);
 
   return {
     dataset,

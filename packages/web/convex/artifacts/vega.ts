@@ -2,12 +2,10 @@
 
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
-import type { WithoutSystemFields } from "convex/server";
 import { compile, type TopLevelSpec } from "vega-lite";
 import type { LayoutSizeMixins } from "vega-lite/build/src/spec";
 import vlSchema from "vega-lite/build/vega-lite-schema.json";
-import { internal } from "../_generated/api";
-import type { Doc, Id } from "../_generated/dataModel";
+import type { Doc } from "../_generated/dataModel";
 import { internalAction } from "../_generated/server";
 
 const ajv = new Ajv({
@@ -27,57 +25,72 @@ function isVegaLiteSpec(
   return validateVegaLite(spec);
 }
 
-type ProcessAndStoreChartArgs = Omit<
-  WithoutSystemFields<Doc<"artifacts">>,
-  "type" | "vegaSpec"
-> & {
+type ValidateVLSpecResult =
+  | {
+      valid: true;
+    }
+  | {
+      valid: false;
+      errors: string;
+    };
+
+export const validateVLSpec = internalAction({
+  handler: async (
+    _ctx,
+    { vlSpec }: { vlSpec: string },
+  ): Promise<ValidateVLSpecResult> => {
+    const parsed = JSON.parse(vlSpec);
+
+    if (!isVegaLiteSpec(parsed)) {
+      const errors =
+        validateVegaLite.errors
+          ?.map((err) => `${err.instancePath || "root"}: ${err.message}`)
+          .join(", ") || "Unknown validation error";
+      return { valid: false, errors };
+    }
+
+    return { valid: true };
+  },
+});
+
+type CompileVLSpecArgs = {
+  vlSpec: string;
   dataset: Doc<"datasets">["rows"];
 };
 
-export const processAndStoreChart = internalAction({
+type CompileVLSpecResult = {
+  vlSpec: string;
+  vegaSpec: string;
+};
+
+export const compileVLSpec = internalAction({
   handler: async (
-    ctx,
-    args: ProcessAndStoreChartArgs,
-  ): Promise<Id<"artifacts">> => {
-    const { dataset, ...artifactData } = args;
-    const vlSpec = artifactData.vlSpec ? JSON.parse(artifactData.vlSpec) : null;
+    _ctx,
+    { vlSpec, dataset }: CompileVLSpecArgs,
+  ): Promise<CompileVLSpecResult> => {
+    const parsed = JSON.parse(vlSpec);
 
-    if (!vlSpec || !isVegaLiteSpec(vlSpec)) {
-      throw new Error(
-        `Invalid Vega-Lite specification: ${
-          validateVegaLite.errors
-            ?.map((err) => `${err.instancePath || "root"}: ${err.message}`)
-            .join(", ") || "Unknown validation error"
-        }`,
-      );
-    }
-
-    vlSpec.width = "container";
-    vlSpec.height = "container";
-    vlSpec.autosize = {
+    parsed.width = "container";
+    parsed.height = "container";
+    parsed.autosize = {
       type: "fit",
       resize: true,
       contains: "padding",
     };
-    vlSpec.datasets = {
+    parsed.datasets = {
       current: dataset,
     };
 
-    const vegaSpec = compile(vlSpec).spec;
+    // Compile to Vega
+    const vegaSpec = compile(parsed).spec;
 
     if (!vegaSpec) {
       throw new Error("Failed to compile Vega-Lite spec");
     }
 
-    const artifactId = await ctx.runMutation(
-      internal.artifacts.protected.createArtifact,
-      {
-        ...artifactData,
-        vegaSpec: JSON.stringify(vegaSpec),
-        type: "vega-lite",
-      },
-    );
-
-    return artifactId;
+    return {
+      vlSpec: JSON.stringify(parsed),
+      vegaSpec: JSON.stringify(vegaSpec),
+    };
   },
 });

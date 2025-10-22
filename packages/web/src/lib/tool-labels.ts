@@ -1,6 +1,17 @@
 import { asanaToolLabels } from "asana-tools";
 import type { ArcanaToolUIPart } from "@/lib/convex-agent/types";
 
+export type DynamicToolOutput = Extract<
+  ArcanaToolUIPart["output"],
+  { message: string }
+>;
+
+export type ToolLabels<T = string> = {
+  "input-streaming": string;
+  "output-available": T;
+  "output-error": string;
+};
+
 const artifactsToolLabels = {
   datasets_listDatasetsTool: {
     "input-streaming": "Checking existing datasets...",
@@ -13,21 +24,19 @@ const artifactsToolLabels = {
     "output-error": "Failed to create dataset",
   },
   charts_createOrUpdateChartTool: {
-    "input-streaming": "Generating the chart, may take a minute...",
-    "output-available": "Chart created successfully",
+    "input-streaming": "Processing the chart request...",
+    "output-available": { field: "message" } as const,
     "output-error": "Failed to create the chart",
   },
-} as const;
+};
 
-export const toolLabels = {
+export const toolLabels: Record<
+  string,
+  ToolLabels<string | { field: keyof DynamicToolOutput }>
+> = {
   ...asanaToolLabels,
   ...artifactsToolLabels,
 };
-
-export type ToolLabels = Record<
-  "input-streaming" | "output-available" | "output-error",
-  string
->;
 
 export type ExtractToolName<T extends string> = T extends `tool-${infer U}`
   ? U

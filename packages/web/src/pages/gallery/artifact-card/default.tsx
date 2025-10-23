@@ -47,7 +47,6 @@ export function ArtifactCard({ className }: { className?: string }) {
         className,
         isOpen && "z-20",
       )}
-      layoutScroll
     >
       <div className="flex flex-col">
         <motion.div

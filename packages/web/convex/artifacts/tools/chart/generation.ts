@@ -10,8 +10,9 @@ import type { ResolvedChartData } from "./types";
 const vegaLiteOutputSchema = z.object({
   title: z
     .string()
+    .max(65, "Title is too long")
     .describe(
-      "A concise, descriptive title for the chart (e.g., 'Projects by Status', 'Task Completion Over Time')",
+      "A concise, descriptive title for the chart (40-60 characters max). Examples: 'Projects by Status', 'Product Sales YoY 2023-2025'",
     ),
   spec: z.string().describe("The complete Vega-Lite v5 specification JSON"),
 });
@@ -68,7 +69,7 @@ export async function* generateAndStoreChart(
     | { success: false; error: string }
   > {
     try {
-      const { vlSpec, vegaSpec } = await validateAndCompileSpec(
+      const vegaSpec = await validateAndCompileSpec(
         ctx,
         generated.spec,
         data.dataset.rows,
@@ -77,7 +78,7 @@ export async function* generateAndStoreChart(
         internal.artifacts.protected.createArtifact,
         {
           title: isUpdate ? "" : generated.title,
-          vlSpec,
+          vlSpec: generated.spec,
           vegaSpec,
           datasetId: data.dataset._id,
           threadId: ctx.threadId as string,
@@ -92,7 +93,7 @@ export async function* generateAndStoreChart(
       return {
         success: true,
         output: {
-          artifactId,
+          artifactId: data.rootArtifactId ?? artifactId,
           title: data.existingArtifact?.title ?? generated.title,
           version: data.version,
           message: `Chart ${isUpdate ? "updated" : "created"} successfully`,

@@ -4,28 +4,31 @@ import { internal } from "../../_generated/api";
 import type { Doc, Id } from "../../_generated/dataModel";
 
 const createDatasetTool = createTool({
-  description: `Create datasets for charting.
+  description: `Create datasets for charting. Use only when you have actual data to save (from Asana, user input, or mock data).
 
-Use when:
-- User asks to create/generate a dataset
-- Data from Asana/tools needs saving for charts
-- User wants mock data for visualization
+Before calling:
+- Construct the data array with all values filled in
+- Define the matching TypeScript schema
+- Provide all three parameters (name, data, schema)
 
-CRITICAL: Provide meaningful data with actual values. Empty arrays or objects with no properties will fail.`,
+CRITICAL: 
+- You must provide ALL THREE fields: name, data, and schema. Empty or undefined values will fail.
+- The data parameter must be an actual array of objects with values, not undefined or empty.
+- After calling: Confirm save briefly without reciting the data (user sees it in UI).`,
   args: z.object({
     name: z
       .string()
-      .describe(
-        "Human-readable name for the dataset (e.g., 'Projects by Artem')",
-      ),
+      .describe("Dataset name (required). Example: 'Q4 Sales by Region'"),
     data: z
       .array(z.record(z.any(), z.any()))
       .min(1, "Dataset must contain at least one row of data")
-      .describe("Array of JSON objects containing the actual data"),
+      .describe(
+        "REQUIRED: Array of data objects with actual values. Must be constructed before calling this tool. Each object must have properties matching the TS type schema. Example: [{region: 'North', sales: 1200}, {region: 'South', sales: 950}]. Cannot be undefined or empty.",
+      ),
     schema: z
       .string()
       .describe(
-        'TypeScript types describing the data structure. Example: \'interface Project { id: string; name: string; status: "active" | "archived"; }\\ntype DATA = Project[]\'',
+        "REQUIRED: TypeScript type definition of your data, may be complex if needed. Example: 'interface Row { region: string; sales: number; }\\ntype DATA = Row[]'",
       ),
   }),
   handler: async (ctx, args): Promise<string> => {
@@ -50,7 +53,7 @@ CRITICAL: Provide meaningful data with actual values. Empty arrays or objects wi
       },
     );
 
-    return `Dataset created with ID: \`${result}\``;
+    return `Dataset saved successfully. ID: \`${result}\`. Do not recite the data - user can see it in the UI.`;
   },
 });
 

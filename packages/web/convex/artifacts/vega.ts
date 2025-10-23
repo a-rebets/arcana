@@ -58,16 +58,11 @@ type CompileVLSpecArgs = {
   dataset: Doc<"datasets">["rows"];
 };
 
-type CompileVLSpecResult = {
-  vlSpec: string;
-  vegaSpec: string;
-};
-
 export const compileVLSpec = internalAction({
   handler: async (
     _ctx,
     { vlSpec, dataset }: CompileVLSpecArgs,
-  ): Promise<CompileVLSpecResult> => {
+  ): Promise<string> => {
     const parsed = JSON.parse(vlSpec);
 
     parsed.width = "container";
@@ -88,9 +83,6 @@ export const compileVLSpec = internalAction({
       throw new Error("Failed to compile Vega-Lite spec");
     }
 
-    return {
-      vlSpec: JSON.stringify(parsed),
-      vegaSpec: JSON.stringify(vegaSpec),
-    };
+    return JSON.stringify(vegaSpec);
   },
 });

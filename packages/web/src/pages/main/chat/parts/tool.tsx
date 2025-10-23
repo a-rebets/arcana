@@ -40,6 +40,7 @@ function ToolCall({ part }: { part: ArcanaToolUIPart }) {
   return (
     <Tool>
       <ToolHeader
+        id={part.toolCallId}
         labels={labels}
         state={part.state}
         className="-ml-0.5"

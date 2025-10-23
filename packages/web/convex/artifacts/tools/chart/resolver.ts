@@ -21,8 +21,8 @@ export async function resolveChartData(
     throw new Error(`Artifact not found: ${args.artifactId}`);
   }
 
-  // Determine which dataset to use
-  const datasetId = args.datasetId ?? existingArtifact?.datasetId;
+  const datasetId =
+    (args.datasetId || undefined) ?? existingArtifact?.datasetId;
 
   if (!datasetId) {
     throw new Error("No dataset provided");

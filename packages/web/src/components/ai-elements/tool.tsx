@@ -8,7 +8,7 @@ import {
 } from "@phosphor-icons/react";
 import { useUpdateEffect } from "@react-hookz/web";
 import type { ToolUIPart } from "ai";
-import { motion } from "motion/react";
+import { LayoutGroup, motion } from "motion/react";
 import { type ComponentProps, type ReactNode, useState } from "react";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import {
@@ -43,7 +43,17 @@ const getHeaderBadge = (state: ToolUIPart["state"]) => {
   return icons[state];
 };
 
+function getOrderedLabels(labels: ToolLabels, state: ToolUIPart["state"]) {
+  const order = ["input-streaming", "output-available", "output-error"];
+  const currentIndex = order.indexOf(state);
+  return {
+    orderedLabels: order.map((label) => labels[label as keyof ToolLabels]),
+    currentLabelIndex: currentIndex < 0 ? 0 : currentIndex,
+  };
+}
+
 export type ToolHeaderProps = {
+  id?: string;
   state: ToolUIPart["state"];
   className?: string;
   isAsana?: boolean;
@@ -53,6 +63,7 @@ export type ToolHeaderProps = {
 };
 
 export function ToolHeader({
+  id,
   className,
   state,
   isAsana,
@@ -68,40 +79,49 @@ export function ToolHeader({
     setTimeout(() => setInternalState(state), delay);
   }, [state]);
 
-  const currentLabelIndex = Object.keys(labels).indexOf(internalState);
+  const { currentLabelIndex, orderedLabels } = getOrderedLabels(
+    labels,
+    internalState,
+  );
 
   return (
-    <DisclosureTrigger {...props}>
-      <Button
-        layout
-        transition={{ duration: 0.45, ease: "easeInOut" }}
-        className={cn("py-2 text-left text-sm overflow-clip", className)}
-        type="button"
-        variant="outline"
-        hoverScale={1}
-        tapScale={1}
-        size="sm"
-        style={{
-          borderRadius: 50,
-        }}
-      >
-        <motion.div className="flex items-center gap-2" layout="position">
-          {children || <GearSixIcon className="size-4 text-muted-foreground" />}
-          <TextLoop
-            items={Object.values(labels)}
-            itemsWithShimmer={isPreliminary ? [0, 1] : [0]}
-            index={currentLabelIndex < 0 ? 0 : currentLabelIndex}
-            className="ml-1 mr-1.5"
-          />
-          <motion.div layout="position">
-            {getHeaderBadge(isPreliminary ? "input-available" : internalState)}
+    <LayoutGroup>
+      <DisclosureTrigger {...props}>
+        <Button
+          layout="size"
+          transition={{ duration: 0.45, ease: "easeInOut" }}
+          className={cn("py-2 text-left text-sm overflow-clip", className)}
+          type="button"
+          variant="outline"
+          hoverScale={1}
+          tapScale={1}
+          size="sm"
+          style={{
+            borderRadius: 50,
+          }}
+        >
+          <motion.div className="flex items-center gap-2" layout="position">
+            {children || (
+              <GearSixIcon className="size-4 text-muted-foreground" />
+            )}
+            <TextLoop
+              items={orderedLabels}
+              itemsWithShimmer={isPreliminary ? [0, 1] : [0]}
+              index={currentLabelIndex}
+              className="ml-1 mr-1.5"
+            />
+            <motion.div layout="position">
+              {getHeaderBadge(
+                isPreliminary ? "input-available" : internalState,
+              )}
+            </motion.div>
           </motion.div>
-        </motion.div>
-        <motion.div layout="position">
-          <CaretDownIcon className="size-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
-        </motion.div>
-      </Button>
-    </DisclosureTrigger>
+          <motion.div layout="position">
+            <CaretDownIcon className="size-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+          </motion.div>
+        </Button>
+      </DisclosureTrigger>
+    </LayoutGroup>
   );
 }
 

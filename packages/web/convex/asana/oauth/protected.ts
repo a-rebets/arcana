@@ -195,16 +195,18 @@ export const saveNewTokens = internalMutation({
       .withIndex("by_user", (q) => q.eq("userId", args.userId))
       .first();
 
+    const { oauthStateId, ...connectionData } = args;
+
     if (connection) {
-      await ctx.db.patch(connection._id, { ...args });
+      await ctx.db.patch(connection._id, connectionData);
     } else {
-      await ctx.db.insert("asanaConnections", { ...args });
+      await ctx.db.insert("asanaConnections", connectionData);
     }
 
     await ctx.db.patch(args.userId, {
       onboardingCompletedTime: Date.now(),
     });
 
-    await ctx.db.delete(args.oauthStateId);
+    await ctx.db.delete(oauthStateId);
   },
 });

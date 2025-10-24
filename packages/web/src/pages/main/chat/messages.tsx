@@ -59,7 +59,11 @@ export function ChatMessages() {
           </div>
         );
       })}
-      {status === "submitted" && <EyeLoader />}
+      {status === "submitted" && (
+        <div key="loader">
+          <EyeLoader />
+        </div>
+      )}
     </>
   );
 }

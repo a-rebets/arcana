@@ -1,15 +1,20 @@
 import {
   CaretDownIcon,
   CheckCircleIcon,
-  CircleIcon,
   ClockIcon,
   GearSixIcon,
   XCircleIcon,
 } from "@phosphor-icons/react";
-import { useUpdateEffect } from "@react-hookz/web";
+import { useDebouncedState, useUpdateEffect } from "@react-hookz/web";
 import type { ToolUIPart } from "ai";
-import { LayoutGroup, motion } from "motion/react";
-import { type ComponentProps, type ReactNode, useState } from "react";
+import { motion } from "motion/react";
+import {
+  type ComponentProps,
+  type ReactNode,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import {
   Disclosure,
@@ -34,7 +39,7 @@ export const Tool = ({ className, ...props }: ToolProps) => {
 
 const getHeaderBadge = (state: ToolUIPart["state"]) => {
   const icons = {
-    "input-streaming": <CircleIcon className="size-3" />,
+    "input-streaming": <ClockIcon className="size-3 animate-pulse" />,
     "input-available": <ClockIcon className="size-3 animate-pulse" />,
     "output-available": <CheckCircleIcon className="size-3 text-green-600" />,
     "output-error": <XCircleIcon className="size-3 text-red-600" />,
@@ -74,54 +79,69 @@ export function ToolHeader({
 }: ToolHeaderProps) {
   const [internalState, setInternalState] = useState(state);
 
-  useUpdateEffect(() => {
-    const delay = state === "output-available" ? 300 : 0;
-    setTimeout(() => setInternalState(state), delay);
-  }, [state]);
-
-  const { currentLabelIndex, orderedLabels } = getOrderedLabels(
-    labels,
-    internalState,
+  const shouldAnimate =
+    internalState.startsWith("input-") || isPreliminary === true;
+  const [animationComplete, setAnimationComplete] = useDebouncedState(
+    false,
+    500,
   );
 
+  useUpdateEffect(() => {
+    const delay = state === "output-available" ? 500 : 0;
+    const timeoutId = setTimeout(() => {
+      setInternalState(state);
+    }, delay);
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [state]);
+
+  useEffect(() => {
+    if (!shouldAnimate) {
+      setAnimationComplete(true);
+    }
+  }, [shouldAnimate, setAnimationComplete]);
+
+  const { currentLabelIndex, orderedLabels } = useMemo(
+    () => getOrderedLabels(labels, internalState),
+    [labels, internalState],
+  );
+
+  const animateLayout = animationComplete ? undefined : "position";
+
   return (
-    <LayoutGroup>
-      <DisclosureTrigger {...props}>
-        <Button
-          layout="size"
-          transition={{ duration: 0.45, ease: "easeInOut" }}
-          className={cn("py-2 text-left text-sm overflow-clip", className)}
-          type="button"
-          variant="outline"
-          hoverScale={1}
-          tapScale={1}
-          size="sm"
-          style={{
-            borderRadius: 50,
-          }}
-        >
-          <motion.div className="flex items-center gap-2" layout="position">
-            {children || (
-              <GearSixIcon className="size-4 text-muted-foreground" />
-            )}
-            <TextLoop
-              items={orderedLabels}
-              itemsWithShimmer={isPreliminary ? [0, 1] : [0]}
-              index={currentLabelIndex}
-              className="ml-1 mr-1.5"
-            />
-            <motion.div layout="position">
-              {getHeaderBadge(
-                isPreliminary ? "input-available" : internalState,
-              )}
-            </motion.div>
+    <DisclosureTrigger {...props}>
+      <Button
+        layout="size"
+        transition={{ duration: 0.45, ease: "easeInOut" }}
+        className={cn("py-2 text-left text-sm overflow-clip", className)}
+        type="button"
+        variant="outline"
+        hoverScale={1}
+        tapScale={1}
+        size="sm"
+        style={{
+          borderRadius: 50,
+        }}
+      >
+        <motion.div className="flex items-center gap-2" layout={animateLayout}>
+          {children || <GearSixIcon className="size-4 text-muted-foreground" />}
+          <TextLoop
+            items={orderedLabels}
+            itemsWithShimmer={isPreliminary ? [0, 1] : [0]}
+            index={currentLabelIndex}
+            className="ml-1 mr-1.5"
+            layout={animateLayout}
+          />
+          <motion.div layout={animateLayout}>
+            {getHeaderBadge(isPreliminary ? "input-available" : internalState)}
           </motion.div>
-          <motion.div layout="position">
-            <CaretDownIcon className="size-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
-          </motion.div>
-        </Button>
-      </DisclosureTrigger>
-    </LayoutGroup>
+        </motion.div>
+        <motion.div layout={animateLayout}>
+          <CaretDownIcon className="size-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+        </motion.div>
+      </Button>
+    </DisclosureTrigger>
   );
 }
 

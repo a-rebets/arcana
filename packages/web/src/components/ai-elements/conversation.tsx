@@ -1,4 +1,5 @@
 import { ArrowDownIcon } from "@phosphor-icons/react";
+import { type HTMLMotionProps, motion } from "motion/react";
 import type { ComponentProps } from "react";
 import { useCallback } from "react";
 import { StickToBottom, useStickToBottomContext } from "use-stick-to-bottom";
@@ -9,7 +10,7 @@ export type ConversationProps = ComponentProps<typeof StickToBottom>;
 
 export const Conversation = ({ className, ...props }: ConversationProps) => (
   <StickToBottom
-    className={cn("relative flex-1 overflow-y-auto", className)}
+    className={cn("relative flex-1", className)}
     initial="smooth"
     resize="smooth"
     role="log"
@@ -17,16 +18,34 @@ export const Conversation = ({ className, ...props }: ConversationProps) => (
   />
 );
 
-export type ConversationContentProps = ComponentProps<
-  typeof StickToBottom.Content
->;
+type ConversationContentProps = StickToBottom.ContentProps &
+  HTMLMotionProps<"div">;
 
 export const ConversationContent = ({
+  children,
   className,
   ...props
-}: ConversationContentProps) => (
-  <StickToBottom.Content className={cn("p-4", className)} {...props} />
-);
+}: ConversationContentProps) => {
+  const context = useStickToBottomContext();
+  return (
+    <motion.div
+      ref={context.scrollRef}
+      style={{
+        height: "100%",
+        width: "100%",
+      }}
+      layoutScroll
+    >
+      <motion.div
+        className={cn("p-4", className)}
+        {...props}
+        ref={context.contentRef}
+      >
+        {typeof children === "function" ? children(context) : children}
+      </motion.div>
+    </motion.div>
+  );
+};
 
 export type ConversationEmptyStateProps = ComponentProps<"div"> & {
   title?: string;

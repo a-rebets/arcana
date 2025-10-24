@@ -28,7 +28,7 @@ const ToolIcons = {
 
 function ToolCall({ part }: { part: ArcanaToolUIPart }) {
   const toolInfo = parseToolType(part.type);
-  const labels = getToolLabels(part);
+  const labels = getToolLabels(part, toolInfo?.fullName);
 
   if (isChartToolResultPart(part)) {
     return <ArtifactChatButton data={part.output} className="mb-4" />;
@@ -40,7 +40,7 @@ function ToolCall({ part }: { part: ArcanaToolUIPart }) {
   return (
     <Tool>
       <ToolHeader
-        id={part.toolCallId}
+        key={part.toolCallId}
         labels={labels}
         state={part.state}
         className="-ml-0.5"
@@ -62,16 +62,17 @@ function ToolCall({ part }: { part: ArcanaToolUIPart }) {
   );
 }
 
-function getToolLabels(part: ArcanaToolUIPart) {
+function getToolLabels(
+  part: ArcanaToolUIPart,
+  name: RawArcanaUIToolType | undefined,
+) {
   const output = part.output;
-  const toolInfo = parseToolType(part.type);
   const defaultLabels = getDefaultToolLabels(part.type);
 
-  if (!toolInfo) {
+  if (!name) {
     return defaultLabels;
   }
-  const { "output-available": outputLabel, ...rest } =
-    toolLabels[toolInfo.fullName];
+  const { "output-available": outputLabel, ...rest } = toolLabels[name];
 
   if (typeof outputLabel === "string") {
     return { ...rest, "output-available": outputLabel };

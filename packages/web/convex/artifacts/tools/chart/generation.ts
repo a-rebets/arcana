@@ -43,24 +43,6 @@ export async function* generateAndStoreChart(
 
   const isUpdate = !!data.rootArtifactId;
 
-  async function generateSpec(
-    prompt: string,
-    reasoningEffort: "low" | "medium",
-  ) {
-    const { object } = await chartsAgent.generateObject(
-      ctx,
-      { userId: ctx.userId },
-      {
-        prompt,
-        schema: vegaLiteOutputSchema,
-        providerOptions: {
-          openrouter: { reasoning: { effort: reasoningEffort } },
-        },
-      },
-    );
-    return object;
-  }
-
   async function tryValidateAndStore(generated: {
     title: string;
     spec: string;
@@ -113,6 +95,7 @@ export async function* generateAndStoreChart(
   yield { message: "Generating the chart, may take a minute..." };
 
   let generatedResult = await generateSpec(
+    ctx,
     initialPrompt,
     isUpdate ? "low" : "medium",
   );
@@ -127,22 +110,40 @@ export async function* generateAndStoreChart(
     }
 
     lastError = result.error;
-
-    if (attempt < MAX_RETRY_ATTEMPTS - 1) {
-      yield { message: "Fixing errors..." };
-      const retryPrompt = buildChartRetryPrompt(
-        task,
-        data.dataset,
-        generatedResult.spec,
-        result.error,
-      );
-      generatedResult = await generateSpec(retryPrompt, "low");
-    }
+    yield {
+      message: attempt === 0 ? "Fixing errors..." : "Still fixing errors...",
+    };
+    const retryPrompt = buildChartRetryPrompt(
+      task,
+      data.dataset,
+      generatedResult.spec,
+      result.error,
+    );
+    generatedResult = await generateSpec(ctx, retryPrompt, "low");
   }
 
   throw new Error(
     `Failed to generate valid chart after ${MAX_RETRY_ATTEMPTS} attempts: ${lastError}`,
   );
+}
+
+async function generateSpec(
+  ctx: ToolCtx,
+  prompt: string,
+  reasoningEffort: "low" | "medium",
+) {
+  const { object } = await chartsAgent.generateObject(
+    ctx,
+    { userId: ctx.userId },
+    {
+      prompt,
+      schema: vegaLiteOutputSchema,
+      providerOptions: {
+        openrouter: { reasoning: { effort: reasoningEffort } },
+      },
+    },
+  );
+  return object;
 }
 
 async function validateAndCompileSpec(
@@ -156,7 +157,7 @@ async function validateAndCompileSpec(
   );
 
   if (!validation.valid) {
-    throw new Error(`Invalid Vega-Lite specification: ${validation.errors}`);
+    throw new Error(`Invalid chart specification: ${validation.errors}`);
   }
 
   return await ctx.runAction(internal.artifacts.vega.compileVLSpec, {

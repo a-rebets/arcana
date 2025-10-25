@@ -12,9 +12,12 @@ export async function resolveChartData(
   }
 
   const existingArtifact = args.artifactId
-    ? await ctx.runQuery(internal.artifacts.protected.getArtifact, {
-        artifactId: args.artifactId,
-      })
+    ? await ctx.runQuery(
+        internal.artifacts.protected.getLatestArtifactVersion,
+        {
+          artifactId: args.artifactId,
+        },
+      )
     : null;
 
   if (args.artifactId && !existingArtifact) {

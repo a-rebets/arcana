@@ -80,7 +80,7 @@ export const compileVLSpec = internalAction({
     const vegaSpec = compile(parsed).spec;
 
     if (!vegaSpec) {
-      throw new Error("Failed to compile Vega-Lite spec");
+      throw new Error("Failed to compile the chart specification");
     }
 
     return JSON.stringify(vegaSpec);

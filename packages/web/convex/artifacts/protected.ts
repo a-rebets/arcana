@@ -65,3 +65,22 @@ export const getArtifact = internalQuery({
     return await ctx.db.get(args.artifactId);
   },
 });
+
+export const getLatestArtifactVersion = internalQuery({
+  args: {
+    artifactId: v.id("artifacts"),
+  },
+  handler: async (ctx, args) => {
+    const artifact = await ctx.db.get(args.artifactId);
+    if (!artifact) return null;
+
+    const rootId = artifact.rootArtifactId ?? artifact._id;
+    const latest = await ctx.db
+      .query("artifacts")
+      .withIndex("by_root_and_version", (q) => q.eq("rootArtifactId", rootId))
+      .order("desc")
+      .first();
+
+    return latest ?? artifact;
+  },
+});

@@ -123,7 +123,5 @@ function buildChains(artifacts: Array<Doc<"artifacts">>): ArtifactChain[] {
     }
   }
 
-  chains.reverse();
-
   return chains;
 }

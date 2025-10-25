@@ -36,11 +36,11 @@ export default function OnboardingBoundary({
     }
   }, [user, require, redirectTo, navigate]);
 
-  if (user === undefined) return fallback;
+  if (user == null) return fallback;
 
   if (
-    (require === "onboarded" && !user?.onboardingCompletedTime) ||
-    (require === "not-onboarded" && user?.onboardingCompletedTime)
+    (require === "onboarded" && !user.onboardingCompletedTime) ||
+    (require === "not-onboarded" && user.onboardingCompletedTime)
   ) {
     return null;
   }

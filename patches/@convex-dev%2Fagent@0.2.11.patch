@@ -1,0 +1,55 @@
+diff --git a/dist/UIMessages.js b/dist/UIMessages.js
+index 5587d5c31ece02a2705c1e5c9ce2d9ffee5afcb1..da4819ebd4b5c74c8ceeb77b522d00d68bb673f3 100644
+--- a/dist/UIMessages.js
++++ b/dist/UIMessages.js
+@@ -328,13 +328,16 @@ function createAssistantUIMessage(groupUnordered) {
+                     const output = typeof contentPart.output?.type === "string"
+                         ? contentPart.output.value
+                         : contentPart.output;
++                        const isError = message.error ||
++                            contentPart.output?.type === "error-text" ||
++                            contentPart.output?.type === "error-json";
+                     const call = allParts.find((part) => part.type === `tool-${contentPart.toolName}` &&
+                         "toolCallId" in part &&
+                         part.toolCallId === contentPart.toolCallId);
+                     if (call) {
+-                        if (message.error) {
++                        if (isError) {
+                             call.state = "output-error";
+-                            call.errorText = message.error;
++                            call.errorText = message.error || output;
+                             call.output = output;
+                         }
+                         else {
+@@ -344,13 +347,13 @@ function createAssistantUIMessage(groupUnordered) {
+                     }
+                     else {
+                         console.warn("Tool result without preceding tool call.. adding anyways", contentPart);
+-                        if (message.error) {
++                        if (isError) {
+                             allParts.push({
+                                 type: `tool-${contentPart.toolName}`,
+                                 toolCallId: contentPart.toolCallId,
+                                 state: "output-error",
+                                 input: undefined,
+-                                errorText: message.error,
++                                errorText: message.error || output,
+                                 callProviderMetadata: message.providerMetadata,
+                             });
+                         }
+diff --git a/dist/mapping.js b/dist/mapping.js
+index 0bf1fe9426e451fafb1083655b03d5b22f6038a6..af5c95415ffb38377bd24d04cda16e7dc5ffc747 100644
+--- a/dist/mapping.js
++++ b/dist/mapping.js
+@@ -105,7 +105,7 @@ export async function serializeNewMessagesInStep(ctx, component, step, model) {
+         sources: step.toolResults.length === 0 ? step.sources : undefined,
+     };
+     const toolFields = { sources: step.sources };
+-    const messages = await Promise.all((step.toolResults.length > 0
++    const messages = await Promise.all((step.finishReason === "tool-calls"
+         ? step.response.messages.slice(-2)
+         : step.content.length
+             ? step.response.messages.slice(-1)
+diff --git a/src/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/results.json b/Users/apopelyshev/.bun/install/cache/@convex-dev/agent@0.2.11@@@1/src/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/results.json
+deleted file mode 100644
+index 8a6143fe55d945f96ec3aa39f03b55bf1f7d16fc..0000000000000000000000000000000000000000

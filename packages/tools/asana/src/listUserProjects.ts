@@ -1,4 +1,4 @@
-import { tool } from "ai";
+import { createTool } from "@convex-dev/agent";
 import {
   castArrayWithOptFields,
   type ProjectResponse,
@@ -6,7 +6,7 @@ import {
 } from "asana-sdk";
 import { type AsanaSdkClient, createAsanaClient } from "./http";
 import { ListUserProjectsInput } from "./schemas";
-import type { ToolLabels } from "./types";
+import type { AsanaToolCtx } from "./types";
 
 async function getUserTeams(
   sdk: AsanaSdkClient,
@@ -84,26 +84,26 @@ async function listUserProjects({
   return { projects: limitedProjects };
 }
 
-const listUserProjectsTool = tool({
+const listUserProjectsTool = createTool({
   description:
     "List projects a user is a member of within a workspace, optionally filtering by teams.",
-  inputSchema: ListUserProjectsInput,
-  execute: async (input, opts) => {
-    const ctx = opts.experimental_context as { asanaToken?: string };
+  args: ListUserProjectsInput,
+  handler: async (ctx: AsanaToolCtx, args) => {
     const token = ctx.asanaToken;
     if (!token) {
       throw new Error(
         "Missing Asana access token in experimental_context.asanaToken",
       );
     }
-    return listUserProjects({ token, ...input });
+    return listUserProjects({ token, ...args });
   },
 });
 
-const labels: ToolLabels = {
+const labels = {
   "input-streaming": "Listing projects for the user...",
   "output-available": "Listed projects",
-};
+  "output-error": "Failed to list projects",
+} as const;
 
 export default {
   tool: listUserProjectsTool,

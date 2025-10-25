@@ -1,4 +1,13 @@
 {
     "extends": "../../tsconfig.json",
+    "references": [{ "path": "../../sdk/asana" }],
+    "compilerOptions": {
+        "composite": true,
+        "declaration": true,
+        "declarationMap": true,
+        "outDir": "./dist",
+        "noEmit": false,
+        "allowImportingTsExtensions": false
+    },
     "include": ["src", "index.ts"]
 }

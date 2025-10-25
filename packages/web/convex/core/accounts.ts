@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import type { Doc } from "../_generated/dataModel";
-import { internalMutation, mutation, query } from "../_generated/server";
+import { mutation, query } from "../_generated/server";
 import { requireUserId } from "../helpers";
 
 export const updateUserInfo = mutation({
@@ -10,15 +10,6 @@ export const updateUserInfo = mutation({
     await ctx.db.patch(userId, {
       profileColors: args.profileColors,
       name: args.name,
-    });
-  },
-});
-
-export const completeOnboarding = internalMutation({
-  args: { id: v.id("users") },
-  handler: async (ctx, args) => {
-    await ctx.db.patch(args.id, {
-      onboardingCompletedTime: Date.now(),
     });
   },
 });

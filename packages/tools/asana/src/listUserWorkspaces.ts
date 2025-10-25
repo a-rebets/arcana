@@ -1,8 +1,8 @@
-import { tool } from "ai";
+import { createTool } from "@convex-dev/agent";
 import type { WorkspaceCompact } from "asana-sdk";
 import { createAsanaClient } from "./http";
 import { ListUserWorkspacesInput } from "./schemas";
-import type { ToolLabels } from "./types";
+import type { AsanaToolCtx } from "./types";
 
 async function listUserWorkspaces({
   token,
@@ -26,25 +26,25 @@ async function listUserWorkspaces({
   };
 }
 
-const listUserWorkspacesTool = tool({
+const listUserWorkspacesTool = createTool({
   description: "List workspaces the user has access to (id and name).",
-  inputSchema: ListUserWorkspacesInput,
-  execute: async (input, opts) => {
-    const ctx = opts.experimental_context as { asanaToken?: string };
+  args: ListUserWorkspacesInput,
+  handler: async (ctx: AsanaToolCtx, args) => {
     const token = ctx.asanaToken;
     if (!token) {
       throw new Error(
         "Missing Asana access token in experimental_context.asanaToken",
       );
     }
-    return listUserWorkspaces({ token, ...input });
+    return listUserWorkspaces({ token, ...args });
   },
 });
 
-const labels: ToolLabels = {
+const labels = {
   "input-streaming": "Listing workspaces for the user...",
   "output-available": "Listed workspaces",
-};
+  "output-error": "Failed to list workspaces",
+} as const;
 
 export default {
   tool: listUserWorkspacesTool,

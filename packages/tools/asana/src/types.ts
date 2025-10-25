@@ -1,3 +1,3 @@
-export type ToolState = "input-streaming" | "output-available";
+import type { ToolCtx } from "@convex-dev/agent";
 
-export type ToolLabels = Record<ToolState, string>;
+export type AsanaToolCtx = ToolCtx & { asanaToken?: string };

@@ -29,6 +29,7 @@ export const useChatMessages = createFieldSelector("messages");
 export const useChatStatus = createFieldSelector("status");
 export const useChatQueryStatus = createFieldSelector("queryStatus");
 export const useChatInitialSyncDone = createFieldSelector("initialSyncDone");
+export const useChatId = createFieldSelector("id");
 
 // Derived selectors
 export function useChatMessagesCount<

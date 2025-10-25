@@ -1,5 +1,4 @@
 import { GlobeSimpleIcon } from "@phosphor-icons/react";
-import { useParams } from "react-router";
 import {
   PromptInput,
   PromptInputBody,
@@ -11,18 +10,23 @@ import {
 } from "@/components/ai-elements/prompt-input";
 import { useAsanaRefresh } from "@/hooks/use-asana-refresh";
 import { useChatInput } from "@/hooks/use-chat-input";
-import { useChatStatus } from "@/lib/convex-agent";
+import { useChatId, useChatStatus } from "@/lib/convex-agent";
+import { ArtifactsToggleButton } from "@/pages/main/artifacts";
 
-export const ChatInput = () => {
-  const { threadId } = useParams<{ threadId: string }>();
+export const ChatInput = ({ className }: { className?: string }) => {
+  const threadId = useChatId();
 
   const { ready: asanaReady } = useAsanaRefresh();
   const inputHelpers = useChatInput(threadId);
-
   const status = useChatStatus();
 
   return (
-    <PromptInput onSubmit={inputHelpers.handleSubmit} globalDrop multiple>
+    <PromptInput
+      onSubmit={inputHelpers.handleSubmit}
+      globalDrop
+      multiple
+      className={className}
+    >
       <PromptInputBody>
         <PromptInputTextarea
           onChange={inputHelpers.handleInputChange}
@@ -36,9 +40,10 @@ export const ChatInput = () => {
             onClick={inputHelpers.toggleWebSearch}
             hoverScale={1}
           >
-            <GlobeSimpleIcon size={16} />
+            <GlobeSimpleIcon weight="bold" />
             <span>Search</span>
           </PromptInputButton>
+          <ArtifactsToggleButton />
         </PromptInputTools>
         <PromptInputSubmit
           disabled={

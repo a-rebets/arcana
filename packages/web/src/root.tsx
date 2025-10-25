@@ -14,7 +14,6 @@ import {
 } from "react-router";
 import type { Route } from "./+types/root";
 import { Toaster } from "./components/ui/sonner";
-import { cn } from "./lib/utils";
 
 import "./globals.css";
 
@@ -50,12 +49,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body
-        className={cn(
-          " bg-background text-foreground",
-          currentRoute.handle?.bodyClasses ?? "",
-        )}
-      >
+      <body className={currentRoute.handle?.bodyClasses}>
         {children}
         <ScrollRestoration />
         <Scripts />

@@ -2,20 +2,35 @@
     "name": "arcana",
     "version": "1.0.0",
     "devDependencies": {
-        "@types/node": "24.5.2",
-        "typescript": "5.9.2"
+        "@biomejs/biome": "catalog:",
+        "typescript": "catalog:"
     },
     "scripts": {
         "dev": "bun --filter '*' dev",
         "build": "bun --filter '*' build",
-        "lint": "bun --filter '*' lint",
+        "lint": "bun run types; biome check && bun --filter '*' lint",
+        "types": "[ -d packages/sdk/asana/dist ] || bun --filter '*' types",
         "preview": "bun --filter '*' preview",
-        "format": "bun --filter '*' format"
+        "format": "biome format --write",
+        "clean": "bun run clean:packages && bun run clean:npm",
+        "clean:packages": "find . -name 'dist' -type d -prune -exec rm -rf '{}' +",
+        "clean:npm": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +"
     },
     "workspaces": [
         "packages/web",
         "packages/tools/*",
         "packages/sdk/*",
         "packages/doc-gen"
-    ]
+    ],
+    "catalog": {
+        "@biomejs/biome": "2.2.6",
+        "@convex-dev/agent": "0.2.11",
+        "@types/node": "24.7.2",
+        "ai": "5.0.76",
+        "typescript": "5.9.2",
+        "zod": "4.1.12"
+    },
+    "patchedDependencies": {
+        "@convex-dev/agent@0.2.11": "patches/@convex-dev%2Fagent@0.2.11.patch"
+    }
 }

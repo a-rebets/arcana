@@ -1,25 +1,5 @@
+import { defineTable } from "convex/server";
 import { v } from "convex/values";
-
-export const tokenFields = {
-  accessToken: v.string(),
-  refreshToken: v.string(),
-  expiresAt: v.number(),
-} as const;
-
-export const oauthStateFields = {
-  state: v.string(),
-  userId: v.id("users"),
-  codeVerifier: v.string(),
-  expiresAt: v.number(),
-} as const;
-
-export const asanaConnectionFields = {
-  userId: v.id("users"),
-  asanaUserId: v.string(),
-  asanaUserName: v.string(),
-  asanaUserEmail: v.string(),
-  ...tokenFields,
-} as const;
 
 export const exchangeTokenResponse = v.object({
   access_token: v.string(),
@@ -34,3 +14,20 @@ export const exchangeTokenResponse = v.object({
     email: v.string(),
   }),
 });
+
+export const asanaConnections = defineTable({
+  userId: v.id("users"),
+  asanaUserId: v.string(),
+  asanaUserName: v.string(),
+  asanaUserEmail: v.string(),
+  accessToken: v.string(),
+  refreshToken: v.string(),
+  expiresAt: v.number(),
+}).index("by_user", ["userId"]);
+
+export const oauthStates = defineTable({
+  state: v.string(),
+  userId: v.id("users"),
+  codeVerifier: v.string(),
+  expiresAt: v.number(),
+}).index("by_state", ["state"]);

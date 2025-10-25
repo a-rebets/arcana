@@ -1,13 +1,20 @@
 {
-	"name": "asana-tools",
-	"version": "0.1.0",
-	"private": true,
-	"type": "module",
-	"main": "./index.ts",
-	"types": "./index.ts",
-	"dependencies": {
-		"ai": "^5.0.47",
-		"zod": "^4.1.8",
-		"asana-sdk": "workspace:*"
-	}
+    "name": "asana-tools",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "main": "./index.ts",
+    "types": "./dist/index.d.ts",
+    "scripts": {
+        "types": "tsc -b ."
+    },
+    "dependencies": {
+        "@convex-dev/agent": "catalog:",
+        "ai": "catalog:",
+        "asana-sdk": "workspace:*",
+        "zod": "catalog:"
+    },
+    "devDependencies": {
+        "typescript": "catalog:"
+    }
 }

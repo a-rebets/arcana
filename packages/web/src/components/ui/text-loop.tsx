@@ -65,7 +65,6 @@ export function TextLoop({
   return (
     <motion.div
       className={cn("relative whitespace-nowrap inline-block", className)}
-      {...props}
     >
       <span
         style={{
@@ -86,6 +85,7 @@ export function TextLoop({
           exit="exit"
           transition={transition}
           variants={variants || motionVariants}
+          {...props}
         >
           {withShimmer ? (
             <TextShimmer duration={0.8} spread={2} as="span">

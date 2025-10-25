@@ -51,29 +51,23 @@ export function ArtifactsContent({
   useDeepCompareEffect(() => {
     if (!artifacts?.length) return;
 
-    const currentChart = activeChart ?? {
-      rootId: searchParams.get("artifact"),
-    };
+    const openedChartId = searchParams.get("artifact");
+    const currentChartId = activeChart?.rootId ?? openedChartId;
     const versionMap = Object.fromEntries(
       artifacts.map((a) => [a.rootId, a.versions.length]),
     );
     syncVersionStates(versionMap);
 
-    // Try to maintain position on the same chart
-    if (currentChart.rootId) {
-      setSearchParams({});
-      const newIndex = artifacts.findIndex(
-        (a) => a.rootId === currentChart.rootId,
-      );
-      if (newIndex !== -1 && newIndex !== carouselIndex) {
+    if (openedChartId) setSearchParams({});
+    if (currentChartId) {
+      const newIndex = artifacts.findIndex((a) => a.rootId === currentChartId);
+      if (newIndex !== -1) {
         setCarouselIndex(newIndex);
-        return;
       }
-      if (newIndex !== -1) return;
+      return;
     }
 
-    const { rootId, title } = artifacts[0];
-    setCarouselIndex(0);
+    const { rootId, title } = artifacts[artifacts.length - 1];
     setActiveChart({ rootId, title });
   }, [artifacts]);
 
@@ -84,7 +78,17 @@ export function ArtifactsContent({
     if (activeChart?.rootId !== next.rootId) {
       setActiveChart({ rootId: next.rootId, title: next.title });
     }
-  }, [carouselIndex, artifacts, activeChart]);
+  }, [carouselIndex]);
+
+  // Update carousel index when active chart is changed externally
+  useUpdateEffect(() => {
+    if (!activeChart || !artifacts?.length) return;
+    const switchedChartIndex = artifacts.findIndex(
+      (a) => a.rootId === activeChart.rootId,
+    );
+    if (switchedChartIndex < 0) return;
+    setCarouselIndex(switchedChartIndex);
+  }, [activeChart]);
 
   return (
     <CarouselContent>

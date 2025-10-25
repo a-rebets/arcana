@@ -20,7 +20,7 @@ function Page() {
     convexQuery(api.artifacts.public.listLatestArtifactsForUser, {}),
   );
   const [sorting, setSorting] = useState<Sorting>("newest");
-  const [ready, setReady] = useDebouncedState(false, 500, 1000);
+  const [ready, setReady] = useDebouncedState(!isPending, 500, 1000);
 
   useUpdateEffect(() => {
     if (!isPending) setReady(true);

@@ -46,9 +46,7 @@ export function NavigationHeader({
   children,
 }: HTMLAttributes<HTMLDivElement>) {
   return (
-    <header
-      className={cn("border-b px-4 md:px-6 pt-4 md:pt-0 z-30", className)}
-    >
+    <header className={cn("border-b px-4 md:px-6 pt-4 md:pt-0", className)}>
       <section
         className={cn(
           "relative grid gap-4 md:min-h-16",

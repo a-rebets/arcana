@@ -5,11 +5,13 @@ import { cn } from "@/lib/utils";
 export function GradientBackground({
   className,
   gradient,
-  active,
+  active = true,
+  animating = true,
 }: {
   className?: string;
   gradient: Gradient;
-  active: boolean;
+  active?: boolean;
+  animating?: boolean;
 }) {
   return (
     <motion.div
@@ -32,10 +34,28 @@ export function GradientBackground({
       }}
       transition={{
         duration: active ? 4 : 0,
-        repeat: Infinity,
+        repeat: animating ? Infinity : undefined,
         ease: "linear",
         opacity: { duration: 0.5 },
       }}
+    />
+  );
+}
+
+export function StaticGradientBackground({
+  className,
+  gradient,
+}: {
+  className?: string;
+  gradient: Gradient;
+}) {
+  return (
+    <div
+      className={cn(
+        "absolute -inset-1 -z-10 pointer-events-none rounded-xl blur-md bg-linear-to-br transition-all duration-500 ease-in-out",
+        getGradientClasses(gradient),
+        className,
+      )}
     />
   );
 }

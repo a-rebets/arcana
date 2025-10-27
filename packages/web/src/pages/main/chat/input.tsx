@@ -33,7 +33,7 @@ export const ChatInput = ({ className }: { className?: string }) => {
         <StaticGradientBackground
           gradient={userData.profileColors as Gradient}
           className={cn(
-            "blur-sm -inset-[1.5px] rounded-2xl saturate-200 dark:saturate-100 z-20",
+            "blur-sm -inset-px rounded-2xl saturate-200 dark:saturate-100 z-20",
             bgDimmed && "blur-xs opacity-50",
           )}
         />

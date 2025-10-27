@@ -1,4 +1,4 @@
-import { CardsIcon, HouseIcon } from "@phosphor-icons/react";
+import { CardsIcon, ChatCircleTextIcon } from "@phosphor-icons/react";
 import { type HTMLAttributes, useMemo } from "react";
 import { Link, useLocation, useResolvedPath } from "react-router";
 import { Button } from "@/components/animate-ui/components/buttons/button";
@@ -9,19 +9,19 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import { cn } from "@/lib/utils";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+} from "./animate-ui/components/radix/popover";
 import UserMenu from "./user-menu";
 
 const navigationLinks = [
   {
     href: "/",
     label: "Chat",
-    icon: HouseIcon,
+    icon: ChatCircleTextIcon,
   },
   {
     href: "/gallery",
@@ -41,6 +41,23 @@ function isActive(path: string, href: string) {
   return path.startsWith(href);
 }
 
+function useCurrentChatPath() {
+  const { pathname: globalPath } = useResolvedPath(".");
+  const { state }: { state?: { from: string } } = useLocation();
+
+  const path = useMemo(() => {
+    const from = state?.from;
+    if (isChatPath(globalPath)) {
+      return globalPath;
+    }
+    if (from && isChatPath(from)) {
+      return from;
+    }
+    return "/";
+  }, [globalPath, state]);
+  return { chatPath: path, globalPath };
+}
+
 export function NavigationHeader({
   className,
   children,
@@ -56,7 +73,7 @@ export function NavigationHeader({
       >
         <div
           className={cn(
-            "flex items-center gap-2",
+            "flex items-center gap-3 md:gap-2",
             "col-start-1 row-start-1",
             "md:col-start-1 md:row-start-1 md:min-w-72 md:pb-1",
           )}
@@ -65,7 +82,7 @@ export function NavigationHeader({
           <div className="flex items-center gap-6">
             <Link
               to="/"
-              className="text-primary hover:text-primary/90 font-display text-2xl"
+              className="text-primary hover:text-primary/90 font-display text-[1.7rem] md:text-2xl mb-0.5 md:mb-0"
             >
               arcana
             </Link>
@@ -110,19 +127,7 @@ export function MainNavigationSection({
 }
 
 function DesktopNavigation({ className }: { className?: string }) {
-  const { pathname: globalPath } = useResolvedPath(".");
-  const { state }: { state?: { from: string } } = useLocation();
-
-  const chatHref = useMemo(() => {
-    const from = state?.from;
-    if (isChatPath(globalPath)) {
-      return globalPath;
-    }
-    if (from && isChatPath(from)) {
-      return from;
-    }
-    return "/";
-  }, [globalPath, state]);
+  const { chatPath, globalPath } = useCurrentChatPath();
 
   return (
     <NavigationMenu className={cn("h-full *:h-full", className)}>
@@ -136,7 +141,7 @@ function DesktopNavigation({ className }: { className?: string }) {
                 className="text-muted-foreground hover:text-primary border-b-primary hover:border-b-primary data-[active]:border-b-primary h-full justify-center rounded-none border-y-2 border-transparent py-1.5 font-medium hover:bg-transparent data-[active]:bg-transparent!"
               >
                 <Link
-                  to={link.href === "/" ? chatHref : link.href}
+                  to={link.href === "/" ? chatPath : link.href}
                   prefetch="intent"
                   state={{ from: globalPath }}
                 >
@@ -152,43 +157,62 @@ function DesktopNavigation({ className }: { className?: string }) {
 }
 
 function MobileNavigation({ className }: { className?: string }) {
-  const path = useResolvedPath(".");
+  const { chatPath, globalPath } = useCurrentChatPath();
+
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          className={cn("group size-8", className)}
-          variant="ghost"
+          className={cn(
+            "group rounded-full min-w-10 bg-transparent dark:bg-transparent shadow-none",
+            className,
+          )}
+          variant="outline"
           size="icon"
         >
           <MorphingIcon />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-36 p-1 md:hidden">
+      <PopoverContent
+        align="start"
+        alignOffset={-14}
+        sideOffset={12}
+        className="w-screen h-fit border-none shadow-none bg-transparent p-0"
+        initial={{ opacity: 0, y: -10, backdropFilter: "blur(0px)" }}
+        animate={{ opacity: 1, y: 0, backdropFilter: "blur(8px)" }}
+        exit={{ opacity: 0, y: -10, backdropFilter: "blur(0px)" }}
+        transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      >
         <NavigationMenu className="max-w-none *:w-full">
-          <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
+          <NavigationMenuList className="flex-col items-start gap-2 px-3 pb-4 pt-1">
             {navigationLinks.map((link) => {
               const Icon = link.icon;
               return (
                 <NavigationMenuItem key={link.label} className="w-full">
                   <NavigationMenuLink
                     asChild
-                    className="flex-row items-center gap-2 py-1.5"
-                    active={path.pathname === link.href}
+                    className="group/nav-link flex-row items-center gap-5 py-2.5 px-[0.9rem] rounded-full data-[active]:bg-transparent text-muted-foreground data-[active]:text-accent-foreground"
+                    active={isActive(globalPath, link.href)}
                   >
-                    <Link to={link.href}>
+                    <Link
+                      to={link.href === "/" ? chatPath : link.href}
+                      prefetch="intent"
+                      state={{ from: globalPath }}
+                    >
                       <Icon
-                        size={16}
-                        className="text-muted-foreground"
+                        className="size-5.5 text-inherit"
                         aria-hidden="true"
                       />
-                      <span>{link.label}</span>
+                      <span className="text-lg group-data-[active]/nav-link:underline underline-offset-[6px]">
+                        {link.label}
+                      </span>
                     </Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
               );
             })}
           </NavigationMenuList>
+          <div className="bg-card/80 absolute inset-0 -z-10 rounded-b-3xl border-b dark:border-ring/30 border-ring/15 shadow-xl dark:shadow-none" />
         </NavigationMenu>
       </PopoverContent>
     </Popover>

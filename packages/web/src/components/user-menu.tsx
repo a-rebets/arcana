@@ -32,7 +32,7 @@ export default function UserMenu() {
           variant="ghost"
           className="h-auto p-0 hover:bg-transparent rounded-full focus-visible:ring-2"
         >
-          <Avatar>
+          <Avatar className="size-9 md:size-8">
             <AvatarFallback
               className={cn(
                 "bg-linear-to-br",

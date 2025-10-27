@@ -29,7 +29,7 @@ export function MessageText({
         from={role}
         className={cn("mb-4", role === "assistant" && "py-0", isLast && "mb-0")}
       >
-        <MessageContent className="rounded-2xl">
+        <MessageContent className="rounded-2xl max-w-[90%] md:max-w-[80%]">
           <Response>{part.text}</Response>
         </MessageContent>
       </Message>

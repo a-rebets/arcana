@@ -130,7 +130,11 @@ function ActionsRow({ className }: ActionsRowProps) {
         className,
       )}
     >
-      <ArtifactVersionPicker className="w-full md:w-48" />
+      <ArtifactVersionPicker
+        className="w-full md:w-48"
+        side={isMobile ? "top" : undefined}
+        sideOffset={isMobile ? 6 : undefined}
+      />
       <Button
         variant="outline"
         className="rounded-xl col-start-1 md:col-start-2"

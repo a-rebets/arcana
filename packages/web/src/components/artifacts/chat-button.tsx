@@ -30,17 +30,19 @@ export function ArtifactChatButton({
     <Button
       onClick={handleClick}
       className={cn(
-        "group h-auto gap-4 py-3 has-[>svg]:px-4 text-left rounded-2xl max-w-md",
+        "group h-auto gap-4 py-3 has-[>svg]:px-4 text-left rounded-2xl md:max-w-md max-w-full",
         className,
       )}
       variant="outline"
       hoverScale={1.01}
       tapScale={0.99}
     >
-      <PresentationChartIcon className="size-6" />
+      <PresentationChartIcon className="size-5.5 md:size-6" />
       <div className="space-y-1 min-w-0">
-        <h3 className="truncate font-display font-normal">{data.title}</h3>
-        <p className="rounded-full border border-primary/50 text-primary/60 px-2 py-0.5 text-xs w-fit font-semibold">
+        <h3 className="truncate font-display font-normal md:text-sm text-[0.8rem]">
+          {data.title}
+        </h3>
+        <p className="rounded-full border border-primary/50 text-primary/60 px-2 py-0.5 md:text-xs text-[0.65rem] w-fit font-semibold">
           Version {data.version}
         </p>
       </div>

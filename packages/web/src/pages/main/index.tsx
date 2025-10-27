@@ -61,12 +61,12 @@ function Page({ params }: Route.ComponentProps) {
       <div className="size-full flex min-h-0">
         <div className="pb-6 relative flex flex-col h-full flex-1 min-w-0">
           <Conversation className="flex-1 min-h-0">
-            <ConversationContent className="max-w-4xl mx-auto px-6 py-4">
+            <ConversationContent className="max-w-4xl mx-auto md:px-6 px-4.5">
               <ChatMessages />
             </ConversationContent>
             <ConversationScrollButton />
           </Conversation>
-          <div className="px-6 max-w-4xl w-full mx-auto">
+          <div className="px-4 md:px-6 max-w-4xl w-full mx-auto">
             <ChatInput />
           </div>
         </div>

@@ -25,11 +25,6 @@ export type ArcanaToolUIPart = Extract<
   { type: ToolUIPart["type"] }
 >;
 
-export type ArcanaChartToolResult = ArcanaToolWithCompleteOutput<
-  "tool-charts_createOrUpdateChartTool",
-  { version: number }
->;
-
 export type ArcanaTextUIPart = Extract<
   ArcanaUIMessagePart,
   { type: TextUIPart["type"] }
@@ -45,7 +40,20 @@ export type ArcanaSourcesUIPart = Extract<
   { type: SourceUrlUIPart["type"] }
 >;
 
+export type ArcanaChartToolResult = ArcanaToolWithCompleteOutput<
+  "tool-charts_createOrUpdateChartTool",
+  { version: number }
+>;
+
 // Helper Utilities
+export type ArcanaToolWithOutput<K extends ArcanaToolUIPart["type"]> = Extract<
+  ArcanaToolUIPart,
+  { type: K; state: "output-available" }
+>;
+
+export type ArcanaToolResult<K extends ArcanaToolUIPart["type"]> =
+  ArcanaToolWithOutput<K>["output"];
+
 type FilterToolByOutput<ToolPart, OutputShape> = ToolPart extends {
   output: infer O;
 }
@@ -57,7 +65,4 @@ type FilterToolByOutput<ToolPart, OutputShape> = ToolPart extends {
 type ArcanaToolWithCompleteOutput<
   K extends ArcanaToolUIPart["type"],
   T extends Record<string, unknown>,
-> = FilterToolByOutput<
-  Extract<ArcanaToolUIPart, { type: K; state: "output-available" }>,
-  T & { message: string }
->;
+> = FilterToolByOutput<ArcanaToolWithOutput<K>, T & { message: string }>;

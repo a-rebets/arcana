@@ -4,6 +4,8 @@
 
 @plugin "tailwindcss-animate";
 
+@source "../node_modules/streamdown/dist/index.js";
+
 /* unbounded-latin-wght-normal */
 @font-face {
     font-family: "Unbounded Variable";

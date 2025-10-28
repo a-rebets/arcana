@@ -1,4 +1,4 @@
-import { ChecksIcon, FilesIcon } from "@phosphor-icons/react";
+import { ChecksIcon, FilesIcon, PlusIcon } from "@phosphor-icons/react";
 import { motion, stagger, type Variants } from "motion/react";
 import type { ArcanaToolResult } from "@/lib/convex-agent/types";
 
@@ -45,9 +45,12 @@ export function DatasetsList({
           <motion.li
             key="more"
             variants={child}
-            className="border text-sm rounded-full px-6 py-px w-fit font-mono"
+            className="border rounded-full px-6 py-[2px] w-fit inline-flex items-center gap-px"
           >
-            +{data.length - 2}
+            <PlusIcon className="size-2.5" />
+            <span className="text-xs pb-px">
+              {data.length - 2}&nbsp;&nbsp;more
+            </span>
           </motion.li>
         )}
       </motion.ul>

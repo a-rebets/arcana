@@ -15,6 +15,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useArtifactCard } from "@/hooks/use-artifact-card";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import {
   type NoPropagationCallback,
   useNoPropagationCallback,
@@ -85,12 +86,26 @@ type ActionsRowProps = {
 };
 
 function ActionsRow({ className, handleDownload }: ActionsRowProps) {
+  const isMobile = useIsMobile();
   const navigate = useNavigate();
   const { rootId, threadId } = useArtifactCard();
 
   const handleOpenChat = useNoPropagationCallback<HTMLButtonElement>(() => {
     navigate(`/chat/${threadId}?artifact=${rootId}`);
   });
+
+  const chatButton = (
+    <Button
+      variant="outline"
+      size="icon"
+      className="rounded-lg"
+      onClick={handleOpenChat}
+    >
+      <motion.div layoutId={`chat-icon-${rootId}`}>
+        <ChatCircleTextIcon className="size-5" />
+      </motion.div>
+    </Button>
+  );
 
   return (
     <div className={cn("flex items-center gap-1", className)}>
@@ -104,18 +119,13 @@ function ActionsRow({ className, handleDownload }: ActionsRowProps) {
           <DownloadSimpleIcon className="size-5" />
         </motion.div>
       </Button>
-      <ButtonWithChatPreview side="bottom" align="end" threadId={threadId}>
-        <Button
-          variant="outline"
-          size="icon"
-          className="rounded-lg"
-          onClick={handleOpenChat}
-        >
-          <motion.div layoutId={`chat-icon-${rootId}`}>
-            <ChatCircleTextIcon className="size-5" />
-          </motion.div>
-        </Button>
-      </ButtonWithChatPreview>
+      {isMobile ? (
+        chatButton
+      ) : (
+        <ButtonWithChatPreview side="bottom" align="end" threadId={threadId}>
+          {chatButton}
+        </ButtonWithChatPreview>
+      )}
     </div>
   );
 }

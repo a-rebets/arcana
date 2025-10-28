@@ -123,6 +123,17 @@ function ActionsRow({ className }: ActionsRowProps) {
   const { rootId, threadId } = useArtifactCard();
   const { toggle: toggleDownload } = useArtifactDownload();
 
+  const chatButton = (
+    <Button className="rounded-xl bg-linear-to-b from-primary to-ring" asChild>
+      <Link to={`/chat/${threadId}?artifact=${rootId}`}>
+        <motion.div layoutId={`chat-icon-${rootId}`}>
+          <ChatCircleTextIcon weight="bold" />
+        </motion.div>{" "}
+        Open in chat
+      </Link>
+    </Button>
+  );
+
   return (
     <section
       className={cn(
@@ -145,25 +156,19 @@ function ActionsRow({ className }: ActionsRowProps) {
         </motion.div>{" "}
         Download PNG
       </Button>
-      <ButtonWithChatPreview
-        side="bottom"
-        align="end"
-        sideOffset={10}
-        threadId={threadId}
-        className="rounded-xl"
-      >
-        <Button
-          className="rounded-xl bg-linear-to-b from-primary to-ring"
-          asChild
+      {isMobile ? (
+        chatButton
+      ) : (
+        <ButtonWithChatPreview
+          side="bottom"
+          align="end"
+          sideOffset={10}
+          threadId={threadId}
+          className="rounded-xl"
         >
-          <Link to={`/chat/${threadId}?artifact=${rootId}`}>
-            <motion.div layoutId={`chat-icon-${rootId}`}>
-              <ChatCircleTextIcon weight="bold" />
-            </motion.div>{" "}
-            Open in chat
-          </Link>
-        </Button>
-      </ButtonWithChatPreview>
+          {chatButton}
+        </ButtonWithChatPreview>
+      )}
     </section>
   );
 }

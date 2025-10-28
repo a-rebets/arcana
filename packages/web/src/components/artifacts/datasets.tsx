@@ -23,7 +23,7 @@ export function DatasetsList({
   data: ArcanaToolResult<"tool-datasets_listDatasetsTool">;
 }) {
   return (
-    <div className="-ml-px max-w-[70%] mb-4 text-muted-foreground">
+    <div className="-ml-px max-w-[70%] md:max-w-none mb-4 text-muted-foreground">
       <OutputHeader message="Listed available datasets" />
       <motion.ul
         variants={container}
@@ -34,7 +34,7 @@ export function DatasetsList({
         {data.slice(0, 2).map((dataset) => (
           <motion.li
             key={dataset.id}
-            className="flex items-center gap-2 border rounded-full px-3 py-1"
+            className="flex items-center gap-2 border rounded-full pl-3 pr-3.5 py-1 md:w-fit"
             variants={child}
           >
             <FilesIcon className="size-4 shrink-0" />
@@ -66,7 +66,7 @@ export function SavedDataset({
       {data.id && (
         <motion.li
           key={data.id}
-          className="flex items-center gap-2 border rounded-full px-3 py-1"
+          className="flex items-center gap-2 border rounded-full pl-3 pr-3.5 py-1 md:w-fit"
           variants={child}
           initial="hidden"
           animate="show"

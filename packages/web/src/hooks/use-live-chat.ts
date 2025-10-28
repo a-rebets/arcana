@@ -1,10 +1,6 @@
 import { useChat } from "@ai-sdk/react";
 import { useAuthToken } from "@convex-dev/auth/react";
-import {
-  useDeepCompareEffect,
-  useToggle,
-  useUpdateEffect,
-} from "@react-hookz/web";
+import { useToggle, useUpdateEffect } from "@react-hookz/web";
 import { DefaultChatTransport } from "ai";
 import { useCallback, useEffect, useMemo } from "react";
 import {
@@ -76,13 +72,16 @@ export function useLiveChat(opts: UseLiveChatOptions) {
   // biome-ignore lint/correctness/useExhaustiveDependencies: reset on mount and on threadId change
   useEffect(resetLiveChat, [threadId]);
 
-  useDeepCompareEffect(() => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: store is stable
+  useEffect(() => {
     if (!liveChatEnabled || !threadId) return;
-    //     logWithTimestamp(
-    //       `running live hook:
-    // [status] ${status}
-    // [messages count] ${messages.length}`,
-    //     );
+    /*     logWithTimestamp(
+      `running live hook:
+[status] ${status}
+[last message id] ${lastMsg?.id}
+[last part type] ${lastPart?.type}
+[last text length] ${lastPart?.type === "text" ? lastPart.text?.length : "n/a"}`,
+    ); */
     store.getState()._syncState(
       {
         messages,

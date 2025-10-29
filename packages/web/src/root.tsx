@@ -43,13 +43,26 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
+        <title>Arcana - AI Insights For Productivity</title>
+        <Meta />
         <meta charSet="UTF-8" />
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content"
         />
-        <title>Arcana - AI Insights For Productivity</title>
-        <Meta />
+        <meta
+          property="og:title"
+          content="Make sense of your work with Arcana."
+        />
+        <meta
+          property="og:description"
+          content="Chat with your productivity tools like Asana. Effortlessly extract charts, highlights, and overviews using AI to make smarter, faster business decisions."
+        />
+        <meta property="og:image" content="/og-image.jpg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.tryarcana.app/" />
         <Links />
       </head>
       <body className={currentRoute.handle?.bodyClasses}>

@@ -10,7 +10,7 @@ import {
 import { useClickOutside, useToggle } from "@react-hookz/web";
 import { useQuery } from "@tanstack/react-query";
 import { type UsePaginatedQueryResult, usePaginatedQuery } from "convex/react";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import {
   Disclosure,

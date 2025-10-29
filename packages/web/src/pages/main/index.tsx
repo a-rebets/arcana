@@ -1,27 +1,18 @@
 import { api } from "@convex/api";
-import { convexQuery } from "@convex-dev/react-query";
-import { PlusIcon } from "@phosphor-icons/react";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router";
+import PatternBg from "@/assets/bg-pattern.svg";
 import {
   Conversation,
   ConversationContent,
   ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
-import { Button } from "@/components/animate-ui/components/buttons/button";
-import {
-  MainNavigationSection,
-  NavigationHeader,
-} from "@/components/navigation";
-import { useArtifactsPanelActions } from "@/hooks/use-artifacts-store";
+import { NavigationHeader } from "@/components/navigation";
 import { useLiveChat } from "@/hooks/use-live-chat";
 import { useSyncChat } from "@/hooks/use-sync-chat";
 import type { Route } from "./+types/";
 import { ArtifactsDesktopLayout } from "./artifacts";
 import { ChatInput } from "./chat/input";
 import { ChatMessages } from "./chat/messages";
-import { ThreadsBox } from "./threads-list";
+import { Threads } from "./threads-list";
 
 function Page({ params }: Route.ComponentProps) {
   useSyncChat({
@@ -41,6 +32,7 @@ function Page({ params }: Route.ComponentProps) {
       </NavigationHeader>
       <div className="size-full flex min-h-0">
         <div className="pb-6 relative flex flex-col h-full flex-1 min-w-0">
+          <ConversationBg />
           <Conversation className="flex-1 min-h-0">
             <ConversationContent className="max-w-4xl mx-auto md:px-6 px-4.5">
               <ChatMessages />
@@ -57,45 +49,16 @@ function Page({ params }: Route.ComponentProps) {
   );
 }
 
-function Threads({ threadId }: { threadId: string | undefined }) {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const { open: openArtifactsPanel } = useArtifactsPanelActions();
-
-  const { data: threadMetadata } = useQuery(
-    convexQuery(
-      api.ai.threads.public.getThreadMetadata,
-      threadId ? { threadId } : "skip",
-    ),
-  );
-
-  useEffect(() => {
-    if (threadMetadata === null) {
-      navigate("/", { replace: true });
-      return;
-    }
-    document.title = `Arcana - ${threadMetadata?.title ?? "New chat"}`;
-    if (searchParams.get("artifact")) {
-      openArtifactsPanel();
-    }
-  }, [threadMetadata, navigate, searchParams, openArtifactsPanel]);
-
+function ConversationBg() {
   return (
-    <MainNavigationSection className="md:pt-3.5 overflow-visible">
-      <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 grid-rows-1">
-        <ThreadsBox title={threadMetadata?.title} />
-        <Button
-          className="h-[2.4rem] w-20 rounded-xl border dark:border-0 shrink-0"
-          variant="accent"
-          hoverScale={1}
-          asChild
-        >
-          <Link to="/">
-            <PlusIcon weight="bold" />
-          </Link>
-        </Button>
-      </div>
-    </MainNavigationSection>
+    <div
+      className="absolute inset-0 -z-10 dark:from-accent/70 dark:to-accent/25 to-border/35 from-border/80 bg-gradient-to-b mask-repeat md:mask-size-[25rem] mask-size-[20rem]"
+      style={{
+        maskImage: `url(${PatternBg})`,
+        WebkitMaskImage: `url(${PatternBg})`,
+        WebkitMaskRepeat: "repeat",
+      }}
+    />
   );
 }
 

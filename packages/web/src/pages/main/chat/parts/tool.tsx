@@ -15,12 +15,12 @@ import type {
   ArcanaToolWithOutput,
   ArcanaUIMessagePart,
 } from "@/lib/convex-agent";
-import {
-  type DynamicToolOutput,
-  type RawArcanaUIToolPackage,
-  type RawArcanaUIToolType,
-  toolLabels,
-} from "@/lib/tool-labels";
+import { toolLabels } from "@/lib/tool-labels";
+import type {
+  DynamicToolOutput,
+  RawArcanaUIToolPackage,
+  RawArcanaUIToolType,
+} from "@/lib/types/tools";
 
 const ToolIcons = {
   asana: <AsanaIcon className="size-4 text-asana" />,

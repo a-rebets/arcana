@@ -1,10 +1,5 @@
 import { asanaToolLabels } from "asana-tools";
-import type { ArcanaToolUIPart } from "@/lib/convex-agent/types";
-
-export type DynamicToolOutput = Extract<
-  ArcanaToolUIPart["output"],
-  { message: string }
->;
+import type { DynamicToolOutput } from "./types/tools";
 
 export type ToolLabels<T = string> = {
   "input-streaming": string;
@@ -37,16 +32,3 @@ export const toolLabels: Record<
   ...asanaToolLabels,
   ...artifactsToolLabels,
 };
-
-export type ExtractToolName<T extends string> = T extends `tool-${infer U}`
-  ? U
-  : never;
-
-export type ExtractPackageName<T extends string> =
-  T extends `tool-${infer Package}_${string}` ? Package : never;
-
-export type RawArcanaUIToolType = ExtractToolName<ArcanaToolUIPart["type"]>;
-
-export type RawArcanaUIToolPackage = ExtractPackageName<
-  ArcanaToolUIPart["type"]
->;

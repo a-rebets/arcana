@@ -1,7 +1,8 @@
 import { api } from "@convex/api";
+import { convexQuery } from "@convex-dev/react-query";
 import { GlobeSimpleIcon } from "@phosphor-icons/react";
+import { useQuery } from "@tanstack/react-query";
 import type { ChatStatus } from "ai";
-import { useQuery } from "convex/react";
 import {
   PromptInput,
   PromptInputBody,
@@ -22,7 +23,9 @@ import { ArtifactsToggleButton } from "@/pages/main/artifacts";
 export const ChatInput = ({ className }: { className?: string }) => {
   const threadId = useChatId();
   const status = useChatStatus();
-  const userData = useQuery(api.core.accounts.getUser);
+  const { data: userData } = useQuery(
+    convexQuery(api.core.accounts.getUser, {}),
+  );
   const inputHelpers = useChatInput(threadId);
 
   const bgDimmed = !status || status !== "ready";

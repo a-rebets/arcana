@@ -1,5 +1,6 @@
 import { api } from "@convex/api";
-import { useQuery } from "convex/react";
+import { convexQuery } from "@convex-dev/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
 
@@ -19,28 +20,30 @@ export default function OnboardingBoundary({
   fallback = null,
 }: OnboardingBoundaryProps) {
   const navigate = useNavigate();
-  const user = useQuery(api.core.accounts.getUser);
+  const { data: userData } = useQuery(
+    convexQuery(api.core.accounts.getUser, {}),
+  );
 
   useEffect(() => {
-    if (user === undefined) return;
+    if (userData === undefined) return;
 
     // Require onboarding to be completed
-    if (require === "onboarded" && !user?.onboardingCompletedTime) {
+    if (require === "onboarded" && !userData?.onboardingCompletedTime) {
       navigate(redirectTo || "/onboarding", {
         replace: true,
       });
     }
     // Require onboarding to NOT be completed (redirect if already done)
-    if (require === "not-onboarded" && user?.onboardingCompletedTime) {
+    if (require === "not-onboarded" && userData?.onboardingCompletedTime) {
       navigate(redirectTo || "/", { replace: true });
     }
-  }, [user, require, redirectTo, navigate]);
+  }, [userData, require, redirectTo, navigate]);
 
-  if (user == null) return fallback;
+  if (userData == null) return fallback;
 
   if (
-    (require === "onboarded" && !user.onboardingCompletedTime) ||
-    (require === "not-onboarded" && user.onboardingCompletedTime)
+    (require === "onboarded" && !userData.onboardingCompletedTime) ||
+    (require === "not-onboarded" && userData.onboardingCompletedTime)
   ) {
     return null;
   }

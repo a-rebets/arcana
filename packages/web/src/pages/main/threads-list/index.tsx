@@ -38,7 +38,13 @@ const ThreadTitle = memo(({ title }: { title: string | undefined }) => {
 
 ThreadTitle.displayName = "ThreadTitle";
 
-export function ThreadsBox({ className }: { className?: string }) {
+export function ThreadsBox({
+  className,
+  title,
+}: {
+  className?: string;
+  title: string | undefined;
+}) {
   const threadId = useChatId();
   const isMobile = useIsMobile();
   const boxRef = useRef<HTMLDivElement>(null);
@@ -97,11 +103,6 @@ export function ThreadsBox({ className }: { className?: string }) {
 
   const threads = searchTerm ? searchResults : paginatedThreads;
 
-  const currentThreadTitle = useMemo(() => {
-    if (!paginatedThreads) return;
-    return paginatedThreads.find((thread) => thread._id === threadId)?.title;
-  }, [threadId, paginatedThreads]);
-
   const noThreads = !threads?.length && !searchTerm;
 
   return (
@@ -121,14 +122,14 @@ export function ThreadsBox({ className }: { className?: string }) {
           type="button"
           className={cn(
             "w-full justify-between rounded-xl has-[>svg]:px-4",
-            !currentThreadTitle && "text-muted-foreground/80 font-normal",
+            !title && "text-muted-foreground/80 font-normal",
           )}
           variant="ghost"
           tapScale={0.98}
           hoverScale={1}
           onHoverStart={() => toggleOpen(true)}
         >
-          <ThreadTitle title={currentThreadTitle} />
+          <ThreadTitle title={title} />
           <MagnifyingGlassIcon />
         </Button>
       </DisclosureTrigger>

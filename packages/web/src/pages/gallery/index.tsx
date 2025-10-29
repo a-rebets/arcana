@@ -30,6 +30,7 @@ function Page() {
 
   return (
     <>
+      <title>Arcana - Gallery</title>
       <NavigationHeader className="z-30" />
       <div className="size-full grid grid-cols-1 grid-rows-[auto_1fr] min-h-0">
         <header className="bg-accent md:pb-16 px-4 md:px-6 md:pt-8 pt-6 pb-14 flex flex-col gap-y-6">

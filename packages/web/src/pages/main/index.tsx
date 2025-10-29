@@ -1,6 +1,7 @@
 import { api } from "@convex/api";
+import { convexQuery } from "@convex-dev/react-query";
 import { PlusIcon } from "@phosphor-icons/react";
-import { useQuery } from "convex/react";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import {
@@ -23,32 +24,6 @@ import { ChatMessages } from "./chat/messages";
 import { ThreadsBox } from "./threads-list";
 
 function Page({ params }: Route.ComponentProps) {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-
-  const threadExists = useQuery(
-    api.ai.threads.public.checkIfThreadExists,
-    params.threadId ? { threadId: params.threadId } : "skip",
-  );
-
-  const { open: openArtifactsPanel } = useArtifactsPanelActions();
-
-  useEffect(() => {
-    if (params.threadId && threadExists === false) {
-      navigate("/", { replace: true });
-      return;
-    }
-    if (searchParams.get("artifact")) {
-      openArtifactsPanel();
-    }
-  }, [
-    params.threadId,
-    threadExists,
-    navigate,
-    searchParams,
-    openArtifactsPanel,
-  ]);
-
   useSyncChat({
     threadId: params.threadId,
     listQuery: api.ai.messages.listThreadMessages,
@@ -62,7 +37,7 @@ function Page({ params }: Route.ComponentProps) {
   return (
     <>
       <NavigationHeader className="z-30">
-        <Threads />
+        <Threads threadId={params.threadId} />
       </NavigationHeader>
       <div className="size-full flex min-h-0">
         <div className="pb-6 relative flex flex-col h-full flex-1 min-w-0">
@@ -82,11 +57,33 @@ function Page({ params }: Route.ComponentProps) {
   );
 }
 
-function Threads() {
+function Threads({ threadId }: { threadId: string | undefined }) {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { open: openArtifactsPanel } = useArtifactsPanelActions();
+
+  const { data: threadMetadata } = useQuery(
+    convexQuery(
+      api.ai.threads.public.getThreadMetadata,
+      threadId ? { threadId } : "skip",
+    ),
+  );
+
+  useEffect(() => {
+    if (threadMetadata === null) {
+      navigate("/", { replace: true });
+      return;
+    }
+    document.title = `Arcana - ${threadMetadata?.title ?? "New chat"}`;
+    if (searchParams.get("artifact")) {
+      openArtifactsPanel();
+    }
+  }, [threadMetadata, navigate, searchParams, openArtifactsPanel]);
+
   return (
     <MainNavigationSection className="md:pt-3.5 overflow-visible">
       <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 grid-rows-1">
-        <ThreadsBox />
+        <ThreadsBox title={threadMetadata?.title} />
         <Button
           className="h-[2.4rem] w-20 rounded-xl border dark:border-0 shrink-0"
           variant="accent"

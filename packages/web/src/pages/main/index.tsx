@@ -26,7 +26,7 @@ function Page({ params }: Route.ComponentProps) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const exists = useQuery(
+  const threadExists = useQuery(
     api.ai.threads.public.checkIfThreadExists,
     params.threadId ? { threadId: params.threadId } : "skip",
   );
@@ -34,14 +34,20 @@ function Page({ params }: Route.ComponentProps) {
   const { open: openArtifactsPanel } = useArtifactsPanelActions();
 
   useEffect(() => {
-    if (params.threadId && exists === false) {
+    if (params.threadId && threadExists === false) {
       navigate("/", { replace: true });
       return;
     }
     if (searchParams.get("artifact")) {
       openArtifactsPanel();
     }
-  }, [params.threadId, exists, navigate, searchParams, openArtifactsPanel]);
+  }, [
+    params.threadId,
+    threadExists,
+    navigate,
+    searchParams,
+    openArtifactsPanel,
+  ]);
 
   useSyncChat({
     threadId: params.threadId,

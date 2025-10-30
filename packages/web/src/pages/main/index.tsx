@@ -12,6 +12,7 @@ import type { Route } from "./+types/";
 import { ArtifactsDesktopLayout } from "./artifacts";
 import { ChatInput } from "./chat/input";
 import { ChatMessages } from "./chat/messages";
+import { ConversationStart } from "./chat/start";
 import { Threads } from "./threads-list";
 
 function Page({ params }: Route.ComponentProps) {
@@ -34,6 +35,9 @@ function Page({ params }: Route.ComponentProps) {
         <div className="pb-6 relative flex flex-col h-full flex-1 min-w-0">
           <ConversationBg />
           <Conversation className="flex-1 min-h-0">
+            {!params.threadId && (
+              <ConversationStart className="left-1/2 -translate-x-1/2 absolute top-1/2 -translate-y-3/5" />
+            )}
             <ConversationContent className="max-w-4xl mx-auto md:px-6 px-4.5">
               <ChatMessages />
             </ConversationContent>

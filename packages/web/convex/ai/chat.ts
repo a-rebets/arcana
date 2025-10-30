@@ -40,6 +40,9 @@ export const postMessage = httpAction(async (ctx, request) => {
       },
       providerOptions: {
         openrouter: {
+          web_search_options: {
+            search_context_size: "high",
+          },
           plugins: webSearch
             ? [
                 {

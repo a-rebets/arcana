@@ -4,7 +4,7 @@ export function EyeLoader({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "relative w-14 h-6 rounded-[50%] border-[3px] border-foreground/30",
+        "relative w-14 h-6 rounded-[50%] border-[2px] border-foreground/30",
         className,
       )}
     >

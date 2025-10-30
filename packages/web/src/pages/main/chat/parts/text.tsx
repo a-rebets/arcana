@@ -29,8 +29,8 @@ export function MessageText({
         from={role}
         className={cn("mb-4", role === "assistant" && "py-0", isLast && "mb-0")}
       >
-        <MessageContent className="rounded-2xl">
-          <Response>{part.text}</Response>
+        <MessageContent className="rounded-2xl max-w-[90%] md:max-w-[80%]">
+          <Response userRole={role}>{part.text}</Response>
         </MessageContent>
       </Message>
       {showActions && (

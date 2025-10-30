@@ -219,12 +219,14 @@ export type CarouselContentProps = {
   children: ReactNode;
   className?: string;
   transition?: Transition;
+  isInitial?: boolean;
 };
 
 function CarouselContent({
   children,
   className,
   transition,
+  isInitial = false,
 }: CarouselContentProps) {
   const { index, setIndex, setItemsCount, disableDrag } = useCarousel();
   const dragX = useMotionValue(0);
@@ -305,7 +307,7 @@ function CarouselContent({
           damping: 18,
           stiffness: 90,
           type: "spring",
-          duration: 0.2,
+          duration: isInitial ? 0 : 0.2,
         }
       }
       className={cn(

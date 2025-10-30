@@ -3,10 +3,28 @@ import tailwindcss from "@tailwindcss/vite";
 import { reactRouter } from "@react-router/dev/vite";
 import { defineConfig } from "vite";
 import svgr from "vite-plugin-svgr";
+import babel from "vite-plugin-babel";
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [tailwindcss(),  svgr(), reactRouter()],
+  define: {
+    "import.meta.env.VITE_DEPLOYMENT_URL": JSON.stringify(
+      `https://${process.env.VERCEL_URL ?? "www.tryarcana.app"}`
+    )
+  },
+  plugins: [
+    tailwindcss(),
+    svgr(),
+    reactRouter(),
+    babel({
+      filter: /src\/.*\.tsx?$/,
+      babelConfig: {
+        presets: ["@babel/preset-typescript"],
+        plugins: [
+          ["babel-plugin-react-compiler"],
+        ],
+      },
+    }),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

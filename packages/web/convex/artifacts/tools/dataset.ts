@@ -3,6 +3,9 @@ import { z } from "zod";
 import { internal } from "../../_generated/api";
 import type { Doc, Id } from "../../_generated/dataModel";
 
+type Dataset = Doc<"datasets">;
+type DatasetEntry = Pick<Dataset, "name" | "schema"> & { id: Id<"datasets"> };
+
 const createDatasetTool = createTool({
   description: `Create datasets for charting. Use only when you have actual data to save (from Asana, user input, or mock data).
 
@@ -31,7 +34,7 @@ CRITICAL:
         "REQUIRED: TypeScript type definition of your data, may be complex if needed. Example: 'interface Row { region: string; sales: number; }\\ntype DATA = Row[]'",
       ),
   }),
-  handler: async (ctx, args): Promise<string> => {
+  handler: async (ctx, args): Promise<DatasetEntry> => {
     if (!ctx.threadId || !ctx.userId) {
       throw new Error("Thread ID and user ID are required");
     }
@@ -53,12 +56,12 @@ CRITICAL:
       },
     );
 
-    return `Dataset saved successfully. ID: \`${result}\`. Do not recite the data - user can see it in the UI.`;
+    return {
+      id: result,
+      name: args.name,
+    };
   },
 });
-
-type Dataset = Doc<"datasets">;
-type DatasetEntry = Pick<Dataset, "name" | "schema"> & { id: Id<"datasets"> };
 
 const listDatasetsTool = createTool({
   description:

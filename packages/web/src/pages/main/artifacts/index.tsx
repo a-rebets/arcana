@@ -181,6 +181,7 @@ function ArtifactsMobileLayout({ children }: { children: React.ReactNode }) {
 
 function ArtfactsMobileHeader() {
   const { toggle: toggleDownload } = useArtifactDownload();
+  const activeChart = useActiveChart();
 
   return (
     <SheetHeader className="flex-row items-center justify-between">
@@ -191,6 +192,7 @@ function ArtfactsMobileHeader() {
         size="icon"
         onClick={toggleDownload}
         className="rounded-lg"
+        disabled={!activeChart}
       >
         <DownloadSimpleIcon className="size-5" />
       </Button>

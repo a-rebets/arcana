@@ -1,7 +1,8 @@
 import { api } from "@convex/api";
 import { useAuthActions } from "@convex-dev/auth/react";
+import { convexQuery } from "@convex-dev/react-query";
 import { SignOutIcon, UserIcon } from "@phosphor-icons/react";
-import { useQuery } from "convex/react";
+import { useQuery } from "@tanstack/react-query";
 import AsanaIcon from "@/assets/asana-icon.svg?react";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -19,11 +20,13 @@ import { type Gradient, getGradientClasses } from "@/lib/colors";
 import { cn } from "@/lib/utils";
 
 export default function UserMenu() {
-  const user = useQuery(api.core.accounts.getUser);
-  const connections = useQuery(api.core.connections.getUserConnections);
+  const { data: userData } = useQuery(
+    convexQuery(api.core.accounts.getUser, {}),
+  );
   const { signOut } = useAuthActions();
 
-  const profileColors = (user?.profileColors as Gradient) || ["green", "sky"];
+  const profileColors =
+    (userData?.profileColors as Gradient) || (["fuchsia", "amber"] as const);
 
   return (
     <DropdownMenu>
@@ -32,7 +35,7 @@ export default function UserMenu() {
           variant="ghost"
           className="h-auto p-0 hover:bg-transparent rounded-full focus-visible:ring-2"
         >
-          <Avatar>
+          <Avatar className="size-9 md:size-8">
             <AvatarFallback
               className={cn(
                 "bg-linear-to-br",
@@ -46,13 +49,13 @@ export default function UserMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-64" align="end">
         <DropdownMenuLabel className="flex min-w-0 flex-col">
-          {user ? (
+          {userData ? (
             <>
               <span className="text-foreground truncate text-xl font-accent font-light">
-                {user.name}
+                {userData.name}
               </span>
               <span className="text-muted-foreground truncate text-xs font-normal">
-                {user.email}
+                {userData.email}
               </span>
             </>
           ) : (
@@ -62,25 +65,7 @@ export default function UserMenu() {
         <DropdownMenuSeparator />
         <DropdownMenuLabel>Connections</DropdownMenuLabel>
         <DropdownMenuGroup>
-          {connections === undefined ? (
-            <ConnectionsSkeleton />
-          ) : connections.length === 0 ? (
-            <DropdownMenuItem disabled>
-              <span className="text-muted-foreground">No connections</span>
-            </DropdownMenuItem>
-          ) : (
-            connections.map((connection) => (
-              <DropdownMenuItem key={connection.asanaUserId}>
-                <AsanaIcon
-                  className="size-3 mx-0.5 opacity-60"
-                  aria-hidden="true"
-                />
-                <span className="truncate text-muted-foreground">
-                  {connection.asanaUserEmail}
-                </span>
-              </DropdownMenuItem>
-            ))
-          )}
+          <UserConnections />
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => signOut()}>
@@ -95,6 +80,33 @@ export default function UserMenu() {
       </DropdownMenuContent>
     </DropdownMenu>
   );
+}
+
+function UserConnections() {
+  const { data: connections, isPending } = useQuery(
+    convexQuery(api.core.connections.getUserConnections, {}),
+  );
+
+  if (isPending) {
+    return <ConnectionsSkeleton />;
+  }
+
+  if (!connections || connections.length === 0) {
+    return (
+      <DropdownMenuItem disabled>
+        <span className="text-muted-foreground">No connections</span>
+      </DropdownMenuItem>
+    );
+  }
+
+  return connections.map((connection) => (
+    <DropdownMenuItem key={connection.asanaUserId}>
+      <AsanaIcon className="size-3 mx-0.5 opacity-60" aria-hidden="true" />
+      <span className="truncate text-muted-foreground">
+        {connection.asanaUserEmail}
+      </span>
+    </DropdownMenuItem>
+  ));
 }
 
 function ConnectionsSkeleton() {

@@ -23,10 +23,10 @@ export function ArtifactVersionPicker({
   sideOffset?: number;
 }) {
   const activeChart = useActiveChart();
-  const versionState = useVersionState(activeChart?.rootId ?? "");
   const { setSelectedVersion } = useArtifactsVersionActions();
 
-  const [selectedIndex, totalCount] = versionState || [0, 0];
+  const versionState = useVersionState(activeChart?.rootId ?? "");
+  const [selectedIndex, totalCount] = versionState ?? [0, 0];
 
   const options = Array.from({ length: totalCount }, (_, i) => ({
     value: String(i),

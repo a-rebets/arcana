@@ -9,12 +9,24 @@ import type { ArcanaUIMessage } from "@/lib/convex-agent/types";
 
 export const useChatInput = (threadId?: string) => {
   const navigate = useNavigate();
-
   const { sendMessage } = useChatActions<ArcanaUIMessage>();
-  const sendFromNewThread = useAction(api.ai.threads.public.startNewThread);
+  const sendNewThreadMessage = useAction(api.ai.threads.public.startNewThread);
 
   const [input, setInput] = useState("");
-  const [webSearch, toggleWebSearch] = useToggle(false);
+  const [withWebSearch, toggleWebSearch] = useToggle(false);
+
+  const submitFromNewThread = useCallback(
+    async (prompt: string, search?: boolean) => {
+      const newThreadId = await sendNewThreadMessage({
+        prompt,
+      });
+      if (newThreadId) {
+        const path = `/chat/${newThreadId}`;
+        navigate(search ? `${path}?search=true` : path);
+      }
+    },
+    [sendNewThreadMessage, navigate],
+  );
 
   const handleSubmit = useCallback(
     async (message: PromptInputMessage) => {
@@ -26,24 +38,18 @@ export const useChatInput = (threadId?: string) => {
       if (threadId) {
         sendMessage({
           text: message.text,
-          webSearch,
+          webSearch: withWebSearch,
         });
-        return;
-      }
-      const newThreadId = await sendFromNewThread({
-        prompt: message.text,
-      });
-      if (newThreadId) {
-        navigate(`/chat/${newThreadId}`);
+      } else {
+        submitFromNewThread(message.text, withWebSearch);
       }
     },
     [
-      sendFromNewThread,
       sendMessage,
-      navigate,
       threadId,
-      webSearch,
+      withWebSearch,
       toggleWebSearch,
+      submitFromNewThread,
     ],
   );
 
@@ -54,5 +60,12 @@ export const useChatInput = (threadId?: string) => {
     [],
   );
 
-  return { handleSubmit, toggleWebSearch, handleInputChange, input, webSearch };
+  return {
+    handleSubmit,
+    toggleWebSearch,
+    handleInputChange,
+    input,
+    withWebSearch,
+    submitFromNewThread,
+  };
 };

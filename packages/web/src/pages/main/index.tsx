@@ -1,48 +1,21 @@
 import { api } from "@convex/api";
-import { PlusIcon } from "@phosphor-icons/react";
-import { useQuery } from "convex/react";
-import { useEffect } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router";
+import PatternBg from "@/assets/bg-pattern.svg";
 import {
   Conversation,
   ConversationContent,
   ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
-import { Button } from "@/components/animate-ui/components/buttons/button";
-import {
-  MainNavigationSection,
-  NavigationHeader,
-} from "@/components/navigation";
-import { useArtifactsPanelActions } from "@/hooks/use-artifacts-store";
+import { NavigationHeader } from "@/components/navigation";
 import { useLiveChat } from "@/hooks/use-live-chat";
 import { useSyncChat } from "@/hooks/use-sync-chat";
 import type { Route } from "./+types/";
 import { ArtifactsDesktopLayout } from "./artifacts";
 import { ChatInput } from "./chat/input";
 import { ChatMessages } from "./chat/messages";
-import { ThreadsBox } from "./threads-list";
+import { ConversationStart } from "./chat/start";
+import { Threads } from "./threads-list";
 
 function Page({ params }: Route.ComponentProps) {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-
-  const exists = useQuery(
-    api.ai.threads.public.checkIfThreadExists,
-    params.threadId ? { threadId: params.threadId } : "skip",
-  );
-
-  const { open: openArtifactsPanel } = useArtifactsPanelActions();
-
-  useEffect(() => {
-    if (params.threadId && exists === false) {
-      navigate("/", { replace: true });
-      return;
-    }
-    if (searchParams.get("artifact")) {
-      openArtifactsPanel();
-    }
-  }, [params.threadId, exists, navigate, searchParams, openArtifactsPanel]);
-
   useSyncChat({
     threadId: params.threadId,
     listQuery: api.ai.messages.listThreadMessages,
@@ -56,18 +29,22 @@ function Page({ params }: Route.ComponentProps) {
   return (
     <>
       <NavigationHeader className="z-30">
-        <Threads />
+        <Threads threadId={params.threadId} />
       </NavigationHeader>
       <div className="size-full flex min-h-0">
         <div className="pb-6 relative flex flex-col h-full flex-1 min-w-0">
+          <ConversationBg />
           <Conversation className="flex-1 min-h-0">
-            <ConversationContent className="max-w-4xl mx-auto px-6 py-4">
+            {!params.threadId && (
+              <ConversationStart className="left-1/2 -translate-x-1/2 absolute top-1/2 -translate-y-3/5" />
+            )}
+            <ConversationContent className="max-w-4xl mx-auto md:px-6 px-4.5">
               <ChatMessages />
             </ConversationContent>
             <ConversationScrollButton />
           </Conversation>
-          <div className="px-6 max-w-4xl w-full mx-auto">
-            <ChatInput className="rounded-2xl" />
+          <div className="px-4 md:px-6 max-w-4xl w-full mx-auto">
+            <ChatInput />
           </div>
         </div>
         <ArtifactsDesktopLayout className="flex-1" />
@@ -76,23 +53,16 @@ function Page({ params }: Route.ComponentProps) {
   );
 }
 
-function Threads() {
+function ConversationBg() {
   return (
-    <MainNavigationSection className="md:pt-3.5 overflow-visible">
-      <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 grid-rows-1">
-        <ThreadsBox />
-        <Button
-          className="h-[2.4rem] w-20 rounded-xl border dark:border-0 shrink-0"
-          variant="accent"
-          hoverScale={1}
-          asChild
-        >
-          <Link to="/">
-            <PlusIcon weight="bold" />
-          </Link>
-        </Button>
-      </div>
-    </MainNavigationSection>
+    <div
+      className="absolute inset-0 -z-10 md:dark:to-accent/25 dark:from-accent/70 dark:to-accent/35 to-border/35 from-border/80 bg-gradient-to-b mask-repeat md:mask-size-[22rem]"
+      style={{
+        maskImage: `url(${PatternBg})`,
+        WebkitMaskImage: `url(${PatternBg})`,
+        WebkitMaskRepeat: "repeat",
+      }}
+    />
   );
 }
 

@@ -8,17 +8,19 @@ import {
   ToolOutput,
 } from "@/components/ai-elements/tool";
 import { ArtifactChatButton } from "@/components/artifacts/chat-button";
+import { DatasetsList, SavedDataset } from "@/components/artifacts/datasets";
 import type {
   ArcanaChartToolResult,
   ArcanaToolUIPart,
+  ArcanaToolWithOutput,
   ArcanaUIMessagePart,
 } from "@/lib/convex-agent";
-import {
-  type DynamicToolOutput,
-  type RawArcanaUIToolPackage,
-  type RawArcanaUIToolType,
-  toolLabels,
-} from "@/lib/tool-labels";
+import { toolLabels } from "@/lib/tool-labels";
+import type {
+  DynamicToolOutput,
+  RawArcanaUIToolPackage,
+  RawArcanaUIToolType,
+} from "@/lib/types/tools";
 
 const ToolIcons = {
   asana: <AsanaIcon className="size-4 text-asana" />,
@@ -32,6 +34,14 @@ function ToolCall({ part }: { part: ArcanaToolUIPart }) {
 
   if (isChartToolResultPart(part)) {
     return <ArtifactChatButton data={part.output} className="mb-4" />;
+  }
+
+  if (isToolResultPart(part, "tool-datasets_listDatasetsTool")) {
+    return <DatasetsList data={part.output} />;
+  }
+
+  if (isToolResultPart(part, "tool-datasets_createDatasetTool")) {
+    return <SavedDataset data={part.output} />;
   }
 
   const isPreliminary =
@@ -120,6 +130,13 @@ function isChartToolResultPart(
     part.output !== null &&
     "version" in part.output
   );
+}
+
+function isToolResultPart<T extends ArcanaToolUIPart["type"]>(
+  part: ArcanaToolUIPart,
+  type: T,
+): part is ArcanaToolWithOutput<T> {
+  return part.type === type && part.state === "output-available";
 }
 
 function hasInput(input: ArcanaToolUIPart["input"]) {

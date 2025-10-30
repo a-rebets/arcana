@@ -51,12 +51,13 @@ export const ChatInput = ({ className }: { className?: string }) => {
           <PromptInputTextarea
             onChange={inputHelpers.handleInputChange}
             value={inputHelpers.input}
+            placeholder="Type your question here..."
           />
         </PromptInputBody>
         <PromptInputToolbar>
           <PromptInputTools>
             <PromptInputButton
-              variant={inputHelpers.webSearch ? "default" : "ghost"}
+              variant={inputHelpers.withWebSearch ? "default" : "ghost"}
               onClick={inputHelpers.toggleWebSearch}
               hoverScale={1}
             >
@@ -79,6 +80,7 @@ function ChatSubmitButton({ status }: { status?: ChatStatus }) {
     <PromptInputSubmit
       disabled={!asanaReady || status === "submitted" || status === "streaming"}
       status={status}
+      className="rounded-br-xl"
     />
   );
 }

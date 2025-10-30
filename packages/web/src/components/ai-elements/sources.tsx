@@ -67,7 +67,7 @@ export const Source = ({ href, title, children, ...props }: SourceProps) => (
   >
     {children ?? (
       <>
-        <FileTextIcon className="h-4 w-4" />
+        <FileTextIcon className="size-4 shrink-0" />
         <span className="block font-medium">{title}</span>
       </>
     )}

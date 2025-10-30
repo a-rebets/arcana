@@ -38,7 +38,7 @@ export function ArtifactChatButton({
       tapScale={0.99}
     >
       <PresentationChartIcon className="size-5.5 md:size-6" />
-      <div className="space-y-1 min-w-0">
+      <div className="space-y-1 md:space-y-1.5 min-w-0">
         <h3 className="truncate font-display font-normal text-sm">
           {data.title}
         </h3>

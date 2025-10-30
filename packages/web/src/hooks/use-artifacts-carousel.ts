@@ -48,16 +48,13 @@ export function useArtifactsCarousel(
     syncVersionStates(versionMap);
 
     if (openedChartId) setSearchParams({});
-    if (currentChartId) {
-      const newIndex = artifacts.findIndex((a) => a.rootId === currentChartId);
-      if (newIndex !== -1) {
-        setCarouselIndex(newIndex);
-        setReady(true);
-      }
-      return;
-    }
+    const selectedChart = currentChartId
+      ? artifacts.find((a) => a.rootId === currentChartId)
+      : null;
+    const currentChart = selectedChart ?? artifacts[artifacts.length - 1];
+    const { rootId, title } = currentChart;
 
-    setCarouselIndex(artifacts.length - 1);
+    setActiveChart({ rootId, title });
     setReady(true);
   }, [artifacts]);
 

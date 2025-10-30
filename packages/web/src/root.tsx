@@ -34,6 +34,9 @@ export const links: Route.LinksFunction = () => [
   { rel: "icon", href: "/favicon.ico" },
 ];
 
+const remoteUrl = import.meta.env.VERCEL_URL ?? "https://www.tryarcana.app";
+const deploymentUrl = import.meta.env.DEV ? "http://localhost:5173" : remoteUrl;
+
 export function Layout({ children }: { children: React.ReactNode }) {
   const matches = useMatches();
   const currentRoute = matches[matches.length - 1] as {
@@ -44,12 +47,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <html lang="en">
       <head>
         <title>Arcana - AI Insights For Productivity</title>
-        <Meta />
         <meta charSet="UTF-8" />
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content"
         />
+        <Meta />
         <meta
           property="og:title"
           content="Make sense of your work with Arcana."
@@ -62,7 +65,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.tryarcana.app/" />
+        <meta property="og:url" content={deploymentUrl} />
         <Links />
       </head>
       <body className={currentRoute.handle?.bodyClasses}>

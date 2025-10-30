@@ -106,11 +106,9 @@ export function useLiveChat(opts: UseLiveChatOptions) {
       Boolean(threadId)
     ) {
       actions.sendMessage({ webSearch: search === "true" });
+      if (search === "true") setSearchParams({});
     }
-    if (search === "true") {
-      setSearchParams({});
-    }
-  }, [globalMessages]);
+  }, [globalMessages, actions]);
 
   return {
     status,

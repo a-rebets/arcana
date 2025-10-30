@@ -1,3 +1,4 @@
+import type { UIMessage } from "ai";
 import { lazy, Suspense } from "react";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "../ui/skeleton";
@@ -9,10 +10,11 @@ const Streamdown = lazy(() =>
 type ResponseProps = {
   className?: string;
   children?: string;
+  role: UIMessage["role"];
 };
 
-export const Response = ({ className, children }: ResponseProps) => (
-  <Suspense fallback={<ResponseSkeleton />}>
+export const Response = ({ className, children, role }: ResponseProps) => (
+  <Suspense fallback={<ResponseSkeleton role={role} />}>
     <Streamdown
       className={cn(
         "size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
@@ -24,11 +26,25 @@ export const Response = ({ className, children }: ResponseProps) => (
   </Suspense>
 );
 
-function ResponseSkeleton() {
+function ResponseSkeleton({ role }: { role: UIMessage["role"] }) {
   return (
     <div className="flex flex-col gap-1.5 w-full">
-      <Skeleton className="h-2 w-[40vw] min-w-96 bg-muted-foreground/50" />
-      <Skeleton className="h-2 w-3/4 bg-muted-foreground/50" />
+      <Skeleton
+        className={cn(
+          "h-2 w-[40vw] min-w-64 md:min-w-96",
+          role === "assistant"
+            ? "bg-muted-foreground/20"
+            : "bg-muted-foreground/40",
+        )}
+      />
+      <Skeleton
+        className={cn(
+          "h-2 w-3/4",
+          role === "assistant"
+            ? "bg-muted-foreground/15"
+            : "bg-muted-foreground/30",
+        )}
+      />
     </div>
   );
 }

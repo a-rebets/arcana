@@ -28,19 +28,19 @@ export const ChatInput = ({ className }: { className?: string }) => {
   );
   const inputHelpers = useChatInput(threadId);
 
+  const bgGradient =
+    (userData?.profileColors as Gradient) || (["fuchsia", "amber"] as const);
   const bgDimmed = !status || status !== "ready";
 
   return (
     <div className="relative">
-      {userData && (
-        <StaticGradientBackground
-          gradient={userData.profileColors as Gradient}
-          className={cn(
-            "blur-sm -inset-px rounded-2xl saturate-200 dark:saturate-100 z-20",
-            bgDimmed && "blur-xs opacity-50",
-          )}
-        />
-      )}
+      <StaticGradientBackground
+        gradient={bgGradient}
+        className={cn(
+          "blur-sm -inset-px rounded-2xl saturate-200 dark:saturate-100 z-20",
+          bgDimmed && "blur-xs opacity-50",
+        )}
+      />
       <PromptInput
         onSubmit={inputHelpers.handleSubmit}
         globalDrop

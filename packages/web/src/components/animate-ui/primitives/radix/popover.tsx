@@ -21,13 +21,18 @@ function Popover(props: PopoverProps) {
     onChange: props?.onOpenChange,
   });
 
+  const { open: _open, onOpenChange: _onOpenChange, ...restProps } = props;
+
+  // Only pass `open` prop when component is controlled (props.open is provided)
+  // This prevents Radix warning about switching between controlled/uncontrolled
+  const rootProps =
+    props.open !== undefined
+      ? { ...restProps, open: isOpen, onOpenChange: setIsOpen }
+      : { ...restProps, onOpenChange: setIsOpen };
+
   return (
     <PopoverProvider value={{ isOpen, setIsOpen }}>
-      <PopoverPrimitive.Root
-        data-slot="popover"
-        {...props}
-        onOpenChange={setIsOpen}
-      />
+      <PopoverPrimitive.Root data-slot="popover" {...rootProps} />
     </PopoverProvider>
   );
 }

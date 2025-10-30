@@ -103,12 +103,13 @@ export function ThreadsBox({
 
   const threads = searchTerm ? searchResults : paginatedThreads;
 
-  const noThreads = !threads?.length && !searchTerm;
+  const noThreads =
+    !threads?.length && !searchTerm && status !== "LoadingFirstPage";
 
   return (
     <Disclosure
       className={cn(
-        "rounded-xl border bg-background/85 dark:bg-background/90 backdrop-blur-md h-fit",
+        "rounded-xl border bg-background/95 dark:bg-background/90 dark:backdrop-blur-md backdrop-blur-sm h-fit",
         open && "shadow-xl dark:shadow-none",
         className,
       )}

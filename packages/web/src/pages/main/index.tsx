@@ -56,7 +56,7 @@ function Page({ params }: Route.ComponentProps) {
 function ConversationBg() {
   return (
     <div
-      className="absolute inset-0 -z-10 dark:from-accent/70 dark:to-accent/25 to-border/35 from-border/80 bg-gradient-to-b mask-repeat md:mask-size-[25rem] mask-size-[20rem]"
+      className="absolute inset-0 -z-10 md:dark:to-accent/25 dark:from-accent/70 dark:to-accent/35 to-border/35 from-border/80 bg-gradient-to-b mask-repeat md:mask-size-[22rem]"
       style={{
         maskImage: `url(${PatternBg})`,
         WebkitMaskImage: `url(${PatternBg})`,

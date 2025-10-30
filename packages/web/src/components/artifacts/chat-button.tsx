@@ -39,10 +39,10 @@ export function ArtifactChatButton({
     >
       <PresentationChartIcon className="size-5.5 md:size-6" />
       <div className="space-y-1 min-w-0">
-        <h3 className="truncate font-display font-normal md:text-sm text-[0.8rem]">
+        <h3 className="truncate font-display font-normal text-sm">
           {data.title}
         </h3>
-        <p className="rounded-full border border-primary/50 text-primary/60 px-2 py-0.5 md:text-xs text-[0.65rem] w-fit font-semibold">
+        <p className="rounded-full border border-primary/50 text-primary/60 px-2 py-0.5 text-xs w-fit font-semibold">
           Version {data.version}
         </p>
       </div>

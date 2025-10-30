@@ -25,10 +25,8 @@ export default function UserMenu() {
   );
   const { signOut } = useAuthActions();
 
-  const profileColors = (userData?.profileColors as Gradient) || [
-    "green",
-    "sky",
-  ];
+  const profileColors =
+    (userData?.profileColors as Gradient) || (["fuchsia", "amber"] as const);
 
   return (
     <DropdownMenu>

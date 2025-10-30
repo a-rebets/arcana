@@ -47,8 +47,8 @@ export function DatasetsList({
             variants={child}
             className="border rounded-full px-6 py-[2px] w-fit inline-flex items-center gap-px"
           >
-            <PlusIcon className="size-2.5" />
-            <span className="text-xs pb-px">
+            <PlusIcon className="size-2.5" weight="bold" />
+            <span className="text-xs pb-px font-medium">
               {data.length - 2}&nbsp;&nbsp;more
             </span>
           </motion.li>
@@ -67,7 +67,7 @@ export function SavedDataset({
     <div className="-ml-px max-w-[70%] mb-4 text-muted-foreground">
       <OutputHeader message="Saved the dataset" />
       {data.id && (
-        <motion.li
+        <motion.div
           key={data.id}
           className="flex items-center gap-2 border rounded-full pl-3 pr-3.5 py-1 md:w-fit"
           variants={child}
@@ -76,7 +76,7 @@ export function SavedDataset({
         >
           <FilesIcon className="size-4 shrink-0" />
           <h3 className="text-sm truncate">{data.name}</h3>
-        </motion.li>
+        </motion.div>
       )}
     </div>
   );

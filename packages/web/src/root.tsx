@@ -34,8 +34,9 @@ export const links: Route.LinksFunction = () => [
   { rel: "icon", href: "/favicon.ico" },
 ];
 
-const remoteUrl = import.meta.env.VERCEL_URL ?? "https://www.tryarcana.app";
-const deploymentUrl = import.meta.env.DEV ? "http://localhost:5173" : remoteUrl;
+const deploymentUrl = import.meta.env.DEV
+  ? "http://localhost:5173"
+  : import.meta.env.VITE_DEPLOYMENT_URL;
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const matches = useMatches();

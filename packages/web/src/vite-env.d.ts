@@ -5,6 +5,7 @@
 interface ImportMetaEnv {
   readonly VITE_CONVEX_URL: string;
   readonly VITE_CONVEX_API_URL: string;
+  readonly VITE_DEPLOYMENT_URL: string;
 }
 
 interface ImportMeta {

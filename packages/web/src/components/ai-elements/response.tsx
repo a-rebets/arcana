@@ -10,11 +10,11 @@ const Streamdown = lazy(() =>
 type ResponseProps = {
   className?: string;
   children?: string;
-  role: UIMessage["role"];
+  userRole: UIMessage["role"];
 };
 
-export const Response = ({ className, children, role }: ResponseProps) => (
-  <Suspense fallback={<ResponseSkeleton role={role} />}>
+export const Response = ({ className, children, userRole }: ResponseProps) => (
+  <Suspense fallback={<ResponseSkeleton role={userRole} />}>
     <Streamdown
       className={cn(
         "size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",

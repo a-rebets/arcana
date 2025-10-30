@@ -6,6 +6,11 @@ import svgr from "vite-plugin-svgr";
 import babel from "vite-plugin-babel";
 
 export default defineConfig({
+  define: {
+    "import.meta.env.VITE_DEPLOYMENT_URL": JSON.stringify(
+      `https://${process.env.VERCEL_URL ?? "www.tryarcana.app"}`
+    )
+  },
   plugins: [
     tailwindcss(),
     svgr(),

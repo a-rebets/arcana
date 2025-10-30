@@ -55,6 +55,7 @@ function useCurrentChatPath() {
     }
     return "/";
   }, [globalPath, state]);
+
   return { chatPath: path, globalPath };
 }
 

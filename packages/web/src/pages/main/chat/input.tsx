@@ -37,7 +37,7 @@ export const ChatInput = ({ className }: { className?: string }) => {
       <StaticGradientBackground
         gradient={bgGradient}
         className={cn(
-          "blur-sm -inset-px rounded-2xl saturate-200 dark:saturate-100 z-20",
+          "blur-sm -inset-1 rounded-[1.25rem] saturate-200 dark:saturate-100 z-20",
           bgDimmed && "blur-xs opacity-50",
         )}
       />
@@ -45,7 +45,10 @@ export const ChatInput = ({ className }: { className?: string }) => {
         onSubmit={inputHelpers.handleSubmit}
         globalDrop
         multiple
-        className={cn("relative rounded-2xl shadow-none z-30", className)}
+        className={cn(
+          "relative rounded-2xl shadow-none z-30 border-none",
+          className,
+        )}
       >
         <PromptInputBody>
           <PromptInputTextarea

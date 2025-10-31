@@ -30,7 +30,7 @@ import { ThreadsList } from "./list";
 
 const ThreadTitle = memo(({ title }: { title: string | undefined }) => {
   return (
-    <TextScramble speed={0.02} baseWord="New chat">
+    <TextScramble speed={0.02} baseWord="New chat" className="truncate">
       {title ?? "Search your chats"}
     </TextScramble>
   );

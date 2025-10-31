@@ -30,7 +30,7 @@ export function ArtifactChatButton({
     <Button
       onClick={handleClick}
       className={cn(
-        "group h-auto gap-4 py-3 has-[>svg]:px-4 text-left rounded-2xl md:max-w-md max-w-full",
+        "group h-auto gap-4 py-3 has-[>svg]:px-4 text-left rounded-2xl md:max-w-md max-w-full backdrop-blur-xs",
         className,
       )}
       variant="outline"

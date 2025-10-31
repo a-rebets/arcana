@@ -12,13 +12,16 @@ export function MessageReasoning({
   part: ArcanaReasoningUIPart;
   isLast: boolean;
 }) {
+  const text = part.text.trim();
+  const isEmpty = text === "" || text === "[REDACTED]";
+
   return (
     <Reasoning
       className="w-full"
       isStreaming={part.state === "streaming" && isLast}
       defaultOpen={false}
     >
-      <ReasoningTrigger />
+      <ReasoningTrigger disabled={isEmpty} />
       <ReasoningContent>{part.text}</ReasoningContent>
     </Reasoning>
   );

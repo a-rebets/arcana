@@ -36,7 +36,9 @@ function Page({ params }: Route.ComponentProps) {
           <ConversationBg />
           <Conversation className="flex-1 min-h-0">
             {!params.threadId && (
-              <ConversationStart className="left-1/2 -translate-x-1/2 absolute top-1/2 -translate-y-3/5" />
+              <div className="absolute inset-0 overflow-y-auto">
+                <ConversationStart />
+              </div>
             )}
             <ConversationContent className="max-w-4xl mx-auto md:px-6 px-4.5">
               <ChatMessages />

@@ -1,9 +1,11 @@
 import { api } from "@convex/api";
 import { useToggle } from "@react-hookz/web";
 import { useAction } from "convex/react";
-import { type ChangeEvent, useCallback, useState } from "react";
+import { useAtom } from "jotai";
+import { type ChangeEvent, useCallback } from "react";
 import { useNavigate } from "react-router";
 import type { PromptInputMessage } from "@/components/ai-elements/prompt-input";
+import { chatInputAtom } from "@/lib/atoms/chat-input";
 import { useChatActions } from "@/lib/convex-agent";
 import type { ArcanaUIMessage } from "@/lib/convex-agent/types";
 
@@ -12,7 +14,7 @@ export const useChatInput = (threadId?: string) => {
   const { sendMessage } = useChatActions<ArcanaUIMessage>();
   const sendNewThreadMessage = useAction(api.ai.threads.public.startNewThread);
 
-  const [input, setInput] = useState("");
+  const [input, setInput] = useAtom(chatInputAtom);
   const [withWebSearch, toggleWebSearch] = useToggle(false);
 
   const submitFromNewThread = useCallback(
@@ -50,6 +52,7 @@ export const useChatInput = (threadId?: string) => {
       withWebSearch,
       toggleWebSearch,
       submitFromNewThread,
+      setInput,
     ],
   );
 
@@ -57,7 +60,7 @@ export const useChatInput = (threadId?: string) => {
     (e: ChangeEvent<HTMLTextAreaElement>) => {
       setInput(e.target.value);
     },
-    [],
+    [setInput],
   );
 
   return {

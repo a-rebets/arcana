@@ -31,7 +31,7 @@ function ResponseSkeleton({ role }: { role: UIMessage["role"] }) {
     <div className="flex flex-col gap-1.5 w-full">
       <Skeleton
         className={cn(
-          "h-2 w-[40vw] min-w-64 md:min-w-96",
+          "h-2 w-[30vw] min-w-64 md:min-w-96",
           role === "assistant"
             ? "bg-muted-foreground/20"
             : "bg-muted-foreground/40",

@@ -23,7 +23,7 @@ export function DatasetsList({
   data: ArcanaToolResult<"tool-datasets_listDatasetsTool">;
 }) {
   return (
-    <div className="-ml-px max-w-[70%] md:max-w-none mb-4 text-muted-foreground">
+    <div className="-ml-px max-w-[70%] md:max-w-none mb-4 text-muted-foreground select-none">
       <OutputHeader message="Listed available datasets" />
       <motion.ul
         variants={container}
@@ -34,7 +34,7 @@ export function DatasetsList({
         {data.slice(0, 2).map((dataset) => (
           <motion.li
             key={dataset.id}
-            className="flex items-center gap-2 border rounded-full pl-3 pr-3.5 py-1 md:w-fit"
+            className="flex items-center gap-2 border rounded-full pl-3 pr-3.5 py-1 md:w-fit dark:bg-background/50 bg-background/80"
             variants={child}
           >
             <FilesIcon className="size-4 shrink-0" />
@@ -45,7 +45,7 @@ export function DatasetsList({
           <motion.li
             key="more"
             variants={child}
-            className="border rounded-full px-6 py-[2px] w-fit inline-flex items-center gap-px"
+            className="border rounded-full px-6 py-[2px] w-fit inline-flex items-center gap-px dark:bg-background/50 bg-background/80"
           >
             <PlusIcon className="size-2.5" weight="bold" />
             <span className="text-xs pb-px font-medium">
@@ -64,12 +64,12 @@ export function SavedDataset({
   data: ArcanaToolResult<"tool-datasets_createDatasetTool">;
 }) {
   return (
-    <div className="-ml-px max-w-[70%] mb-4 text-muted-foreground">
+    <div className="-ml-px max-w-[70%] mb-4 text-muted-foreground select-none">
       <OutputHeader message="Saved the dataset" />
       {data.id && (
         <motion.div
           key={data.id}
-          className="flex items-center gap-2 border rounded-full pl-3 pr-3.5 py-1 md:w-fit"
+          className="flex items-center gap-2 border rounded-full pl-3 pr-3.5 py-1 md:w-fit dark:bg-background/50 bg-background/80"
           variants={child}
           initial="hidden"
           animate="show"

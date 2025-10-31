@@ -112,7 +112,7 @@ export const ReasoningTrigger = memo(
     return (
       <CollapsibleTrigger
         className={cn(
-          "flex w-full items-center gap-2 text-muted-foreground text-sm transition-colors hover:text-foreground",
+          "flex w-full items-center gap-2 text-muted-foreground text-sm transition-colors hover:text-foreground group/reasoning-trigger",
           className,
         )}
         {...props}
@@ -123,7 +123,7 @@ export const ReasoningTrigger = memo(
             {getThinkingMessage(isStreaming, duration)}
             <CaretDownIcon
               className={cn(
-                "size-4 transition-transform",
+                "size-4 transition-transform group-disabled/reasoning-trigger:opacity-0",
                 isOpen ? "rotate-180" : "rotate-0",
               )}
             />

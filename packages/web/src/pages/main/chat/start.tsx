@@ -3,13 +3,15 @@ import { convexQuery } from "@convex-dev/react-query";
 import { CurrencyDollarIcon, NewspaperIcon } from "@phosphor-icons/react";
 import { useToggle } from "@react-hookz/web";
 import { useQuery } from "@tanstack/react-query";
-import { motion } from "motion/react";
+import { useAtomValue } from "jotai";
+import { AnimatePresence, type MotionProps, motion } from "motion/react";
 import { useCallback } from "react";
 import AsanaIcon from "@/assets/asana-icon.svg?react";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import { AnimatedBackground } from "@/components/ui/animated-background";
 import { useChatInput } from "@/hooks/use-chat-input";
 import { useIsMobile } from "@/hooks/use-is-mobile";
+import { chatInputAtom } from "@/lib/atoms/chat-input";
 import { cn } from "@/lib/utils";
 
 const ITEMS = [
@@ -33,46 +35,55 @@ const ICONS = {
   search: <NewspaperIcon className="size-4" weight="bold" />,
 };
 
+const animationProps: MotionProps = {
+  initial: { opacity: 0, scale: 0.8, y: 0 },
+  animate: { opacity: 1, scale: 1, y: 0 },
+  exit: { opacity: 0, scale: 0.8, y: 0 },
+  transition: { type: "spring", bounce: 0.2, duration: 0.4 },
+};
+
 export function ConversationStart({ className }: { className?: string }) {
-  const isMobile = useIsMobile();
+  const chatInput = useAtomValue(chatInputAtom);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ type: "spring", bounce: 0.2, duration: 0.4 }}
-      className={cn(
-        "flex flex-col items-center select-none w-full md:w-auto px-4 md:px-0",
-        className,
-      )}
-    >
-      <Greeting />
-      <p className="text-muted-foreground md:text-2xl text-lg font-light text-center md:mb-12 mb-8">
-        What are we exploring today?
-      </p>
-      <div className="flex flex-col w-full md:w-auto px-4 md:px-8 pt-5 md:pt-4 md:pb-7 pb-5 dark:bg-background/40 bg-background/10 backdrop-blur-xs border rounded-2xl">
-        <p className="text-muted-foreground text-center font-light text-sm mb-4">
-          You can get started with one of these questions:
-        </p>
-        <div className="flex flex-col">
-          {isMobile ? (
-            <DefaultQuestions />
-          ) : (
-            <AnimatedBackground
-              className="rounded-xl md:rounded-full bg-muted inset-x-0 inset-y-1.5"
-              transition={{
-                type: "spring",
-                bounce: 0.2,
-                duration: 0.6,
-              }}
-              enableHover
+    <div className="min-h-full flex justify-center items-center">
+      <motion.div
+        className={cn(
+          "flex flex-col items-center select-none w-full md:w-auto px-4 md:px-0 pt-8 pb-24 gap-y-8 md:gap-y-12",
+          className,
+        )}
+        {...animationProps}
+      >
+        <AnimatePresence initial={false} mode="popLayout">
+          <motion.div
+            layout="position"
+            transition={animationProps.transition}
+            className="space-y-3"
+          >
+            <Greeting />
+            <p className="text-muted-foreground md:text-2xl text-lg font-light text-center">
+              What are we exploring today?
+            </p>
+          </motion.div>
+
+          {!chatInput && (
+            <motion.div
+              key="default-questions"
+              className="flex flex-col w-full md:w-auto px-4 md:px-8 pt-5 md:pt-4 md:pb-7 pb-5 dark:bg-background/40 bg-background/10 backdrop-blur-xs border rounded-2xl"
+              {...animationProps}
+              exit={{ opacity: 0, y: "30%" }}
             >
-              <DefaultQuestions />
-            </AnimatedBackground>
+              <p className="text-muted-foreground text-center font-light text-sm mb-4">
+                You can get started with one of these questions:
+              </p>
+              <div className="flex flex-col">
+                <DefaultQuestions />
+              </div>
+            </motion.div>
           )}
-        </div>
-      </div>
-    </motion.div>
+        </AnimatePresence>
+      </motion.div>
+    </div>
   );
 }
 
@@ -81,7 +92,7 @@ function Greeting() {
     convexQuery(api.core.accounts.getUser, {}),
   );
   return (
-    <h1 className="font-accent md:text-5xl text-4xl font-light mb-3 inline-flex flex-wrap justify-center">
+    <h1 className="font-accent md:text-5xl text-4xl font-light inline-flex flex-wrap justify-center">
       Welcome{userData && <span>,&nbsp;</span>}
       <span className="inline-flex">
         {userData && (
@@ -96,6 +107,7 @@ function Greeting() {
 }
 
 export function DefaultQuestions() {
+  const isMobile = useIsMobile();
   const [clicked, toggleClicked] = useToggle(false);
   const { submitFromNewThread } = useChatInput();
 
@@ -108,23 +120,39 @@ export function DefaultQuestions() {
     [submitFromNewThread, toggleClicked, clicked],
   );
 
-  return ITEMS.map((item, index) => (
-    <div key={index.toString()} data-id={`card-${index}`} className="py-1.5">
-      <div className="rounded-xl md:rounded-full border-[0.5px]">
-        <Button
-          variant="outline"
-          className="h-fit select-none border-none has-[>svg]:px-3 md:has-[>svg]:pl-6 md:has-[>svg]:pr-8 py-2 gap-3 text-muted-foreground rounded-xl md:rounded-full w-full justify-start shadow-none hover:bg-transparent bg-transparent font-normal"
-          hoverScale={1}
-          tapScale={0.97}
-          onClick={() => handleClick(item)}
-          disabled={clicked}
+  return (
+    <AnimatedBackground
+      className="rounded-xl md:rounded-full bg-muted inset-x-0 inset-y-1.5"
+      transition={{
+        type: "spring",
+        bounce: 0.2,
+        duration: 0.6,
+      }}
+      enableHover={!isMobile}
+    >
+      {ITEMS.map((item, index) => (
+        <div
+          key={index.toString()}
+          data-id={`card-${index}`}
+          className="py-1.5"
         >
-          {ICONS[item.type]}
-          <p className="text-sm whitespace-normal md:truncate text-left text-pretty">
-            {item.description}
-          </p>
-        </Button>
-      </div>
-    </div>
-  ));
+          <div className="rounded-xl md:rounded-full border-[0.5px]">
+            <Button
+              variant="outline"
+              className="h-fit border-none has-[>svg]:px-3 md:has-[>svg]:pl-6 md:has-[>svg]:pr-8 py-2 gap-3 text-muted-foreground rounded-xl md:rounded-full w-full justify-start shadow-none hover:bg-transparent! bg-transparent! font-normal"
+              hoverScale={1}
+              tapScale={0.97}
+              onClick={() => handleClick(item)}
+              disabled={clicked}
+            >
+              {ICONS[item.type]}
+              <p className="text-sm whitespace-normal md:truncate text-left text-pretty">
+                {item.description}
+              </p>
+            </Button>
+          </div>
+        </div>
+      ))}
+    </AnimatedBackground>
+  );
 }

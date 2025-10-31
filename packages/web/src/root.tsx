@@ -56,24 +56,40 @@ export function Layout({ children }: { children: React.ReactNode }) {
         />
         <Meta />
         <title>Arcana - AI Insights For Productivity</title>
+
+        {/* Open Graph / Facebook */}
         <meta property="og:title" content="Make sense of your work." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={deploymentUrl} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta
+          property="og:image:alt"
+          content="Explore data from your productivity tools with AI."
+        />
+        <meta property="og:site_name" content="Arcana" />
         <meta
           property="og:description"
           content="Chat with your productivity tools like Asana. Effortlessly extract charts, highlights, and overviews to make smarter, faster business decisions."
         />
-        <meta property="og:site_name" content="Arcana" />
-        <meta property="og:image" content={ogImage} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={deploymentUrl} />
+
+        {/* Twitter Card */}
+        <meta name="twitter:image" content={ogImage} />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Make sense of your work." />
+        <meta name="twitter:site" content="@chatwitharcana" />
+        <meta
+          name="twitter:title"
+          content="Arcana - Make sense of your work."
+        />
         <meta
           name="twitter:description"
           content="Chat with your productivity tools like Asana. Effortlessly extract charts, highlights, and overviews to make smarter, faster business decisions."
         />
-        <meta name="twitter:image" content={ogImage} />
+        <meta
+          name="twitter:image:alt"
+          content="Explore data from your productivity tools with AI."
+        />
         <Links />
       </head>
       <body className={currentRoute.handle?.bodyClasses}>

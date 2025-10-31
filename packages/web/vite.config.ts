@@ -8,7 +8,9 @@ import babel from "vite-plugin-babel";
 export default defineConfig({
   define: {
     "import.meta.env.VITE_DEPLOYMENT_URL": JSON.stringify(
-      `https://${process.env.VERCEL_URL ?? "www.tryarcana.app"}`
+      process.env.VERCEL_ENV === "production"
+        ? "https://www.tryarcana.app"
+        : `https://${process.env.VERCEL_URL}`
     )
   },
   plugins: [

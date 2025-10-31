@@ -44,29 +44,36 @@ export function Layout({ children }: { children: React.ReactNode }) {
     handle: { bodyClasses: string };
   };
 
+  const ogImage = `${deploymentUrl}/og-image.jpg`;
+
   return (
     <html lang="en">
       <head>
-        <title>Arcana - AI Insights For Productivity</title>
         <meta charSet="UTF-8" />
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content"
         />
         <Meta />
-        <meta
-          property="og:title"
-          content="Make sense of your work with Arcana."
-        />
+        <title>Arcana - AI Insights For Productivity</title>
+        <meta property="og:title" content="Make sense of your work." />
         <meta
           property="og:description"
-          content="Chat with your productivity tools like Asana. Effortlessly extract charts, highlights, and overviews using AI to make smarter, faster business decisions."
+          content="Chat with your productivity tools like Asana. Effortlessly extract charts, highlights, and overviews to make smarter, faster business decisions."
         />
-        <meta property="og:image" content="/og-image.jpg" />
+        <meta property="og:site_name" content="Arcana" />
+        <meta property="og:image" content={ogImage} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={deploymentUrl} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Make sense of your work." />
+        <meta
+          name="twitter:description"
+          content="Chat with your productivity tools like Asana. Effortlessly extract charts, highlights, and overviews to make smarter, faster business decisions."
+        />
+        <meta name="twitter:image" content={ogImage} />
         <Links />
       </head>
       <body className={currentRoute.handle?.bodyClasses}>

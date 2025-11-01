@@ -22,9 +22,8 @@ const content = [
   },
   {
     icon: BinocularsIcon,
-    title: "AI-driven insights",
-    description:
-      "Visualize Asana data instantly — get trends and insights at a glance.",
+    title: "Actionable analytics",
+    description: "Visualize your business data — get insights at a glance.",
   },
   {
     icon: PlugsIcon,
@@ -40,11 +39,11 @@ function Page() {
         starColor="#FFF"
         className={cn(
           "absolute inset-0 flex items-center justify-center",
-          "bg-[radial-gradient(ellipse_at_bottom,_#262626_0%,_#000_100%)]",
+          "bg-[radial-gradient(circle_at_bottom,_#262626_0%,_#000_100%)] md:bg-[radial-gradient(ellipse_at_bottom,_#262626_0%,_#000_100%)]",
         )}
       />
       <main className="container mx-auto text-center relative px-2 z-10 flex flex-col h-full justify-center items-center pointer-events-none">
-        <div className="flex flex-col justify-center items-center gap-8 bg-background/90 rounded-xl px-3 py-6 md:px-8 md:pb-7 max-w-full md:max-w-[40rem] pointer-events-auto shadow-[inset_0_-56px_80px_-48px_rgb(0_0_0_/_.5)]">
+        <div className="flex flex-col justify-center items-center gap-8 bg-background/90 rounded-xl px-3 py-6 md:px-12 md:pb-7 w-full md:w-[38rem] pointer-events-auto shadow-[inset_0_-56px_80px_-48px_rgb(0_0_0_/_.5)]">
           <div className="select-none">
             <img
               src={logo}
@@ -69,7 +68,7 @@ function Page() {
             <span className="mx-0.5 font-normal">·</span>num - a profound secret
             or mystery
           </p>
-          <ul className="text-left border border-border/60 rounded-xl bg-background/60 divide-y">
+          <ul className="text-left border border-border/60 rounded-xl bg-background/60 divide-y w-full">
             {content.map((item) => {
               const Icon = item.icon;
               return (
@@ -94,7 +93,10 @@ function Page() {
             })}
           </ul>
           <LoginDialog>
-            <Button size="lg" className="min-w-40 select-none">
+            <Button
+              size="lg"
+              className="md:min-w-44 min-w-52 select-none rounded-lg"
+            >
               Start Now
             </Button>
           </LoginDialog>

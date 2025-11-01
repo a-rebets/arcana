@@ -95,7 +95,7 @@ export const LoginDialog = ({ children }: { children: React.ReactNode }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] min-h-52 p-4">
+      <DialogContent className="sm:max-w-[425px] min-h-52 p-4 rounded-xl">
         <Form subscribe={subscribe} {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <Tabs defaultValue="email">
@@ -151,9 +151,15 @@ function EmailTab() {
             </FormItem>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" className="rounded-lg">
+                  Cancel
+                </Button>
               </DialogClose>
-              <Button type="submit" disabled={fieldState.invalid}>
+              <Button
+                type="submit"
+                disabled={fieldState.invalid}
+                className="rounded-lg"
+              >
                 Submit
               </Button>
             </DialogFooter>

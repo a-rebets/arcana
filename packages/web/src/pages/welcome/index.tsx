@@ -11,9 +11,27 @@ import { cn } from "@/lib/utils";
 import { LoginDialog } from "./login-dialog";
 
 export const handle = {
-  bodyClasses:
-    "grid grid-rows-1 place-items-center min-w-[320px] min-h-screen relative",
+  bodyClasses: "w-full h-dvh relative bg-neutral-950 overflow-hidden",
 };
+
+const content = [
+  {
+    icon: ChatCircleDotsIcon,
+    title: "Chat with your work",
+    description: "Natural conversations as your main interface.",
+  },
+  {
+    icon: BinocularsIcon,
+    title: "AI-driven insights",
+    description:
+      "Visualize Asana data instantly — get trends and insights at a glance.",
+  },
+  {
+    icon: PlugsIcon,
+    title: "Plugs into any workspace",
+    description: "Asana today; Google Calendar and more soon.",
+  },
+];
 
 function Page() {
   return (
@@ -25,78 +43,56 @@ function Page() {
           "bg-[radial-gradient(ellipse_at_bottom,_#262626_0%,_#000_100%)]",
         )}
       />
-      <main className="container mx-auto p-8 text-center relative z-10 flex flex-col h-full justify-center items-center pointer-events-none">
-        <div className="flex flex-col justify-center items-center gap-8 bg-background/90 rounded-xl p-8 w-[40rem] pointer-events-auto shadow-[inset_0_-56px_80px_-48px_rgb(0_0_0_/_.5)]">
+      <main className="container mx-auto text-center relative px-2 z-10 flex flex-col h-full justify-center items-center pointer-events-none">
+        <div className="flex flex-col justify-center items-center gap-8 bg-background/90 rounded-xl px-3 py-6 md:px-8 md:pb-7 max-w-full md:max-w-[40rem] pointer-events-auto shadow-[inset_0_-56px_80px_-48px_rgb(0_0_0_/_.5)]">
           <div className="select-none">
             <img
               src={logo}
               alt="Arcana Logo"
-              className="w-72"
+              className="md:w-72 w-64"
               draggable={false}
             />
             <div className="flex items-center gap-1 justify-end pr-3 -mt-2">
-              <span className="font-accent font-thin text-xl mb-0.5">for</span>
+              <span className="font-accent font-thin md:text-xl text-lg mb-0.5">
+                for
+              </span>
               <img
                 src={asana}
                 alt="Asana Logo"
-                className="w-20"
+                className="md:w-20 w-18"
                 draggable={false}
               />
             </div>
           </div>
-          <p className="font-accent text-muted-foreground text-lg font-extralight select-none">
+          <p className="font-accent text-muted-foreground md:text-lg text-base font-extralight select-none">
             ar<span className="mx-0.5 font-normal">·</span>ca
             <span className="mx-0.5 font-normal">·</span>num - a profound secret
             or mystery
           </p>
-          <div className="w-full">
-            <ul className="text-left border border-border/60 rounded-xl bg-background/60 divide-y">
-              <li className="flex items-center gap-4 py-4 px-6">
-                <ChatCircleDotsIcon
-                  size={28}
-                  weight="duotone"
-                  className="text-foreground/80"
-                />
-                <div>
-                  <p className="font-medium leading-none">
-                    Chat with your work
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Natural conversations as your main interface.
-                  </p>
-                </div>
-              </li>
-              <li className="flex items-center gap-4 py-4 px-6">
-                <BinocularsIcon
-                  size={28}
-                  weight="duotone"
-                  className="text-foreground/80"
-                />
-                <div>
-                  <p className="font-medium leading-none">AI-driven insights</p>
-                  <p className="text-sm text-muted-foreground">
-                    Visualize Asana data instantly — get trends and insights at
-                    a glance.
-                  </p>
-                </div>
-              </li>
-              <li className="flex items-center gap-4 py-4 px-6">
-                <PlugsIcon
-                  size={28}
-                  weight="duotone"
-                  className="text-foreground/80"
-                />
-                <div>
-                  <p className="font-medium leading-none">
-                    Plugs into any workspace
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Asana today; Google Calendar and more soon.
-                  </p>
-                </div>
-              </li>
-            </ul>
-          </div>
+          <ul className="text-left border border-border/60 rounded-xl bg-background/60 divide-y">
+            {content.map((item) => {
+              const Icon = item.icon;
+              return (
+                <li
+                  key={item.title}
+                  className="flex items-center gap-4 py-4 px-6"
+                >
+                  <Icon
+                    weight="duotone"
+                    className="text-foreground/80 size-6 md:size-7 shrink-0"
+                  />
+                  <div className="space-y-1">
+                    <p className="font-medium leading-none md:text-base text-sm">
+                      {item.title}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {item.description}
+                    </p>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
           <LoginDialog>
             <Button size="lg" className="min-w-40 select-none">
               Start Now

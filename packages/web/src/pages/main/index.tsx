@@ -40,7 +40,7 @@ function Page({ params }: Route.ComponentProps) {
                 <ConversationStart />
               </div>
             )}
-            <ConversationContent className="max-w-4xl mx-auto md:px-6 px-4.5">
+            <ConversationContent className="max-w-4xl mx-auto md:px-6 px-4.5 pb-6">
               <ChatMessages />
             </ConversationContent>
             <ConversationScrollButton />

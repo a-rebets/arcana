@@ -7,7 +7,7 @@ import {
   useSpring,
 } from "motion/react";
 import * as React from "react";
-
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { cn } from "@/lib/utils";
 
 type StarLayerProps = HTMLMotionProps<"div"> & {
@@ -75,6 +75,7 @@ type StarsBackgroundProps = React.ComponentProps<"div"> & {
   transition?: SpringOptions;
   starColor?: string;
   pointerEvents?: boolean;
+  enabled?: boolean;
 };
 
 function StarsBackground({
@@ -85,8 +86,10 @@ function StarsBackground({
   transition = { stiffness: 50, damping: 20 },
   starColor = "#fff",
   pointerEvents = true,
+  enabled = true,
   ...props
 }: StarsBackgroundProps) {
+  const isMobile = useIsMobile();
   const offsetX = useMotionValue(1);
   const offsetY = useMotionValue(1);
 
@@ -113,7 +116,7 @@ function StarsBackground({
         "relative size-full overflow-hidden bg-[radial-gradient(ellipse_at_bottom,_#262626_0%,_#000_100%)]",
         className,
       )}
-      onMouseMove={handleMouseMove}
+      onMouseMove={enabled && !isMobile ? handleMouseMove : undefined}
       {...props}
     >
       <motion.div

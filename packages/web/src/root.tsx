@@ -10,6 +10,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLocation,
   useMatches,
 } from "react-router";
 import type { Route } from "./+types/root";
@@ -103,6 +104,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function Root() {
+  const { pathname } = useLocation();
+
   const { convex, queryClient } = useMemo(() => {
     const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL);
     const convexQueryClient = new ConvexQueryClient(convex);
@@ -126,6 +129,7 @@ export default function Root() {
           storageKey="arcana-theme"
           enableSystem={false}
           attribute="class"
+          forcedTheme={pathname === "/welcome" ? "light" : undefined}
         >
           <Outlet />
         </ThemeProvider>

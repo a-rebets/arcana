@@ -75,6 +75,7 @@ export const postMessage = httpAction(async (ctx, request) => {
     sendSources: true,
     headers: {
       "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization, User-Agent",
       Vary: "origin",
     },
   });

@@ -3,6 +3,7 @@ import {
   ChatCircleDotsIcon,
   PlugsIcon,
 } from "@phosphor-icons/react";
+import { motion } from "motion/react";
 import asana from "@/assets/asana.svg";
 import logo from "@/assets/logo.svg";
 import { StarsBackground } from "@/components/animate-ui/components/backgrounds/stars";
@@ -43,7 +44,13 @@ function Page() {
         )}
       />
       <main className="container mx-auto text-center relative px-2 z-10 flex flex-col h-full justify-center items-center pointer-events-none">
-        <div className="flex flex-col justify-center items-center gap-8 bg-background/90 rounded-xl px-3 py-6 md:px-12 md:pb-7 w-full md:w-[38rem] pointer-events-auto shadow-[inset_0_-56px_80px_-48px_rgb(0_0_0_/_.5)]">
+        <motion.div
+          initial={{ opacity: 0.1, y: 100 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0.1, y: 100 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="flex flex-col justify-center items-center gap-8 bg-background/90 rounded-xl px-3 py-6 md:px-12 md:pb-7 w-full md:w-[38rem] pointer-events-auto shadow-[inset_0_-56px_80px_-48px_rgb(0_0_0_/_.5)]"
+        >
           <div className="select-none">
             <img
               src={logo}
@@ -100,7 +107,7 @@ function Page() {
               Start Now
             </Button>
           </LoginDialog>
-        </div>
+        </motion.div>
       </main>
     </>
   );

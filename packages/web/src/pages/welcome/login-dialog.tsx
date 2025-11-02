@@ -142,7 +142,7 @@ function EmailTab() {
         name="email"
         render={({ field, fieldState }) => (
           <>
-            <FormItem>
+            <FormItem className="mb-3 md:mb-0">
               <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input placeholder="user@example.com" {...field} />
@@ -156,9 +156,10 @@ function EmailTab() {
                 </Button>
               </DialogClose>
               <Button
+                size="lg"
                 type="submit"
                 disabled={fieldState.invalid}
-                className="rounded-lg"
+                className="rounded-lg h-11 md:h-10"
               >
                 Submit
               </Button>

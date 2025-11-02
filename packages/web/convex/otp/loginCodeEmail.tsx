@@ -21,10 +21,10 @@ export function LoginCodeEmail({
         <Head />
         <Container className="container px-20 font-sans">
           <Heading className="text-xl font-bold mb-4">
-            Sign in to Arcana
+            Are you trying to sign in?
           </Heading>
           <Text className="text-sm">
-            Please enter the following code on the sign in page.
+            Please use the following code to continue the login process.
           </Text>
           <Section className="text-center">
             <Text className="font-semibold">Verification code</Text>

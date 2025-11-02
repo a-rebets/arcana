@@ -55,7 +55,7 @@ function Page() {
             <img
               src={logo}
               alt="Arcana Logo"
-              className="md:w-72 w-64"
+              className="md:w-72 w-60"
               draggable={false}
             />
             <div className="flex items-center gap-1 justify-end pr-3 -mt-2">

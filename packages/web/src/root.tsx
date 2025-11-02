@@ -18,6 +18,8 @@ import { Toaster } from "./components/ui/sonner";
 
 import "./globals.css";
 
+const lightModePages = ["/welcome", "/onboarding"];
+
 export const links: Route.LinksFunction = () => [
   {
     rel: "icon",
@@ -129,7 +131,7 @@ export default function Root() {
           storageKey="arcana-theme"
           enableSystem={false}
           attribute="class"
-          forcedTheme={pathname === "/welcome" ? "light" : undefined}
+          forcedTheme={lightModePages.includes(pathname) ? "light" : undefined}
         >
           <Outlet />
         </ThemeProvider>

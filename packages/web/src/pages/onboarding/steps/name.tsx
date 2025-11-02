@@ -7,8 +7,8 @@ export function NameStep() {
   const { control } = useFormContext<OnboardingFormValues>();
 
   return (
-    <section className="pt-9 pb-12 px-4">
-      <h3 className="text-center font-accent text-3xl text-zinc-800 dark:text-zinc-100 mb-10">
+    <section className="pt-6 pb-10 md:pt-9 md:pb-12 px-0 md:px-4">
+      <h3 className="text-center font-accent md:text-3xl text-[1.7rem] mb-10">
         What should we call you?
       </h3>
       <FormField
@@ -19,7 +19,7 @@ export function NameStep() {
             <FormControl>
               <Input
                 placeholder="Enter your name"
-                className="w-5/6 mx-auto rounded-lg"
+                className="w-5/6 mx-auto rounded-xl h-10"
                 {...field}
               />
             </FormControl>

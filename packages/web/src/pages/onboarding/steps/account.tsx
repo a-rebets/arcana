@@ -49,14 +49,14 @@ export function AccountStep() {
   }, [toggleLoading]);
 
   return (
-    <section className="pt-9 pb-12 px-4 flex flex-col items-center gap-10">
-      <h3 className="text-center font-accent text-3xl text-zinc-800 dark:text-zinc-100">
+    <section className="pt-6 pb-10 md:pt-9 md:pb-12 px-0 md:px-4 flex flex-col items-center">
+      <h3 className="text-center font-accent md:text-3xl text-[1.7rem] mb-6 md:mb-10">
         Connect your projects
       </h3>
       <Button
         size="lg"
         variant="outline"
-        className="w-5/6 rounded-lg h-fit min-h-16 py-2"
+        className="w-5/6 rounded-xl h-fit min-h-16 py-2"
         hoverScale={1.01}
         onClick={handleConnectAsana}
         disabled={isLoading}

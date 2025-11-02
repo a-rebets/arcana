@@ -38,9 +38,12 @@ function Page() {
   };
 
   return (
-    <main className="min-h-screen w-full flex items-center justify-center">
+    <main className="h-dvh w-full flex items-center justify-center">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-[95%] max-w-lg"
+        >
           <OnboardingCard activeIndex={activeIndex} loading={isPending} />
         </form>
       </Form>

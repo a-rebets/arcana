@@ -14,8 +14,14 @@ export function AccountStep() {
   const handleConnectAsana = async () => {
     try {
       toggleLoading(true);
+      // Open window immediately to preserve user gesture context (Safari)
+      const authWindow = window.open("", "asana-oauth");
       const authUrl = await startAsanaAuth({});
-      window.open(authUrl, "asana-oauth");
+      if (authWindow) {
+        authWindow.location.href = authUrl;
+      } else {
+        window.location.href = authUrl;
+      }
     } catch (error) {
       console.error("Failed to start Asana auth:", error);
       toggleLoading(false);
